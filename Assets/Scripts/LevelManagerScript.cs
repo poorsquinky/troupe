@@ -9,9 +9,6 @@ public class LevelManagerScript : MonoBehaviour {
     public int levelWidth=200;
     public int levelHeight=200;
 
-    public int overworldCoarseWidth = 512;
-    public int overworldCoarseHeight = 512;
-
     public GameObject playerPrefab;
 
     public GameObject npcPrefab;
@@ -21,8 +18,6 @@ public class LevelManagerScript : MonoBehaviour {
     private List<List<GameObject>> tileGrid = new List<List<GameObject>>();
     private List<List<GameObject>> subTileGrid = new List<List<GameObject>>();
     private GameObject player;
-
-    public OverworldMapManager overworldMan;
 
     public MapRectangle fullMapBounds;
     public MapSpaceType[][] map;
@@ -42,11 +37,12 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
     void go() {
+        entity = new LevelEntity(levelWidth, levelHeight);
 
+        // Find a starting spot for the player
+        // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
         int player_x = 0;
         int player_y = 0;
-
-        entity = new LevelEntity(levelWidth, levelHeight);
 
         fullMapBounds = new MapRectangle(0, 0, levelWidth, levelHeight);
         map = mapman.GetPatch(fullMapBounds);
@@ -179,11 +175,9 @@ public class LevelManagerScript : MonoBehaviour {
         this.active = true;
     }
 
+
     public void go_overworld() {
-        overworldMan = new OverworldMapManager(overworldCoarseWidth,
-           overworldCoarseHeight);
-        mapman = new OverworldMapManager(overworldCoarseWidth,
-           overworldCoarseHeight);
+        mapman = new TroupeOverworldMapManager(levelWidth, levelHeight);
         go();
     }
     public void go_simple() {

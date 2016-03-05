@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using ThugLib;
 
 public class GameManagerScript : MonoBehaviour {
 
@@ -13,11 +14,15 @@ public class GameManagerScript : MonoBehaviour {
 
     public bool menuActive = false;
 
+    public int seed = 242;
+
     private GameObject ui_textoverlay;
     private GameObject ui_textcontent;
 
     public float keyRepeatSpeed = 0.5f;
     public float currentKeyRepeat = 0f;
+
+    public LevelEntity overworldEntity;
 
     private const string helpText =
 @"<b>MOVEMENT:</b>
@@ -242,7 +247,15 @@ public class GameManagerScript : MonoBehaviour {
 
     void Start()
     {
+//        this.seed = 242;
+        GameObject l = Instantiate(outdoorLevelManager) as GameObject;
+        lm = l.GetComponent<LevelManagerScript>();
+        lm.levelWidth  = 200;
+        lm.levelHeight = 200;
+        lm.go_overworld();
+        this.overworldEntity = lm.entity;
 
+        /*
         CallbackMenu(
             "Select a map type!",
             new[] {
@@ -258,6 +271,7 @@ public class GameManagerScript : MonoBehaviour {
                 })
             }
         );
+        */
 
 
         // set up our callback delegates
