@@ -31,13 +31,22 @@ public class LevelManagerScript : MonoBehaviour {
 
     public LevelEntity entity;
 
+    private GameManagerScript gm;
+
     private bool IsVisibleAndBlocked(int x, int y) {
         return (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight &&
             visibility_map[x][y] && !map[x][y].passable);
     }
 
+    void Awake ()
+    {
+        GameObject g = GameObject.Find("GameManager");
+        gm = g.GetComponent<GameManagerScript>();
+    }
+
     void go() {
-        entity = new LevelEntity(levelWidth, levelHeight);
+        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
 
         // Find a starting spot for the player
         // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time

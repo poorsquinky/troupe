@@ -16,46 +16,67 @@ namespace ThugLib
             return this.y;
         }
 
+        public int terrainIndex;
         public TerrainEntity terrain;
         public void SetTerrain(TerrainEntity t)
         {
             this.terrain = t;
+            terrainIndex = t.index;
+            t.parent = this;
+            t.parent_index = this.index;
         }
         public TerrainEntity GetTerrain()
         {
             return this.terrain;
         }
 
+        public int propIndex;
         public PropEntity prop;
         public void SetProp(PropEntity p)
         {
             this.prop = p;
+            propIndex = p.index;
+            p.parent = this;
+            p.parent_index = this.index;
         }
         public PropEntity GetProp()
         {
             return this.prop;
         }
 
+        public int actorIndex;
         public ActorEntity actor;
         public void SetActor(ActorEntity a)
         {
             this.actor = a;
             if (a != null)
+            {
                 a.SetParent(this as Entity);
+                actorIndex = a.index;
+            }
+            else
+            {
+                actorIndex = -1;
+            }
         }
         public ActorEntity GetActor()
         {
             return this.actor;
         }
 
+        public List<int> items_index;
         public List<ItemEntity> items;
         public void AddItem(ItemEntity i)
         {
             this.items.Add(i);
+            this.items_index.Add(i.index);
+            i.parent = this;
+            i.parent_index = this.index;
         }
         public void RemoveItem(ItemEntity i)
         {
             this.items.Remove(i);
+            this.items_index.Remove(i.index);
         }
         public List<ItemEntity> GetItems()
         {
@@ -70,6 +91,7 @@ namespace ThugLib
             if (this.RunActionCallbacks(actor, "_exit"))
             {
                 this.SetActor(null);
+                this.actorIndex=-1;
                 return true;
             }
             return false;
@@ -82,7 +104,6 @@ namespace ThugLib
             if (this.RunActionCallbacks(actor, "_enter"))
             {
                 this.SetActor(actor);
-                actor.SetParent(this as Entity);
                 return true;
             }
             return false;
@@ -98,6 +119,7 @@ namespace ThugLib
             this.x = x;
             this.y = y;
             this.parent = parent;
+            this.parent_index = parent.index;
         }
 
 

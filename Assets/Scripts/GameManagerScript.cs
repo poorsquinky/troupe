@@ -22,6 +22,8 @@ public class GameManagerScript : MonoBehaviour {
     public float keyRepeatSpeed = 0.5f;
     public float currentKeyRepeat = 0f;
 
+    public GameEntity entity = new GameEntity();
+
     public LevelEntity overworldEntity;
 
     private const string helpText =

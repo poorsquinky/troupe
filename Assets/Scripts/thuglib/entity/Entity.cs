@@ -1,21 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
 
 namespace ThugLib
 {
+    [Serializable]
     public class Entity
     {
 
         protected string entityType = "NONE"; // we're abusing strings for a lot of these things for extensibility
 
+        public int index;
+
         public Entity parent;
 
-        protected string shortDescription;
-        protected string longDescription;
+        public string shortDescription;
+        public string longDescription;
 
         // FIXME (later): unity dependency in thuglib
-        public int entitySeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+        public int entitySeed = 0;
+        //public int entitySeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
         // For the benefit of Unity scripts, refreshDelegates are a list
         // of subscribers that will be informed whenever this Entity
@@ -28,11 +34,19 @@ namespace ThugLib
         public delegate bool CallbackDelegate(Entity subject);
         protected Dictionary<string, List<CallbackDelegate>> actionCallbacks = new Dictionary<string, List<CallbackDelegate>>();
 
-        protected List<string> tags = new List<String>();
+        public List<string> tags = new List<String>();
 
         protected List<Entity> children    = new List<Entity>();
         protected List<Entity> descendants = new List<Entity>();
         protected Dictionary<string, List<Entity>> descendantsByTag = new Dictionary<string, List<Entity>>();
+
+        public int parent_index = -1;
+        public List<int> children_index = new List<int>();
+
+        public string Serialize()
+        {
+            return JsonUtility.ToJson(this);
+        }
 
         ///// Accessor methods
 
@@ -71,6 +85,7 @@ namespace ThugLib
         public void SetParent(Entity parent)
         {
             this.parent = parent;
+            this.parent_index = parent.index;
         }
         // refreshDelegates
         public void AddRefreshDelegate(RefreshDelegate d)
@@ -145,6 +160,9 @@ namespace ThugLib
             this.children.Add(child);
             foreach (string tag in child.GetTags())
                 this.AddTag(tag, child);
+
+            this.children_index.Add(child.index);
+
             this.Refresh();
             return true;
         }
@@ -156,6 +174,7 @@ namespace ThugLib
                     return false;
 
             this.children.Remove(child);
+            this.children_index.Remove(child.index);
             foreach (string tag in child.GetTags())
                 this.RemoveTag(tag, child);
             this.Refresh();

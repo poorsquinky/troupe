@@ -18,6 +18,8 @@ public class ActorScript : MonoBehaviour {
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
         lm = gm.lm;
+
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
     }
 
     public int GetX()

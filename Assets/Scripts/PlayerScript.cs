@@ -72,6 +72,7 @@ public class PlayerScript : MonoBehaviour {
                                 tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
                         }
                     }
+
                 }
                 keyboardX = 0;
                 keyboardY = 0;

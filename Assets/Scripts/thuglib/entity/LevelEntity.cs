@@ -17,9 +17,11 @@ namespace ThugLib
             return null;
         }
 
-        public LevelEntity(int w, int h)
+        public LevelEntity(int w, int h, GameEntity p)
         {
             this.SetEntityType("Level");
+            this.parent = p;
+            this.parent_index = p.index;
             cells = new CellEntity[h][];
             for (int x = 0; x < w; x++)
             {
@@ -31,6 +33,7 @@ namespace ThugLib
                             y: y,
                             parent: this
                     );
+                    cells[x][y].index = p.RegisterEntity(cells[x][y]);
                 }
             }
         }

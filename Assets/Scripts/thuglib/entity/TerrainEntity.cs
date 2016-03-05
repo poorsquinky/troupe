@@ -17,6 +17,7 @@ namespace ThugLib
         public void SetCell(CellEntity location)
         {
             this.parent = location as Entity;
+            this.parent_index = location.index;
             location.SetTerrain(this);
 
             this.parent.AddActionCallback("_enter", delegate(Entity actor)
