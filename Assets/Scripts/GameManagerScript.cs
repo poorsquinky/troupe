@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using ThugLib;
@@ -41,7 +43,8 @@ public class GameManagerScript : MonoBehaviour {
 <b>ACTIONS:</b>
       <color=#cc99ffff>[.]</color> - <color=#ffff66ff>Skip a move</color>
       <color=#cc99ffff>[/]</color> - <color=#ffff66ff>Toggle this help message (duh)</color>
-<color=#cc99ffff>[SHIFT-Q]</color> - <color=#ffff66ff>Quit the game</color>
+<color=#cc99ffff>[SHIFT-S]</color> - <color=#ffff66ff>Save and quit</color>
+<color=#cc99ffff>[SHIFT-Q]</color> - <color=#ffff66ff>Quit the game without saving (give up)</color>
 ";
 
     void CheckRefs()
@@ -361,10 +364,11 @@ public class GameManagerScript : MonoBehaviour {
                 lm.playerTurn = false;
         });
 
+        // quit
         RegisterCallback("Q", delegate(string e)
         {
             CallbackMenu(
-                "Are you sure you want to quit?",
+                "Are you sure you want to quit without saving?",
                 new[] {
                     new MenuCallback("Yes", delegate() { Application.Quit(); }),
                     new MenuCallback("No", delegate() { return; })
@@ -372,13 +376,15 @@ public class GameManagerScript : MonoBehaviour {
             );
         });
 
-        RegisterCallback("P", delegate(string e)
+        RegisterCallback("S", delegate(string e)
         {
-
             CallbackMenu(
-                "This is the menu!",
+                "Are you sure you want to save and quit?",
                 new[] {
-                    new MenuCallback("Close", delegate() { return; })
+                    new MenuCallback("Yes", delegate() {
+                        File.WriteAllText("save-file.json", this.entity.Serialize());
+                    }),
+                    new MenuCallback("No", delegate() { return; })
                 }
             );
         });

@@ -10,7 +10,7 @@ namespace ThugLib
     public class Entity
     {
 
-        protected string entityType = "NONE"; // we're abusing strings for a lot of these things for extensibility
+        public string entityType = "NONE"; // we're abusing strings for a lot of these things for extensibility
 
         public int index;
 
