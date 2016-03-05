@@ -61,6 +61,16 @@ public class PlayerScript : MonoBehaviour {
                     x += this.actor.entity.GetX();
                     y += this.actor.entity.GetY();
                     actor.MoveTo(x,y);
+                    // refresh nearby terrain sprites
+                    for (int i = Mathf.Max(0, x - 20); i < Mathf.Max(lm.levelWidth, x + 20); i++)
+                    {
+                        for (int j = Mathf.Max(0, y - 20); j < Mathf.Max(lm.levelHeight, y + 20); j++)
+                        {
+                            GameObject tile = lm.GetTile(i,j);
+                            if (tile != null)
+                                tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
+                        }
+                    }
                 }
                 keyboardX = 0;
                 keyboardY = 0;

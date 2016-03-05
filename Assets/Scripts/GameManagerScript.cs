@@ -255,6 +255,16 @@ public class GameManagerScript : MonoBehaviour {
         lm.go_overworld();
         this.overworldEntity = lm.entity;
 
+        for (int i = 0; i < lm.levelWidth; i++)
+        {
+            for (int j = 0; j < lm.levelHeight; j++)
+            {
+                GameObject tile = lm.GetTile(i,j);
+                if (tile != null)
+                    tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
+            }
+        }
+
         /*
         CallbackMenu(
             "Select a map type!",

@@ -133,6 +133,7 @@ public class LevelManagerScript : MonoBehaviour {
         PlayerScript playerScript = this.player.GetComponent<PlayerScript>();
         playerScript.ForceMoveTo(player_x, player_y);
 
+        /*
         // Add some placeholder NPCs
         for (int i = 0; i < 10; i++)
         {
@@ -161,6 +162,7 @@ public class LevelManagerScript : MonoBehaviour {
 
             npcCell.ActorForceEnter(actor.entity);
         }
+        */
 
         // Create the camera
         GameObject cam = GameObject.Find("Camera");
@@ -331,6 +333,13 @@ public class LevelManagerScript : MonoBehaviour {
             }
             scheduleOutbox.Add(item);
         }
+    }
+
+    public GameObject GetTile(int x, int y)
+    {
+        if (x > 0 && x < levelWidth && y > 0 && y < levelHeight)
+            return tileGrid[x][y];
+        return null;
     }
 
     // Update is called once per frame
