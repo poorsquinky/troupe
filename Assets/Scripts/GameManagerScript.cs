@@ -250,8 +250,8 @@ public class GameManagerScript : MonoBehaviour {
 //        this.seed = 242;
         GameObject l = Instantiate(outdoorLevelManager) as GameObject;
         lm = l.GetComponent<LevelManagerScript>();
-        lm.levelWidth  = 200;
-        lm.levelHeight = 200;
+        lm.levelWidth  = 100;
+        lm.levelHeight = 100;
         lm.go_overworld();
         this.overworldEntity = lm.entity;
 

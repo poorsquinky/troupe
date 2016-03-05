@@ -14,6 +14,9 @@ namespace ThugLib
         protected string shortDescription;
         protected string longDescription;
 
+        // FIXME (later): unity dependency in thuglib
+        public int entitySeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+
         // For the benefit of Unity scripts, refreshDelegates are a list
         // of subscribers that will be informed whenever this Entity
         // changes at all.  This is due to C# not supporting multiple

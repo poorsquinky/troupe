@@ -112,7 +112,7 @@ public class LevelManagerScript : MonoBehaviour {
                                 ((j > 0               && map[j][i].key == map[j-1][i].key)? 8 : 0)
                                 );
                     }
-                    else
+                    else if (sts.terrainShapeStyle == ShapeTerrainScript.ShapeTypes.VisibleAndImpassable)
                     {
                         sts.SetSprite(
                            (IsVisibleAndBlocked(j,     i + 1) ? 1 : 0) |

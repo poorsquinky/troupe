@@ -5,7 +5,7 @@ using ThugLib;
 
 public class ShapeTerrainScript : MonoBehaviour {
 
-    public enum ShapeTypes{ VisibleAndImpassable, SameSpaceType };
+    public enum ShapeTypes{ VisibleAndImpassable, SameSpaceType, EntitySeedRandom };
     public ShapeTypes terrainShapeStyle = ShapeTypes.VisibleAndImpassable;
 
     public List<Sprite> spriteList;
@@ -27,6 +27,10 @@ public class ShapeTerrainScript : MonoBehaviour {
     {
         this.entity.SetCell(cell);
         cell.SetTerrain(this.entity);
+        if (terrainShapeStyle == ShapeTypes.EntitySeedRandom && spriteList.Count > 1)
+        {
+            SetSprite(Mathf.Abs(this.entity.entitySeed % spriteList.Count));
+        }
     }
 
     void Awake ()
@@ -46,8 +50,9 @@ public class ShapeTerrainScript : MonoBehaviour {
             int player_x = lm.GetPlayerX();
             int player_y = lm.GetPlayerY();
             if (
-                    (Mathf.Abs(player_x - x) > 4)
-                 || (Mathf.Abs(player_y - y) > 4)
+                    // FIXME: don't use hardcoded values here
+                    (Mathf.Abs(player_x - x) > 16)
+                 || (Mathf.Abs(player_y - y) > 16)
                )
                 GetComponent<SpriteRenderer>().enabled = false;
             else
