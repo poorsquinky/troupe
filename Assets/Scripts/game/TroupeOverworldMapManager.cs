@@ -22,6 +22,13 @@ namespace ThugSimpleGame {
             }
 
 
+            for (int i = 10; i < levelWidth - 10; i++)
+                grid[i][levelHeight - 10] = 1;
+            for (int i = 10; i <= levelHeight - 10; i++)
+                grid[levelWidth - 10][i] = 1;
+
+            grid[levelWidth - 12][levelHeight - 10] = 2;
+
             /*
             MapRectangle fullArea = new MapRectangle(0, 0, levelWidth,
                levelHeight);

@@ -51,8 +51,8 @@ public class ShapeTerrainScript : MonoBehaviour {
             int player_y = lm.GetPlayerY();
             if (
                     // FIXME: don't use hardcoded values here
-                    (Mathf.Abs(player_x - x) > 16)
-                 || (Mathf.Abs(player_y - y) > 16)
+                    (Mathf.Abs(player_x - x) > 24)
+                 || (Mathf.Abs(player_y - y) > 24)
                )
                 GetComponent<SpriteRenderer>().enabled = false;
             else
