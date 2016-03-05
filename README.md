@@ -9,5 +9,5 @@ Official start time, 10:10am PST, 05 March 2016
 All code herein is covered by the GPL v3 or later (see the file LICENSE) EXCEPT:
 
 * The font "Hack" by Christopher Simpkins - [website](http://sourcefoundry.org/hack/)
-* Everything under Assets/Sprites is CC BY-SA 4.0 (see the file LICENSE in that directory)
+* Everything under Assets/Sprites is [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/legalcode) (see the file LICENSE in that directory)
 
