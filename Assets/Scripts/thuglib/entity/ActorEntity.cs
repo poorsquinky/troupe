@@ -19,6 +19,8 @@ namespace ThugLib
             return -1;
         }
 
+        public bool isPlayer = false;
+
         public bool MoveTo(int x, int y)
         {
             CellEntity oldCell = this.parent as CellEntity;

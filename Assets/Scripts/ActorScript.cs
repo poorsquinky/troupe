@@ -15,6 +15,8 @@ public class ActorScript : MonoBehaviour {
 
     void Awake()
     {
+        entity.isPlayer = true;
+
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
         lm = gm.lm;

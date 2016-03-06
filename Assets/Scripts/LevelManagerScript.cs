@@ -14,6 +14,7 @@ public class LevelManagerScript : MonoBehaviour {
     public GameObject npcPrefab;
 
     public List<GameObject> tilePrefabs;
+    public List<GameObject> propPrefabs;
 
     private List<List<GameObject>> tileGrid = new List<List<GameObject>>();
     private List<List<GameObject>> subTileGrid = new List<List<GameObject>>();
@@ -199,7 +200,7 @@ public class LevelManagerScript : MonoBehaviour {
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
         this.entity.index = gm.entity.RegisterEntity(this.entity);
 
-        mapman = new TroupeCircusMapManager(this.entity);
+        mapman = new TroupeCircusMapManager(this);
         go();
     }
     public void init_simple() {

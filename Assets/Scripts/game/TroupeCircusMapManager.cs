@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
 
+// FIXME unity stuff is here because I'm lazy/sloppy
+using UnityEngine;
+
 namespace ThugSimpleGame {
     public class TroupeCircusMapManager : MapManager {
 
         private int[][] grid;
 
-        public TroupeCircusMapManager(LevelEntity entity) {
-            int levelWidth  = entity.GetW();
-            int levelHeight = entity.GetH();
+        public TroupeCircusMapManager(LevelManagerScript lm) {
+            int levelWidth  = lm.entity.GetW();
+            int levelHeight = lm.entity.GetH();
             AddSpaceType(key: 0, glyph: '.', passable: true, transparent: true);
             AddSpaceType(key: 1, glyph: '+', passable: true, transparent: true);
             AddSpaceType(key: 2, glyph: '-', passable: true, transparent: true);
@@ -23,9 +26,9 @@ namespace ThugSimpleGame {
             int[,] prefabCircus = new int[,] {
                 {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
                 {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
-                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
-                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
                 {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
+                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -79,6 +82,54 @@ namespace ThugSimpleGame {
                     grid[x][levelHeight - y - 1] = prefabCircus[y,x];
                 }
             }
+
+            // add the signpost
+            int xx = 25;
+            int yy = 42;
+            GameObject signpostObject = GameObject.Instantiate(lm.propPrefabs[1]) as GameObject;
+            PropEntity signpostEntity = new PropEntity();
+            signpostEntity.shortDescription = "a signpost";
+            signpostEntity.SetCell(lm.entity.GetCell(xx,yy));
+            signpostObject.transform.position = new Vector3(xx, yy, 0);
+
+            // fake npcs
+            xx = 26;
+            yy = 46;
+            GameObject rightFakeNpcObject = GameObject.Instantiate(lm.propPrefabs[2]) as GameObject;
+            PropEntity rightFakeNpcEntity = new PropEntity();
+            rightFakeNpcEntity.shortDescription = "a city guard";
+            rightFakeNpcEntity.SetCell(lm.entity.GetCell(xx,yy));
+            rightFakeNpcObject.transform.position = new Vector3(xx, yy, 0);
+            xx = 24;
+            yy = 46;
+            GameObject leftFakeNpcObject = GameObject.Instantiate(lm.propPrefabs[2]) as GameObject;
+            PropEntity leftFakeNpcEntity = new PropEntity();
+            leftFakeNpcEntity.shortDescription = "a city guard";
+            leftFakeNpcEntity.SetCell(lm.entity.GetCell(xx,yy));
+            leftFakeNpcObject.transform.position = new Vector3(xx, yy, 0);
+
+            // door
+            xx = 25;
+            yy = 47;
+            GameObject doorObject = GameObject.Instantiate(lm.propPrefabs[0]) as GameObject;
+            PropEntity doorEntity = new PropEntity();
+            doorEntity.shortDescription = "a city guard";
+            doorEntity.SetCell(lm.entity.GetCell(xx,yy));
+            doorObject.transform.position = new Vector3(xx, yy, 0);
+
+            // entryway trigger
+            CellEntity gateTriggerCell = lm.entity.GetCell(25,46);
+            gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
+                    {
+                        ActorEntity actor = e as ActorEntity;
+                        if (actor.isPlayer == true)
+                        {
+                            return false;
+                        }
+                        return true;
+                    });
+
+
         }
 
         public override MapSpaceType[][] GetPatch(MapRectangle region) {
