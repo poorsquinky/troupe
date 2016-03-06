@@ -13,43 +13,63 @@ public class LevelManagerScript : MonoBehaviour {
 
     public GameObject npcPrefab;
 
-    public List<GameObject> tilePrefabs;
-    public List<GameObject> propPrefabs;
-
     private List<List<GameObject>> tileGrid = new List<List<GameObject>>();
     private List<List<GameObject>> subTileGrid = new List<List<GameObject>>();
     private GameObject player;
 
+    [HideInInspector]
     public MapRectangle fullMapBounds;
+
+/*
+    [HideInInspector]
     public MapSpaceType[][] map;
+*/
+    [HideInInspector]
+    public CellEntity[][] map;
+
+    [HideInInspector]
     public MapManager mapman;
 
     private bool[][] visibility_map;
 
+    [HideInInspector]
     public List<GameObject> npcs = new List<GameObject>();
 
+    [HideInInspector]
     public bool active = false;
 
+    [HideInInspector]
     public LevelEntity entity;
 
+    [HideInInspector]
     public GameManagerScript gm;
 
     private bool IsVisibleAndBlocked(int x, int y) {
         return (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight &&
-            visibility_map[x][y] && !map[x][y].passable);
+            visibility_map[x][y] && !map[x][y].Passable());
     }
+
+    [System.Serializable]
+    public struct namedGameObject
+    {
+        public string name;
+        public GameObject gameObject;
+    }
+    public List<namedGameObject> gameObjectTypes;
+    public Dictionary<string, GameObject> gameObjects = new Dictionary<string, GameObject>();
+
 
     void Awake ()
     {
+        foreach (namedGameObject go in gameObjectTypes)
+            gameObjects[go.name] = go.gameObject;
+
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
     }
 
-    void go() {
-        // Find a starting spot for the player
-        // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
-        int player_x = 25;
-        int player_y = 38;
+    void BuildVisibilityMap()
+    {
 
         fullMapBounds = new MapRectangle(0, 0, levelWidth, levelHeight);
         map = mapman.GetPatch(fullMapBounds);
@@ -68,7 +88,7 @@ public class LevelManagerScript : MonoBehaviour {
                     for (int y = j-1; keepLooping && y <= j+1; y++)
                     {
                         if (x >= 0 && x < levelWidth && y >= 0 &&
-                            y < levelHeight && map[x][y].passable)
+                            y < levelHeight && map[x][y].Passable())
                         {
                             keepLooping = false;
                             visibility_map[i][j] = true;
@@ -77,8 +97,10 @@ public class LevelManagerScript : MonoBehaviour {
                 }
             }
         }
+    }
 
-        // create all of the sprites
+    void CreateSprites()
+    {
         for (int i = 0; i < levelHeight; i++)
         {
             tileGrid.Add(new List<GameObject>());
@@ -86,39 +108,51 @@ public class LevelManagerScript : MonoBehaviour {
             for (int j = 0; j < levelWidth; j++)
             {
 
-                // XXX XXX XXX put the sprite objects under each cell as TerrainEntity objects
+                TerrainEntity    terrain = map[j][i].GetTerrain();
+                PropEntity          prop = map[j][i].GetProp();
 
-
-                // XXX this is profoundly dumb -- we're just assigning the player coords to the last passable square.  But it's temporary.
-                /*
-                if (map[j][i].passable)
+                if (! gameObjects.ContainsKey(terrain.shortDescription))
                 {
-                    player_x = j;
-                    player_y = i;
+                    Debug.Log("TERRAIN NOT FOUND: " + terrain.shortDescription);
+                    terrain.shortDescription = "wall";
                 }
-                */
+                GameObject terrainObject = gameObjects[terrain.shortDescription];
 
-                subTileGrid[i].Add(null);
+                GameObject propObject = null;
+                if (prop != null)
+                {
+                    if (! gameObjects.ContainsKey(prop.shortDescription))
+                    {
+                        Debug.Log("PROP NOT FOUND: " + prop.shortDescription);
+                        prop.shortDescription = "wall";
+                    }
+                    propObject = gameObjects[prop.shortDescription];
+                }
 
-                var o = Instantiate(this.tilePrefabs[map[j][i].key]) as GameObject;
-                o.transform.position = new Vector3(j, i, 0);
-                var sts = o.GetComponent<ShapeTerrainScript>();
+                GameObject             o = Instantiate(terrainObject) as GameObject;
+                o.transform.position     = new Vector3(j, i, 0);
+                ShapeTerrainScript   sts = o.GetComponent<ShapeTerrainScript>();
+
                 if (sts)
                 {
-                    sts.SetCell(this.entity.GetCell(j,i));
-                    if (map[j][i].passable)
+                    CellEntity       cellEntity = map[j][i];
+                    TerrainEntity terrainEntity = cellEntity.GetTerrain();
+                    sts.SetCell(cellEntity);
+                    /*
+                    if (map[j][i].Passable())
                         sts.entity.hindrance = 0f;
                     else
                         sts.entity.hindrance = 1f;
+                    */
 
                     // FIXME: all the shape terrain stuff should go in the ShapeTerrainScript and not here
                     if (sts.terrainShapeStyle == ShapeTerrainScript.ShapeTypes.SameSpaceType)
                     {
                         sts.SetSprite(0 |
-                                ((i < levelHeight - 1 && map[j][i].key == map[j][i+1].key)? 1 : 0) |
-                                ((j < levelWidth - 1  && map[j][i].key == map[j+1][i].key)? 2 : 0) |
-                                ((i > 0               && map[j][i].key == map[j][i-1].key)? 4 : 0) |
-                                ((j > 0               && map[j][i].key == map[j-1][i].key)? 8 : 0)
+                                ((i < levelHeight - 1 && terrainEntity.shortDescription == map[j  ][i+1].GetTerrain().shortDescription)? 1 : 0) |
+                                ((j < levelWidth - 1  && terrainEntity.shortDescription == map[j+1][i  ].GetTerrain().shortDescription)? 2 : 0) |
+                                ((i > 0               && terrainEntity.shortDescription == map[j  ][i-1].GetTerrain().shortDescription)? 4 : 0) |
+                                ((j > 0               && terrainEntity.shortDescription == map[j-1][i  ].GetTerrain().shortDescription)? 8 : 0)
                                 );
                     }
                     else if (sts.terrainShapeStyle == ShapeTerrainScript.ShapeTypes.VisibleAndImpassable)
@@ -133,8 +167,31 @@ public class LevelManagerScript : MonoBehaviour {
                     }
                 }
                 tileGrid[i].Add(o);
+
+                if (propObject != null)
+                {
+                    GameObject         po = Instantiate(propObject) as GameObject;
+                    po.transform.position = new Vector3(j, i, 0);
+                    subTileGrid[i].Add(po);
+                }
+                else
+                {
+                    subTileGrid[i].Add(null);
+                }
             }
         }
+    }
+
+    void go() {
+        // Find a starting spot for the player
+        // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
+        int player_x = 25;
+        int player_y = 38;
+
+        BuildVisibilityMap();
+
+        // create all of the sprites
+        CreateSprites();
 
         // Create the player
         this.player = Instantiate(this.playerPrefab) as GameObject;
@@ -142,36 +199,6 @@ public class LevelManagerScript : MonoBehaviour {
         PlayerScript playerScript = this.player.GetComponent<PlayerScript>();
         playerScript.ForceMoveTo(player_x, player_y);
 
-        /*
-        // Add some placeholder NPCs
-        for (int i = 0; i < 10; i++)
-        {
-            GameObject npc = Instantiate(npcPrefab);
-            npcs.Add(npc);
-
-            ScheduleItem sched = new ScheduleItem(npc.GetComponent<NPCScript>().timeUnitsPerTurn, npc);
-            scheduleOutbox.Add(sched);
-
-            ActorScript actor = npc.GetComponent<ActorScript>();
-
-            int x = Random.Range(0,levelWidth);
-            int y = Random.Range(0,levelHeight);
-            CellEntity npcCell = this.entity.GetCell(x,y);
-            while (true)
-            {
-                if (
-                        (npcCell != null)
-                     && (npcCell.GetHindrance() < 1f)
-                   )
-                    break;
-                x = Random.Range(0,levelWidth);
-                y = Random.Range(0,levelHeight);
-                npcCell = this.entity.GetCell(x,y);
-            }
-
-            npcCell.ActorForceEnter(actor.entity);
-        }
-        */
 
         // Create the camera
         GameObject cam = GameObject.Find("Camera");
@@ -187,6 +214,7 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
 
+    /* FIXME: update to new stuff
     public void init_overworld() {
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
         this.entity.index = gm.entity.RegisterEntity(this.entity);
@@ -194,6 +222,14 @@ public class LevelManagerScript : MonoBehaviour {
         mapman = new TroupeOverworldMapManager(this.entity);
         go();
     }
+    public void init_simple() {
+        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
+
+        mapman = new SimpleMapManager(this.entity);
+        go();
+    }
+    */
     public void init_circus() {
         levelWidth=50;
         levelHeight=50;
@@ -201,13 +237,6 @@ public class LevelManagerScript : MonoBehaviour {
         this.entity.index = gm.entity.RegisterEntity(this.entity);
 
         mapman = new TroupeCircusMapManager(this);
-        go();
-    }
-    public void init_simple() {
-        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
-        this.entity.index = gm.entity.RegisterEntity(this.entity);
-
-        mapman = new SimpleMapManager(this.entity);
         go();
     }
 
@@ -243,11 +272,16 @@ public class LevelManagerScript : MonoBehaviour {
 
         int playerX = MathUtils.RoundToInt(lastVisibilityUpdatePlayerPos.x);
         int playerY = MathUtils.RoundToInt(lastVisibilityUpdatePlayerPos.y);
-        PathUtils.CalculateBresenhamProductsToRectangle(playerX, playerY,
-           map, fullMapBounds, (previous, tile) => 
-// FIXME: ---ENTITY_UPDATE---
-           ((previous == 0 || !((MapSpaceType)tile).transparent) ?
-           0 : 1), 1, false, false, latestVisibility);
+        PathUtils.CalculateBresenhamProductsToRectangle(
+                fromX: playerX,
+                fromY: playerY,
+                map: map,
+                rectangle: fullMapBounds,
+                update: (previous, cell) => ((previous == 0 || !((CellEntity)cell).Visible()) ? 0 : 1),
+                startingProduct: 1,
+                includeFirstSquare: false,
+                includeLastSquare: false,
+                outputMap: latestVisibility);
 
         foreach (GameObject npc in npcs)
         {
@@ -305,6 +339,7 @@ public class LevelManagerScript : MonoBehaviour {
         }
     }
 
+    [HideInInspector]
     public bool playerTurn = true;
 
     struct ScheduleItem
@@ -345,7 +380,9 @@ public class LevelManagerScript : MonoBehaviour {
             {
                 if (item.npc)
                 {
+                    /*
                     item.npc.GetComponent<NPCScript>().Move();
+                    */
                     item.speed = item.npc.GetComponent<NPCScript>().timeUnitsPerTurn;
                 }
                 else

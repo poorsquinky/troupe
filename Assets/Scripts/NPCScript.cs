@@ -5,7 +5,6 @@ using ThugLib;
 using ThugSimpleGame;
 
 public class NPCScript : MonoBehaviour {
-
     public LevelManagerScript lm; // LevelManager
     public GameManagerScript gm;
     public ActorScript actor;
@@ -15,6 +14,7 @@ public class NPCScript : MonoBehaviour {
     public Path currentPath;
     public int currentPathStep;
 
+/*
     public Dictionary<string,NPCBrain> brain;
 
     public void RunBrain()
@@ -71,4 +71,5 @@ public class NPCScript : MonoBehaviour {
     {
         RunBrain();
     }
+    */
 }

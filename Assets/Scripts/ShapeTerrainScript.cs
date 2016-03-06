@@ -10,7 +10,7 @@ public class ShapeTerrainScript : MonoBehaviour {
 
     public List<Sprite> spriteList;
 
-    public TerrainEntity entity = new TerrainEntity();
+    public TerrainEntity entity;
 
     private GameManagerScript gm;
     private LevelManagerScript lm;
@@ -25,8 +25,9 @@ public class ShapeTerrainScript : MonoBehaviour {
 
     public void SetCell(CellEntity cell)
     {
-        this.entity.SetCell(cell);
-        cell.SetTerrain(this.entity);
+        this.entity = cell.GetTerrain();
+//        this.entity.SetCell(cell);
+//        cell.SetTerrain(this.entity);
         if (terrainShapeStyle == ShapeTypes.EntitySeedRandom && spriteList.Count > 1)
         {
             SetSprite(Mathf.Abs(this.entity.entitySeed % spriteList.Count));
@@ -38,7 +39,7 @@ public class ShapeTerrainScript : MonoBehaviour {
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
         lm = gm.lm;
-        this.entity.index = gm.entity.RegisterEntity(this.entity);
+//        this.entity.index = gm.entity.RegisterEntity(this.entity);
     }
 
     public void ExternalUpdate()

@@ -11,7 +11,10 @@ namespace ThugSimpleGame {
 
         private int[][] grid;
 
-        public TroupeCircusMapManager(LevelManagerScript lm) {
+        private LevelManagerScript lm;
+
+        public TroupeCircusMapManager(LevelManagerScript l) {
+            lm = l;
             int levelWidth  = lm.entity.GetW();
             int levelHeight = lm.entity.GetH();
             AddSpaceType(key: 0, glyph: '.', passable: true, transparent: true);
@@ -79,43 +82,65 @@ namespace ThugSimpleGame {
             {
                 for (int y = 0; y < levelHeight; y++)
                 {
-                    grid[x][levelHeight - y - 1] = prefabCircus[y,x];
+                    CellEntity       cell = lm.entity.GetCell(x,y);
+                    TerrainEntity terrain = new TerrainEntity();
+                    terrain.index         = lm.gm.entity.RegisterEntity(terrain);
+                    terrain.SetCell(cell);
+                    switch (prefabCircus[levelHeight - y - 1,x])
+                    {
+                        case 0:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "grass";
+                            terrain.longDescription  = "Grass";
+                            break;
+                        case 1:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "dirt";
+                            terrain.longDescription  = "A patch of bare dirt";
+                            break;
+                        case 2:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "road";
+                            terrain.longDescription  = "A crumbling but still-functional stretch of road";
+                            break;
+                        case 3:
+                            terrain.hindrance        = 1f;
+                            terrain.opacity          = 1f;
+                            terrain.shortDescription = "wall";
+                            terrain.longDescription  = "A city wall cobbled together from junk and debris";
+                            break;
+                    }
                 }
             }
 
             // add the signpost
             int xx = 25;
             int yy = 42;
-            GameObject signpostObject = GameObject.Instantiate(lm.propPrefabs[1]) as GameObject;
             PropEntity signpostEntity = new PropEntity();
             signpostEntity.shortDescription = "a signpost";
             signpostEntity.SetCell(lm.entity.GetCell(xx,yy));
-            signpostObject.transform.position = new Vector3(xx, yy, 0);
 
             // fake npcs
             xx = 26;
             yy = 46;
-            GameObject rightFakeNpcObject = GameObject.Instantiate(lm.propPrefabs[2]) as GameObject;
             PropEntity rightFakeNpcEntity = new PropEntity();
-            rightFakeNpcEntity.shortDescription = "a city guard";
+            rightFakeNpcEntity.shortDescription = "a city gate guard";
             rightFakeNpcEntity.SetCell(lm.entity.GetCell(xx,yy));
-            rightFakeNpcObject.transform.position = new Vector3(xx, yy, 0);
             xx = 24;
             yy = 46;
-            GameObject leftFakeNpcObject = GameObject.Instantiate(lm.propPrefabs[2]) as GameObject;
             PropEntity leftFakeNpcEntity = new PropEntity();
-            leftFakeNpcEntity.shortDescription = "a city guard";
+            leftFakeNpcEntity.shortDescription = "a city gate guard";
             leftFakeNpcEntity.SetCell(lm.entity.GetCell(xx,yy));
-            leftFakeNpcObject.transform.position = new Vector3(xx, yy, 0);
 
             // door
             xx = 25;
             yy = 47;
-            GameObject doorObject = GameObject.Instantiate(lm.propPrefabs[0]) as GameObject;
             PropEntity doorEntity = new PropEntity();
-            doorEntity.shortDescription = "a city guard";
+            doorEntity.shortDescription = "a locked city gate";
             doorEntity.SetCell(lm.entity.GetCell(xx,yy));
-            doorObject.transform.position = new Vector3(xx, yy, 0);
 
             // entryway trigger
             CellEntity gateTriggerCell = lm.entity.GetCell(25,46);
@@ -137,10 +162,14 @@ namespace ThugSimpleGame {
                         return true;
                     });
 
-            // "That's far enough!  You can't enter the city, vagrant!"
-
         }
 
+        public override CellEntity[][] GetPatch(MapRectangle region)
+        {
+            return lm.entity.cells;
+        }
+
+        /*
         public override MapSpaceType[][] GetPatch(MapRectangle region) {
             MapSpaceType[][] patch = new MapSpaceType[region.w][];
             for (int i = 0; i < region.w; i++) {
@@ -151,5 +180,6 @@ namespace ThugSimpleGame {
             }
             return patch;
         }
+        */
     }
 }

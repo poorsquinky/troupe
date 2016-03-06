@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
 
+/*
 namespace ThugSimpleGame {
     public class NPCPatrolBrain: NPCBrain {
         // scratch arrays
@@ -130,3 +131,4 @@ namespace ThugSimpleGame {
         }
     }
 }
+*/

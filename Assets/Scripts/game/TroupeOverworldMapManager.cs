@@ -119,7 +119,9 @@ namespace ThugSimpleGame {
             */
         }
 
-        public override MapSpaceType[][] GetPatch(MapRectangle region) {
+        public override CellEntity[][] GetPatch(MapRectangle region) {
+            return null;
+            /*
             MapSpaceType[][] patch = new MapSpaceType[region.w][];
             for (int i = 0; i < region.w; i++) {
                 patch[i] = new MapSpaceType[region.h];
@@ -128,6 +130,7 @@ namespace ThugSimpleGame {
                 }
             }
             return patch;
+            */
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
 
+/*
 namespace ThugSimpleGame {
     public class NPCChaseBrain: NPCBrain {
 
@@ -57,3 +58,4 @@ namespace ThugSimpleGame {
         }
     }
 }
+*/
