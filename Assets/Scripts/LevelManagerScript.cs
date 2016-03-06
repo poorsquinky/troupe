@@ -214,14 +214,18 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
 
-    /* FIXME: update to new stuff
     public void init_overworld() {
+        levelWidth=50;
+        levelHeight=50;
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
         this.entity.index = gm.entity.RegisterEntity(this.entity);
 
-        mapman = new TroupeOverworldMapManager(this.entity);
+        mapman = new TroupeOverworldMapManager(this);
+        mapman.Generate();
+        mapman.PostProcess();
         go();
     }
+    /* FIXME: update to new stuff
     public void init_simple() {
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
         this.entity.index = gm.entity.RegisterEntity(this.entity);

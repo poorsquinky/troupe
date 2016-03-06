@@ -9,11 +9,14 @@ using ThugLib;
 public class GameManagerScript : MonoBehaviour {
 
     private PlayerScript player;
+    [HideInInspector]
     public LevelManagerScript lm;
 
     public GameObject dungeonLevelManager;
     public GameObject outdoorLevelManager;
+    public GameObject overworldLevelManager;
 
+    [HideInInspector]
     public bool menuActive = false;
 
     public int seed = 242;
@@ -27,9 +30,12 @@ public class GameManagerScript : MonoBehaviour {
     public float keyRepeatSpeed = 0.5f;
     public float currentKeyRepeat = 0f;
 
+    [HideInInspector]
     public GameEntity entity = new GameEntity();
 
+    [HideInInspector]
     public LevelEntity overworldEntity;
+    [HideInInspector]
     public LevelEntity circusEntity;
 
     private const string helpText =
@@ -267,20 +273,20 @@ public class GameManagerScript : MonoBehaviour {
     void Start()
     {
 
+        /*
         GameObject l = Instantiate(outdoorLevelManager) as GameObject;
         lm = l.GetComponent<LevelManagerScript>();
         lm.levelWidth  = 100;
         lm.levelHeight = 100;
         lm.init_circus();
         this.circusEntity = lm.entity;
-        /*
+        */
         GameObject l = Instantiate(overworldLevelManager) as GameObject;
         lm = l.GetComponent<LevelManagerScript>();
         lm.levelWidth  = 100;
         lm.levelHeight = 100;
         lm.init_overworld();
         this.overworldEntity = lm.entity;
-        */
 
         for (int i = 0; i < lm.levelWidth; i++)
         {
