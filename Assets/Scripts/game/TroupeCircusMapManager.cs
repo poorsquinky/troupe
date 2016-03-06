@@ -124,11 +124,20 @@ namespace ThugSimpleGame {
                         ActorEntity actor = e as ActorEntity;
                         if (actor.isPlayer == true)
                         {
+                            string[] messages = {
+                                "\"That's far enough!  You can't enter the city, vagrant!\"",
+                                "\"Only citizens or travelers with a visa may enter.\"",
+                                "\"Buzz off, entertainer!\"",
+                                "\"None shall pass!\"",
+                                "The city guard glares at you and shakes his head."
+                            };
+                            lm.gm.Message(messages[Random.Range(0,messages.Length)]);
                             return false;
                         }
                         return true;
                     });
 
+            // "That's far enough!  You can't enter the city, vagrant!"
 
         }
 

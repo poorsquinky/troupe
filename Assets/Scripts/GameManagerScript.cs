@@ -21,6 +21,9 @@ public class GameManagerScript : MonoBehaviour {
     private GameObject ui_textoverlay;
     private GameObject ui_textcontent;
 
+    private GameObject ui_messagecontent;
+    private string     ui_messagebuffer;
+
     public float keyRepeatSpeed = 0.5f;
     public float currentKeyRepeat = 0f;
 
@@ -56,6 +59,16 @@ public class GameManagerScript : MonoBehaviour {
         GameObject p = GameObject.Find("player(Clone)");
         if (p)
             this.player = p.GetComponent<PlayerScript>();
+    }
+
+    void Awake()
+    {
+        ui_messagecontent = GameObject.Find("Text-bottom");
+    }
+
+    public void Message(string msg)
+    {
+        ui_messagecontent.GetComponent<Text>().text = msg;
     }
 
     void ToggleHelpMenu()

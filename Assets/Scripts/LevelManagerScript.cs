@@ -32,7 +32,7 @@ public class LevelManagerScript : MonoBehaviour {
 
     public LevelEntity entity;
 
-    private GameManagerScript gm;
+    public GameManagerScript gm;
 
     private bool IsVisibleAndBlocked(int x, int y) {
         return (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight &&
