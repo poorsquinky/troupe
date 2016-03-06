@@ -9,23 +9,18 @@ using UnityEngine;
 namespace ThugSimpleGame {
     public class TroupeCircusMapManager : MapManager {
 
-        private int[][] grid;
-
         private LevelManagerScript lm;
 
         public TroupeCircusMapManager(LevelManagerScript l) {
             lm = l;
             int levelWidth  = lm.entity.GetW();
             int levelHeight = lm.entity.GetH();
-            AddSpaceType(key: 0, glyph: '.', passable: true, transparent: true);
-            AddSpaceType(key: 1, glyph: '+', passable: true, transparent: true);
-            AddSpaceType(key: 2, glyph: '-', passable: true, transparent: true);
-            AddSpaceType(key: 3, glyph: '#', passable: false, transparent: true);
             Bounds = new MapRectangle(0, 0, levelWidth, levelHeight);
-            this.grid = new int[levelWidth][];
-            for (int i = 0; i < levelHeight; i++)
-                this.grid[i] = new int[levelHeight];
 
+        }
+
+        public override void Generate()
+        {
             int[,] prefabCircus = new int[,] {
                 {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
                 {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3},
@@ -78,15 +73,15 @@ namespace ThugSimpleGame {
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             };
-            for (int x = 0; x < levelWidth; x++)
+            for (int x = 0; x < lm.levelWidth; x++)
             {
-                for (int y = 0; y < levelHeight; y++)
+                for (int y = 0; y < lm.levelHeight; y++)
                 {
                     CellEntity       cell = lm.entity.GetCell(x,y);
                     TerrainEntity terrain = new TerrainEntity();
                     terrain.index         = lm.gm.entity.RegisterEntity(terrain);
                     terrain.SetCell(cell);
-                    switch (prefabCircus[levelHeight - y - 1,x])
+                    switch (prefabCircus[lm.levelHeight - y - 1,x])
                     {
                         case 0:
                             terrain.hindrance        = 0f;
@@ -142,6 +137,10 @@ namespace ThugSimpleGame {
             doorEntity.shortDescription = "a locked city gate";
             doorEntity.SetCell(lm.entity.GetCell(xx,yy));
 
+        }
+
+        public override void PostProcess()
+        {
             // entryway trigger
             CellEntity gateTriggerCell = lm.entity.GetCell(25,46);
             gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
@@ -161,7 +160,6 @@ namespace ThugSimpleGame {
                         }
                         return true;
                     });
-
         }
 
         public override CellEntity[][] GetPatch(MapRectangle region)

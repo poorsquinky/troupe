@@ -118,6 +118,14 @@ namespace ThugSimpleGame {
             AddSpaceType(key: 7, glyph: '+', passable: true, transparent: false);
             */
         }
+        public override void Generate()
+        {
+            // TODO
+        }
+        public override void PostProcess()
+        {
+            // TODO
+        }
 
         public override CellEntity[][] GetPatch(MapRectangle region) {
             return null;

@@ -42,6 +42,9 @@ namespace ThugSimpleGame {
             this.palette[key] = st;
         }
 
+        public abstract void Generate();
+        public abstract void PostProcess();
+
         public abstract CellEntity[][] GetPatch(MapRectangle region);
     }
 }

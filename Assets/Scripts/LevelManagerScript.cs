@@ -237,6 +237,9 @@ public class LevelManagerScript : MonoBehaviour {
         this.entity.index = gm.entity.RegisterEntity(this.entity);
 
         mapman = new TroupeCircusMapManager(this);
+
+        mapman.Generate();
+        mapman.PostProcess();
         go();
     }
 
