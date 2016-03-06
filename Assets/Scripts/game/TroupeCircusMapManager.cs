@@ -13,9 +13,7 @@ namespace ThugSimpleGame {
 
         public TroupeCircusMapManager(LevelManagerScript l) {
             lm = l;
-            int levelWidth  = lm.entity.GetW();
-            int levelHeight = lm.entity.GetH();
-            Bounds = new MapRectangle(0, 0, levelWidth, levelHeight);
+            Bounds = new MapRectangle(0, 0, lm.levelWidth, lm.levelHeight);
 
         }
 
