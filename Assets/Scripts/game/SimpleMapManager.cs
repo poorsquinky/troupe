@@ -8,7 +8,9 @@ namespace ThugSimpleGame {
 
         private int[][] grid;
 
-        public SimpleMapManager(int levelWidth, int levelHeight) {
+        public SimpleMapManager(LevelEntity entity) {
+            int levelWidth  = entity.GetW();
+            int levelHeight = entity.GetH();
             Bounds = new MapRectangle(0, 0, levelWidth, levelHeight);
             this.grid = new int[levelWidth][];
             for (int i = 0; i < levelWidth; i++) grid[i] = new int[levelHeight];

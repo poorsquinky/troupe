@@ -45,13 +45,10 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
     void go() {
-        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
-        this.entity.index = gm.entity.RegisterEntity(this.entity);
-
         // Find a starting spot for the player
         // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
-        int player_x = 0;
-        int player_y = 0;
+        int player_x = 25;
+        int player_y = 38;
 
         fullMapBounds = new MapRectangle(0, 0, levelWidth, levelHeight);
         map = mapman.GetPatch(fullMapBounds);
@@ -92,11 +89,13 @@ public class LevelManagerScript : MonoBehaviour {
 
 
                 // XXX this is profoundly dumb -- we're just assigning the player coords to the last passable square.  But it's temporary.
+                /*
                 if (map[j][i].passable)
                 {
                     player_x = j;
                     player_y = i;
                 }
+                */
 
                 subTileGrid[i].Add(null);
 
@@ -187,12 +186,27 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
 
-    public void go_overworld() {
-        mapman = new TroupeOverworldMapManager(levelWidth, levelHeight);
+    public void init_overworld() {
+        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
+
+        mapman = new TroupeOverworldMapManager(this.entity);
         go();
     }
-    public void go_simple() {
-        mapman = new SimpleMapManager(levelWidth, levelHeight);
+    public void init_circus() {
+        levelWidth=50;
+        levelHeight=50;
+        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
+
+        mapman = new TroupeCircusMapManager(this.entity);
+        go();
+    }
+    public void init_simple() {
+        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
+
+        mapman = new SimpleMapManager(this.entity);
         go();
     }
 

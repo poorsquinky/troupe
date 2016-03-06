@@ -27,6 +27,7 @@ public class GameManagerScript : MonoBehaviour {
     public GameEntity entity = new GameEntity();
 
     public LevelEntity overworldEntity;
+    public LevelEntity circusEntity;
 
     private const string helpText =
 @"<b>MOVEMENT:</b>
@@ -43,7 +44,7 @@ public class GameManagerScript : MonoBehaviour {
 <b>ACTIONS:</b>
       <color=#cc99ffff>[.]</color> - <color=#ffff66ff>Skip a move</color>
       <color=#cc99ffff>[/]</color> - <color=#ffff66ff>Toggle this help message (duh)</color>
-<color=#cc99ffff>[SHIFT-S]</color> - <color=#ffff66ff>Save and quit</color>
+<color=#cc99ffff>[SHIFT-S]</color> - <color=#ffff66ff>Save and quit (loading not implemented yet!) (KNOWN TO CRASH)</color>
 <color=#cc99ffff>[SHIFT-Q]</color> - <color=#ffff66ff>Quit the game without saving (give up)</color>
 ";
 
@@ -252,13 +253,21 @@ public class GameManagerScript : MonoBehaviour {
 
     void Start()
     {
-//        this.seed = 242;
+
         GameObject l = Instantiate(outdoorLevelManager) as GameObject;
         lm = l.GetComponent<LevelManagerScript>();
         lm.levelWidth  = 100;
         lm.levelHeight = 100;
-        lm.go_overworld();
+        lm.init_circus();
+        this.circusEntity = lm.entity;
+        /*
+        GameObject l = Instantiate(overworldLevelManager) as GameObject;
+        lm = l.GetComponent<LevelManagerScript>();
+        lm.levelWidth  = 100;
+        lm.levelHeight = 100;
+        lm.init_overworld();
         this.overworldEntity = lm.entity;
+        */
 
         for (int i = 0; i < lm.levelWidth; i++)
         {
@@ -277,12 +286,12 @@ public class GameManagerScript : MonoBehaviour {
                 new MenuCallback("Overworld", delegate() {
                         GameObject l = Instantiate(outdoorLevelManager) as GameObject;
                         lm = l.GetComponent<LevelManagerScript>();
-                        lm.go_overworld();
+                        lm.init_overworld();
                 }),
                 new MenuCallback("Dungeon", delegate() {
                         GameObject l = Instantiate(dungeonLevelManager) as GameObject;
                         lm = l.GetComponent<LevelManagerScript>();
-                        lm.go_simple();
+                        lm.init_simple();
                 })
             }
         );
@@ -382,7 +391,8 @@ public class GameManagerScript : MonoBehaviour {
                 "Are you sure you want to save and quit?",
                 new[] {
                     new MenuCallback("Yes", delegate() {
-                        File.WriteAllText("save-file.json", this.entity.Serialize());
+                        Debug.Log(Application.persistentDataPath + @"/save-file.json");
+                        File.WriteAllText(Application.persistentDataPath + @"/save-file.json", this.entity.Serialize());
                     }),
                     new MenuCallback("No", delegate() { return; })
                 }

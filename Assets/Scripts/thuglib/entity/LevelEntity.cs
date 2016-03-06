@@ -17,6 +17,13 @@ namespace ThugLib
             return null;
         }
 
+        public int GetW(){
+            return cells.Length;
+        }
+        public int GetH(){
+            return cells[0].Length;
+        }
+
         public LevelEntity(int w, int h, GameEntity p)
         {
             this.SetEntityType("Level");
