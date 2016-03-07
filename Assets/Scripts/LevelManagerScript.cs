@@ -10,13 +10,10 @@ public class LevelManagerScript : MonoBehaviour {
     public int levelWidth=200;
     public int levelHeight=200;
 
-    public GameObject playerPrefab;
-
     public GameObject npcPrefab;
 
-    private List<List<GameObject>> tileGrid = new List<List<GameObject>>();
-    private List<List<GameObject>> subTileGrid = new List<List<GameObject>>();
-    private GameObject player;
+    private List<List<GameObject>> tileGrid;
+    private List<List<GameObject>> subTileGrid;
 
     [HideInInspector]
     public MapRectangle fullMapBounds;
@@ -98,6 +95,8 @@ public class LevelManagerScript : MonoBehaviour {
 
     void CreateSprites()
     {
+        tileGrid = new List<List<GameObject>>();
+        subTileGrid = new List<List<GameObject>>();
         for (int i = 0; i < levelHeight; i++)
         {
             tileGrid.Add(new List<GameObject>());
@@ -179,35 +178,67 @@ public class LevelManagerScript : MonoBehaviour {
         }
     }
 
-    void go() {
-        // Find a starting spot for the player
-        // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
-        int player_x = 25;
-        int player_y = 38;
+    void DestroySprites()
+    {
 
-        BuildVisibilityMap();
+        while (tileGrid.Count > 0)
+        {
+            List<GameObject> l = tileGrid[0];
+            while (l.Count > 0)
+            {
+                GameObject t = l[0];
+                if (t != null)
+                    Destroy(t);
+                l.RemoveAt(0);
+            }
+            tileGrid.RemoveAt(0);
+        }
 
+        while (subTileGrid.Count > 0)
+        {
+            List<GameObject> l = subTileGrid[0];
+            while (l.Count > 0)
+            {
+                GameObject t = l[0];
+                if (t != null)
+                    Destroy(t);
+                l.RemoveAt(0);
+            }
+            subTileGrid.RemoveAt(0);
+        }
+
+    }
+
+    public void Deactivate()
+    {
+        DestroySprites();
+    }
+
+    public void Activate()
+    {
         // create all of the sprites
         CreateSprites();
 
-        // Create the player
-        this.player = Instantiate(this.playerPrefab) as GameObject;
-
-        PlayerScript playerScript = this.player.GetComponent<PlayerScript>();
-        playerScript.ForceMoveTo(player_x, player_y);
-
-
-        // Create the camera
-        GameObject cam = GameObject.Find("Camera");
-        Vector3 pos = new Vector3(player_x, player_y, -10);
-        cam.transform.position = pos;
-        cam.GetComponent<CameraScript>().target = this.player.transform;
-
-        // Add the player to the schedule
-        ScheduleItem playersched = new ScheduleItem(player.GetComponent<PlayerScript>().timeUnitsPerTurn, null);
-        scheduleOutbox.Add(playersched);
+        PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
+        playerScript.ForceMoveTo(25,38);
 
         this.active = true;
+    }
+
+    void init_common()
+    {
+        init_common(25,38);
+    }
+
+    void init_common(int player_x, int player_y) {
+        // Find a starting spot for the player
+        // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
+
+        BuildVisibilityMap();
+
+        // Add the player to the schedule
+        ScheduleItem playersched = new ScheduleItem(gm.player.GetComponent<PlayerScript>().timeUnitsPerTurn, null);
+        scheduleOutbox.Add(playersched);
     }
 
 
@@ -239,18 +270,9 @@ public class LevelManagerScript : MonoBehaviour {
         */
 
         mapman.PostProcess();
-        go();
+        init_common();
     }
 
-    /* FIXME: update to new stuff
-    public void init_simple() {
-        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
-        this.entity.index = gm.entity.RegisterEntity(this.entity);
-
-        mapman = new SimpleMapManager(this.entity);
-        go();
-    }
-    */
     public void init_circus() {
         levelWidth=50;
         levelHeight=50;
@@ -261,7 +283,7 @@ public class LevelManagerScript : MonoBehaviour {
 
         mapman.Generate();
         mapman.PostProcess();
-        go();
+        init_common();
     }
 
     private Vector3 lastVisibilityUpdatePlayerPos;
@@ -280,17 +302,17 @@ public class LevelManagerScript : MonoBehaviour {
     }
     public int GetPlayerX()
     {
-        return player.GetComponent<PlayerScript>().actor.GetX();
+        return gm.player.GetComponent<PlayerScript>().actor.GetX();
     }
     public int GetPlayerY()
     {
-        return player.GetComponent<PlayerScript>().actor.GetY();
+        return gm.player.GetComponent<PlayerScript>().actor.GetY();
     }
     private bool[][] wasEverVisible = null;
 
     public void VisibilityUpdate() {
         isFirstUpdate = false;
-        lastVisibilityUpdatePlayerPos = this.player.transform.position;
+        lastVisibilityUpdatePlayerPos = gm.player.transform.position;
 
         // generate a visibility map for the entire level
 
@@ -412,7 +434,7 @@ public class LevelManagerScript : MonoBehaviour {
                 else
                 {
                     playerTurn = true;
-                    item.speed = player.GetComponent<PlayerScript>().timeUnitsPerTurn;
+                    item.speed = gm.player.GetComponent<PlayerScript>().timeUnitsPerTurn;
                 }
                 item.timer += 1f / item.speed;
             }

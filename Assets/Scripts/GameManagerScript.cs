@@ -8,13 +8,19 @@ using ThugLib;
 
 public class GameManagerScript : MonoBehaviour {
 
-    private PlayerScript player;
+    private PlayerScript playerScript;
+    [HideInInspector]
+    public GameObject player;
+    public GameObject playerPrefab;
+
     [HideInInspector]
     public LevelManagerScript lm;
 
-    public GameObject dungeonLevelManager;
-    public GameObject outdoorLevelManager;
-    public GameObject overworldLevelManager;
+    public Dictionary<string, LevelManagerScript> lmDict = new Dictionary<string, LevelManagerScript>();
+
+    public GameObject dungeonLevelManagerPrefab;
+    public GameObject circusLevelManagerPrefab;
+    public GameObject overworldLevelManagerPrefab;
 
     [HideInInspector]
     public bool menuActive = false;
@@ -64,7 +70,7 @@ public class GameManagerScript : MonoBehaviour {
             lm = l.GetComponent<LevelManagerScript>();
         GameObject p = GameObject.Find("player(Clone)");
         if (p)
-            this.player = p.GetComponent<PlayerScript>();
+            this.playerScript = p.GetComponent<PlayerScript>();
     }
 
     void Awake()
@@ -270,117 +276,72 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    void Start()
+    void SetupBasicInputCallbacks()
     {
-
-        /*
-        GameObject l = Instantiate(outdoorLevelManager) as GameObject;
-        lm = l.GetComponent<LevelManagerScript>();
-        lm.levelWidth  = 100;
-        lm.levelHeight = 100;
-        lm.init_circus();
-        this.circusEntity = lm.entity;
-        */
-        GameObject l = Instantiate(overworldLevelManager) as GameObject;
-        lm = l.GetComponent<LevelManagerScript>();
-        lm.levelWidth  = 100;
-        lm.levelHeight = 100;
-        lm.init_overworld();
-        this.overworldEntity = lm.entity;
-
-        for (int i = 0; i < lm.levelWidth; i++)
-        {
-            for (int j = 0; j < lm.levelHeight; j++)
-            {
-                GameObject tile = lm.GetTile(i,j);
-                if (tile != null)
-                    tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
-            }
-        }
-
-        /*
-        CallbackMenu(
-            "Select a map type!",
-            new[] {
-                new MenuCallback("Overworld", delegate() {
-                        GameObject l = Instantiate(outdoorLevelManager) as GameObject;
-                        lm = l.GetComponent<LevelManagerScript>();
-                        lm.init_overworld();
-                }),
-                new MenuCallback("Dungeon", delegate() {
-                        GameObject l = Instantiate(dungeonLevelManager) as GameObject;
-                        lm = l.GetComponent<LevelManagerScript>();
-                        lm.init_simple();
-                })
-            }
-        );
-        */
-
-
         // set up our callback delegates
         // up
         RegisterCallback(new[] {"k","w","uparrow"}, delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = 0;
-            player.keyboardY = 1;
+            playerScript.keyboardX = 0;
+            playerScript.keyboardY = 1;
         });
         // left
         RegisterCallback(new[] {"h","a","leftarrow"}, delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = -1;
-            player.keyboardY = 0;
+            playerScript.keyboardX = -1;
+            playerScript.keyboardY = 0;
         });
         // down
         RegisterCallback(new[] {"j","s","downarrow"}, delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = 0;
-            player.keyboardY = -1;
+            playerScript.keyboardX = 0;
+            playerScript.keyboardY = -1;
         });
         // right
         RegisterCallback(new[] {"l","d","rightarrow"}, delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = 1;
-            player.keyboardY = 0;
+            playerScript.keyboardX = 1;
+            playerScript.keyboardY = 0;
         });
         // down/left
         RegisterCallback("b", delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = -1;
-            player.keyboardY = -1;
+            playerScript.keyboardX = -1;
+            playerScript.keyboardY = -1;
         });
         // up/left
         RegisterCallback("y", delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = -1;
-            player.keyboardY = 1;
+            playerScript.keyboardX = -1;
+            playerScript.keyboardY = 1;
         });
         // up/right
         RegisterCallback("u", delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = 1;
-            player.keyboardY = 1;
+            playerScript.keyboardX = 1;
+            playerScript.keyboardY = 1;
         });
         // down/right
         RegisterCallback("n", delegate(string e)
         {
             CheckRefs();
             if (lm == null || lm.active == false) return;
-            player.keyboardX = 1;
-            player.keyboardY = -1;
+            playerScript.keyboardX = 1;
+            playerScript.keyboardY = -1;
         });
 
         // skip turn
@@ -417,5 +378,93 @@ public class GameManagerScript : MonoBehaviour {
                 }
             );
         });
+        RegisterCallback("O", delegate(string e)
+        {
+            this.ActivateOverworld();
+        });
+    }
+
+    void RefreshTiles()
+    {
+        for (int i = 0; i < lm.levelWidth; i++)
+        {
+            for (int j = 0; j < lm.levelHeight; j++)
+            {
+                GameObject tile = lm.GetTile(i,j);
+                if (tile != null)
+                    tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
+            }
+        }
+    }
+
+    void ActivateCircus()
+    {
+        if (lm)
+            lm.Deactivate();
+        if (! lmDict.ContainsKey("circus"))
+        {
+            GameObject l = Instantiate(circusLevelManagerPrefab) as GameObject;
+            lm = l.GetComponent<LevelManagerScript>();
+            lm.init_circus();
+            this.circusEntity = lm.entity;
+            lmDict["circus"] = lm;
+        }
+        else
+        {
+            lm = lmDict["circus"];
+        }
+        lm.Activate();
+        RefreshTiles();
+    }
+
+    void ActivateOverworld()
+    {
+        if (lm)
+            lm.Deactivate();
+        if (! lmDict.ContainsKey("overworld"))
+        {
+            GameObject l = Instantiate(overworldLevelManagerPrefab) as GameObject;
+            lm = l.GetComponent<LevelManagerScript>();
+            lm.init_overworld();
+            this.overworldEntity = lm.entity;
+            lmDict["overworld"] = lm;
+        }
+        else
+        {
+            lm = lmDict["overworld"];
+        }
+        lm.Activate();
+        RefreshTiles();
+    }
+
+    void SwitchToLevel(string levelName)
+    {
+        lm.Deactivate();
+        // FIXME: stop being stupid here
+        if (levelName == "overworld")
+        {
+            ActivateOverworld();
+        }
+        else if (levelName == "circus")
+        {
+            ActivateCircus();
+        }
+    }
+
+    void Start()
+    {
+        this.player = Instantiate(this.playerPrefab) as GameObject;
+
+        // Create the camera
+        GameObject cam = GameObject.Find("Camera");
+        Vector3 pos = this.player.transform.position;
+        pos.z = -10;
+        cam.transform.position = pos;
+        cam.GetComponent<CameraScript>().target = player.transform;
+
+        ActivateCircus();
+
+        SetupBasicInputCallbacks();
+
     }
 }

@@ -36,6 +36,9 @@ public class PlayerScript : MonoBehaviour {
         Vector3 pos = new Vector3(x, y, 0);
         transform.position = pos;
 
+        // force a refresh every time, in case the level changed
+        lm = gm.lm;
+
         CellEntity c = lm.entity.GetCell(x, y);
 
         this.actor.entity.SetParent(c);
