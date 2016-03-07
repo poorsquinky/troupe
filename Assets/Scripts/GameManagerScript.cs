@@ -44,6 +44,9 @@ public class GameManagerScript : MonoBehaviour {
     [HideInInspector]
     public LevelEntity circusEntity;
 
+    public int overworldX = 6;
+    public int overworldY = 39;
+
     private const string helpText =
 @"<b>MOVEMENT:</b>
  Arrows, gamepad and WASD (probably) work, but vi keys are recommended:
@@ -397,7 +400,7 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    void ActivateCircus()
+    public void ActivateCircus()
     {
         if (lm)
             lm.Deactivate();
@@ -417,7 +420,7 @@ public class GameManagerScript : MonoBehaviour {
         RefreshTiles();
     }
 
-    void ActivateOverworld()
+    public void ActivateOverworld()
     {
         if (lm)
             lm.Deactivate();
@@ -435,6 +438,7 @@ public class GameManagerScript : MonoBehaviour {
         }
         lm.Activate();
         RefreshTiles();
+        playerScript.ForceMoveTo(overworldX,overworldY);
     }
 
     void SwitchToLevel(string levelName)

@@ -158,6 +158,29 @@ namespace ThugSimpleGame {
                         }
                         return true;
                     });
+
+            for (int x = 0; x < lm.levelWidth; x++)
+            {
+                lm.entity.GetCell(x,0).AddActionCallback("_enter", delegate(Entity e)
+                {
+                    lm.gm.ActivateOverworld();
+                    return false;
+                });
+            }
+            for (int y = 0; y < lm.levelHeight; y++)
+            {
+                lm.entity.GetCell(0,y).AddActionCallback("_enter", delegate(Entity e)
+                {
+                    lm.gm.ActivateOverworld();
+                    return false;
+                });
+                lm.entity.GetCell(lm.levelWidth - 1,y).AddActionCallback("_enter", delegate(Entity e)
+                {
+                    lm.gm.ActivateOverworld();
+                    return false;
+                });
+            }
+
         }
 
         public override CellEntity[][] GetPatch(MapRectangle region)

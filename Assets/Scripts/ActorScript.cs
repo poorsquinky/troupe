@@ -9,7 +9,7 @@ public class ActorScript : MonoBehaviour {
 
     public float smooth = 15;
     private GameManagerScript gm; // GameManager
-    private LevelManagerScript lm; // LevelManager
+    public LevelManagerScript lm; // LevelManager
 
     public ActorEntity entity = new ActorEntity();
 
@@ -19,7 +19,6 @@ public class ActorScript : MonoBehaviour {
 
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
-        lm = gm.lm;
 
         this.entity.index = gm.entity.RegisterEntity(this.entity);
     }
@@ -36,6 +35,7 @@ public class ActorScript : MonoBehaviour {
     // XXX delete
     public bool CanMoveTo (int x, int y)
     {
+        lm = gm.lm;
         if (lm)
         {
             if ((x < 0) || (x >= lm.levelWidth))
@@ -52,11 +52,14 @@ public class ActorScript : MonoBehaviour {
     {
         transform.position = destination;
         this.entity.MoveTo((int)destination.x, (int)destination.y);
+        moving = false;
+        movingTo = destination;
         UpdateVisibility();
     }
 
     private void UpdateVisibility()
     {
+        lm = gm.lm;
         if ((lm != null) && (GetComponent<PlayerScript>() == null))
         {
             GetComponent<SpriteRenderer>().enabled = 

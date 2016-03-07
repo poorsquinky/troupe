@@ -188,6 +188,14 @@ namespace ThugLib
         {
             this.SetActor(actor);
         }
+        public void ActorForceExit()
+        {
+            if (this.actor != null)
+            {
+                this.SetActor(null);
+                this.actorIndex = -1;
+            }
+        }
 
         public CellEntity(int x, int y, LevelEntity parent)
         {

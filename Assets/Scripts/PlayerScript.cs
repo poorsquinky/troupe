@@ -7,7 +7,7 @@ public class PlayerScript : MonoBehaviour {
     public float timeUnitsPerTurn = 1f;
 
     private GameManagerScript gm;
-    private LevelManagerScript lm;
+    public LevelManagerScript lm;
     public ActorScript actor;
 
     private bool wasMoving;
@@ -38,11 +38,14 @@ public class PlayerScript : MonoBehaviour {
 
         // force a refresh every time, in case the level changed
         lm = gm.lm;
+        this.actor.lm = lm;
 
         CellEntity c = lm.entity.GetCell(x, y);
 
         this.actor.entity.SetParent(c);
         c.ActorForceEnter(this.actor.entity);
+        this.actor.TeleportTo(x,y);
+
     }
 
     void FixedUpdate()

@@ -220,6 +220,7 @@ public class LevelManagerScript : MonoBehaviour {
         CreateSprites();
 
         PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
+        playerScript.lm = this;
         playerScript.ForceMoveTo(25,38);
 
         this.active = true;

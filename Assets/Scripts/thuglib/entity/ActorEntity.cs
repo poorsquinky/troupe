@@ -24,8 +24,11 @@ namespace ThugLib
 
         public bool MoveTo(int x, int y)
         {
+            GameObject g = GameObject.Find("GameManager");
+            GameManagerScript gm = g.GetComponent<GameManagerScript>();
+            LevelEntity level = gm.lm.entity;
+
             CellEntity oldCell = this.parent as CellEntity;
-            LevelEntity level = oldCell.GetParent() as LevelEntity;
             CellEntity newCell = level.GetCell(x,y);
             if (oldCell.ActorExit(this))
             {
@@ -33,10 +36,10 @@ namespace ThugLib
                 {
                     return true;
                 }
-                else
-                {
-                    oldCell.ActorForceEnter(this);
-                }
+//                else
+//                {
+//                    oldCell.ActorForceEnter(this);
+//                }
             }
             return false;
         }
