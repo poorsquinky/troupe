@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
+using System.IO;
 
 public class LevelManagerScript : MonoBehaviour {
 
@@ -20,10 +21,6 @@ public class LevelManagerScript : MonoBehaviour {
     [HideInInspector]
     public MapRectangle fullMapBounds;
 
-/*
-    [HideInInspector]
-    public MapSpaceType[][] map;
-*/
     [HideInInspector]
     public CellEntity[][] map;
 
@@ -222,9 +219,29 @@ public class LevelManagerScript : MonoBehaviour {
 
         mapman = new TroupeOverworldMapManager(this);
         mapman.Generate();
+
+        // uncomment all of this stuff in order to test serialize/deserialize
+        /*
+        this.entity.Serialize();
+        string serialized = JsonUtility.ToJson(this.entity);
+        File.WriteAllText("save-file.json", serialized);
+
+        this.entity.Decommission(gm.entity);
+
+        this.entity = null;
+        mapman      = null;
+
+        this.entity = JsonUtility.FromJson<LevelEntity>(serialized);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
+        this.entity.Deserialize();
+
+        mapman = new TroupeOverworldMapManager(this);
+        */
+
         mapman.PostProcess();
         go();
     }
+
     /* FIXME: update to new stuff
     public void init_simple() {
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);

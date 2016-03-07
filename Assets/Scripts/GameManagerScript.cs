@@ -411,7 +411,7 @@ public class GameManagerScript : MonoBehaviour {
                 new[] {
                     new MenuCallback("Yes", delegate() {
                         Debug.Log(Application.persistentDataPath + @"/save-file.json");
-                        File.WriteAllText(Application.persistentDataPath + @"/save-file.json", this.entity.Serialize());
+//                        File.WriteAllText(Application.persistentDataPath + @"/save-file.json", this.entity.Serialize());
                     }),
                     new MenuCallback("No", delegate() { return; })
                 }

@@ -6,6 +6,12 @@ namespace ThugLib
 {
     public class PropEntity : Entity
     {
+        public override void DeserializeFields()
+        {
+        }
+        public override void  SerializeFields()
+        {
+        }
         public PropEntity()
         {
             this.SetEntityType("Prop");

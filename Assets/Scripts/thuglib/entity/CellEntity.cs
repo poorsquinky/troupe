@@ -9,6 +9,90 @@ namespace ThugLib
     {
         public int x,y;
 
+        public int terrainIndex;
+        public TerrainEntity terrain;
+
+        public int propIndex;
+        public PropEntity prop;
+
+        public int actorIndex;
+        public ActorEntity actor;
+
+        public List<int> items_index;
+        public List<ItemEntity> items;
+
+        public override void DeserializeFields()
+        {
+//            Debug.Log(this.serialFieldsString);
+            this.x = Convert.ToInt32(serialFields["x"]);
+            this.y = Convert.ToInt32(serialFields["y"]);
+
+            this.terrain = JsonUtility.FromJson<TerrainEntity>(serialFields["terrain"]);
+            this.prop    = JsonUtility.FromJson<PropEntity>(serialFields["prop"]);
+            this.actor   = JsonUtility.FromJson<ActorEntity>(serialFields["actor"]);
+
+            this.items = new List<ItemEntity>();
+            List<string> itemlist = JsonUtility.FromJson<List<string>>(serialFields["items"]);
+            foreach (string s in itemlist)
+            {
+                this.items.Add(JsonUtility.FromJson<ItemEntity>(s));
+            }
+            foreach (ItemEntity i in this.items)
+            {
+                i.Deserialize();
+                // XXX not implemented yet:
+//                i.SetCell(this);
+            }
+
+            // register and set index
+            // XXX register some other time
+
+            // deserialize
+            if (this.terrain != null)
+            {
+                this.terrain.Deserialize();
+                this.terrain.SetCell(this);
+            }
+            if (this.prop != null)
+            {
+                this.prop.Deserialize();
+                this.prop.SetCell(this);
+            }
+            if (this.actor != null)
+            {
+                this.actor.Deserialize();
+                this.actor.SetParent(this as Entity);
+            }
+
+        }
+        public override void  SerializeFields()
+        {
+            serialFields["x"] = x.ToString();
+            serialFields["y"] = y.ToString();
+
+            if (this.terrain != null)
+                this.terrain.Serialize();
+            if (this.prop != null)
+                this.prop.Serialize();
+            if (this.actor != null)
+                this.actor.Serialize();
+
+            serialFields["terrain"] = JsonUtility.ToJson(this.terrain);
+            serialFields["prop"] = JsonUtility.ToJson(this.prop);
+            serialFields["actor"] = JsonUtility.ToJson(this.actor);
+
+            List<string> itemList = new List<string>();
+            if (this.items != null)
+            {
+                foreach (ItemEntity item in this.items)
+                {
+                    item.Serialize();
+                    itemList.Add(JsonUtility.ToJson(item));
+                }
+            }
+            serialFields["items"] = JsonUtility.ToJson(itemList);
+        }
+
         public int GetX() {
             return this.x;
         }
@@ -16,8 +100,6 @@ namespace ThugLib
             return this.y;
         }
 
-        public int terrainIndex;
-        public TerrainEntity terrain;
         public void SetTerrain(TerrainEntity t)
         {
             this.terrain = t;
@@ -30,8 +112,6 @@ namespace ThugLib
             return this.terrain;
         }
 
-        public int propIndex;
-        public PropEntity prop;
         public void SetProp(PropEntity p)
         {
             this.prop = p;
@@ -44,8 +124,6 @@ namespace ThugLib
             return this.prop;
         }
 
-        public int actorIndex;
-        public ActorEntity actor;
         public void SetActor(ActorEntity a)
         {
             this.actor = a;
@@ -64,8 +142,6 @@ namespace ThugLib
             return this.actor;
         }
 
-        public List<int> items_index;
-        public List<ItemEntity> items;
         public void AddItem(ItemEntity i)
         {
             this.items.Add(i);
@@ -121,7 +197,6 @@ namespace ThugLib
             this.parent = parent;
             this.parent_index = parent.index;
         }
-
 
         public float GetOpacity()
         {

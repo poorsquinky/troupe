@@ -6,6 +6,12 @@ namespace ThugLib
 {
     public class ItemEntity : Entity
     {
+        public override void DeserializeFields()
+        {
+        }
+        public override void  SerializeFields()
+        {
+        }
         public ItemEntity(int w, int h)
         {
             this.SetEntityType("Item");

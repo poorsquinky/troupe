@@ -1,12 +1,66 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ThugLib
 {
     public class LevelEntity : Entity
     {
         public CellEntity[][] cells;
+
+        public override void DeserializeFields()
+        {
+            int w = Convert.ToInt32(serialFields["cells_w"]);
+            int h = Convert.ToInt32(serialFields["cells_h"]);
+
+            this.cells = new CellEntity[w][];
+            for (int x = 0; x < cells.Length; x++)
+            {
+                this.cells[x] = new CellEntity[h];
+                for (int y = 0; y < cells[x].Length; y++)
+                {
+                    cells[x][y] = null;
+                }
+            }
+
+            string[] lines = serialFields["cells"].Split(new[] {"<<CELLLINE>>"}, StringSplitOptions.None);
+            foreach (string line in lines)
+            {
+//                Debug.Log(line);
+                string[] entry = line.Split(new[] {"<<CELLDELIMIT>>"}, StringSplitOptions.None);
+                string[] coords = entry[0].Split(',');
+                int x = Convert.ToInt32(coords[0]);
+                int y = Convert.ToInt32(coords[1]);
+                cells[x][y] = JsonUtility.FromJson<CellEntity>(entry[1]);
+                cells[x][y].SetParent(this);
+                cells[x][y].Deserialize();
+            }
+
+        }
+        public override void  SerializeFields()
+        {
+            int w = GetW();
+            int h = GetH();
+            serialFields["cells_w"] = w.ToString();
+            serialFields["cells_h"] = h.ToString();
+
+            string s = "";
+            bool first = true;
+            for (int x = 0; x < cells.Length; x++)
+            {
+                for (int y = 0; y < cells[x].Length; y++)
+                {
+                    cells[x][y].Serialize();
+                    if (!first)
+                        s = s + "<<CELLLINE>>";
+                    s = s + x + "," + y + "<<CELLDELIMIT>>" + JsonUtility.ToJson(cells[x][y]);
+                    first = false;
+                }
+            }
+
+            serialFields["cells"] = s;
+        }
 
         public CellEntity GetCell(int x, int y)
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ThugLib
 {
@@ -43,8 +44,22 @@ namespace ThugLib
         public ActorEntity()
         {
             this.SetEntityType("Actor");
-            // TODO
         }
+
+        public override void DeserializeFields()
+        {
+            if (serialFields["isPlayer"] == "1")
+                this.isPlayer = true;
+            else
+                this.isPlayer = false;
+        }
+        public override void  SerializeFields()
+        {
+            Dictionary<string,string> serialFields = new Dictionary<string,string>();
+            serialFields["isPlayer"] = isPlayer? "1" : "0";
+
+        }
+
 
     }
 }

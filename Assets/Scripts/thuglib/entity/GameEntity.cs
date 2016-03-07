@@ -10,12 +10,20 @@ namespace ThugLib
 
         public List<Entity> entityIndex = new List<Entity>();
 
+        // TODO: serialize and deserialize oh god why
+
         public int RegisterEntity(Entity e)
         {
             // FIXME: unity dependency
-            e.entitySeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+            if (e.entitySeed == 0)
+                e.entitySeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
             entityIndex.Add(e);
             return entityIndex.Count - 1;
+        }
+
+        public void DeregisterEntity(Entity e)
+        {
+            entityIndex.Remove(e);
         }
 
         public Entity GetEntity(int i)

@@ -6,20 +6,27 @@ using UnityEngine;
 
 namespace ThugLib
 {
-    [Serializable]
     public class Entity
     {
+        [SerializeField]
+        public string serialFieldsString;
+        public Dictionary<string,string> serialFields = new Dictionary<string,string>();
 
+        [SerializeField]
         public string entityType = "NONE"; // we're abusing strings for a lot of these things for extensibility
 
+        [SerializeField]
         public int index;
 
         public Entity parent;
 
+        [SerializeField]
         public string shortDescription;
+        [SerializeField]
         public string longDescription;
 
         // FIXME (later): unity dependency in thuglib
+        [SerializeField]
         public int entitySeed = 0;
         //public int entitySeed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
@@ -34,18 +41,27 @@ namespace ThugLib
         public delegate bool CallbackDelegate(Entity subject);
         protected Dictionary<string, List<CallbackDelegate>> actionCallbacks = new Dictionary<string, List<CallbackDelegate>>();
 
+        [SerializeField]
         public List<string> tags = new List<String>();
 
+        [SerializeField]
         protected List<Entity> children    = new List<Entity>();
         protected List<Entity> descendants = new List<Entity>();
         protected Dictionary<string, List<Entity>> descendantsByTag = new Dictionary<string, List<Entity>>();
 
+        [SerializeField]
         public int parent_index = -1;
+        [SerializeField]
         public List<int> children_index = new List<int>();
 
-        public string Serialize()
+        public void Decommission(GameEntity g)
         {
-            return JsonUtility.ToJson(this);
+            foreach (Entity child in this.children)
+            {
+                child.Decommission(g);
+            }
+            g.DeregisterEntity(this);
+            this.GetParent().RemoveChild(this);
         }
 
         ///// Accessor methods
@@ -249,6 +265,59 @@ namespace ThugLib
             foreach (RefreshDelegate d in this.refreshDelegates)
                 d();
         }
+
+        public virtual void SerializeFields()
+        {
+        }
+        public virtual void DeserializeFields()
+        {
+        }
+
+        // escape quotes in the stupidest possible way
+        protected string CheesyEscape(string s)
+        {
+            string o = s.Replace("<<F","<<FF");
+            return o;
+        }
+        protected string CheesyUnescape(string s)
+        {
+            string o = s.Replace("<<FF","<<F");
+            return o;
+        }
+
+        public void Serialize()
+        {
+            // I hate C# right about now
+            this.SerializeFields();
+            string s = "";
+            bool first = true;
+            foreach (KeyValuePair<string,string> entry in serialFields)
+            {
+                if (!first)
+                    s = s + "<<FL>>";
+                s = s + entry.Key + "<<FD>>" + entry.Value;
+                first = false;
+            }
+            this.serialFieldsString = CheesyEscape(s);
+        }
+        public void Deserialize()
+        {
+            this.serialFields = new Dictionary<string,string>();
+            string[] lines = CheesyUnescape(this.serialFieldsString).Split(new[] {"<<FL>>"}, StringSplitOptions.None);
+            foreach (string line in lines)
+            {
+                string[] entry = line.Split(new[] {"<<FD>>"}, StringSplitOptions.None);
+                if (entry.Length > 1)
+                    this.serialFields[entry[0]] = entry[1];
+            }
+
+            // re-initialize some values that don't serialize
+            refreshDelegates = new List<RefreshDelegate>();
+            actionCallbacks  = new Dictionary<string, List<CallbackDelegate>>();
+
+            this.DeserializeFields();
+        }
+
 
     }
 }

@@ -9,6 +9,17 @@ namespace ThugLib
         public float hindrance = 0.0f;  // 0f: move at normal speed; 1f: impassable
         public float opacity   = 0.0f;  // 0f: transparent; 1f: opaque
 
+        public override void DeserializeFields()
+        {
+            this.hindrance = float.Parse(serialFields["hindrance"]);
+            this.opacity   = float.Parse(serialFields["opacity"]);
+        }
+        public override void  SerializeFields()
+        {
+            serialFields["hindrance"] = this.hindrance.ToString();
+            serialFields["opacity"]   = this.opacity.ToString();
+        }
+
         public TerrainEntity()
         {
             this.SetEntityType("Terrain");
