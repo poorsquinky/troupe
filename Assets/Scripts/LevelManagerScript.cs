@@ -232,8 +232,9 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
     void init_common(int player_x, int player_y) {
-        // Find a starting spot for the player
-        // FIXME: this should be loaded from last location if applicable, otherwise set at map gen time
+        PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
+        playerScript.lm = this;
+        playerScript.ForceMoveTo(player_x,player_y);
 
         BuildVisibilityMap();
 

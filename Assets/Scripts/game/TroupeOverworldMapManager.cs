@@ -114,7 +114,26 @@ namespace ThugSimpleGame {
         }
         public override void PostProcess()
         {
-            // TODO
+            lm.entity.GetCell(5,39).AddActionCallback("_enter", delegate(Entity e)
+            {
+                lm.gm.ActivateCircus();
+                return false;
+            });
+            lm.entity.GetCell(40,36).AddActionCallback("_enter", delegate(Entity e)
+            {
+                lm.gm.ActivateCircus();
+                return false;
+            });
+            lm.entity.GetCell(12,23).AddActionCallback("_enter", delegate(Entity e)
+            {
+                lm.gm.ActivateCircus();
+                return false;
+            });
+            lm.entity.GetCell(44,15).AddActionCallback("_enter", delegate(Entity e)
+            {
+                lm.gm.ActivateCircus();
+                return false;
+            });
         }
 
 
