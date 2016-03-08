@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: dfaa0fb563927f54ab52fcc2a6435ecb
-timeCreated: 1457229960
+timeCreated: 1457402014
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -65,6 +65,8 @@ TextureImporter:
     21300116: tileset_58
     21300118: tileset_59
     21300120: tileset_60
+    21300122: tileset_61
+    21300124: tileset_62
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -775,6 +777,28 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 51
+        y: 1
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: tileset_61
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 1
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: tileset_62
+      rect:
+        serializedVersion: 2
+        x: 71
         y: 1
         width: 8
         height: 8
