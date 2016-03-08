@@ -66,6 +66,18 @@ public class GameManagerScript : MonoBehaviour {
 <color=#cc99ffff>[SHIFT-Q]</color> - <color=#ffff66ff>Quit the game without saving (give up)</color>
 ";
 
+    public bool IsOverworldActive() {
+        if (lm.entity == overworldEntity)
+            return true;
+        return false;
+    }
+
+    public void UpdateOverworldCoords(int x, int y)
+    {
+        overworldX = x;
+        overworldY = y;
+    }
+
     void CheckRefs()
     {
         GameObject l = GameObject.Find("LevelManager");
