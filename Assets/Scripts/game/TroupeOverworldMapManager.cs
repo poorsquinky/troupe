@@ -14,10 +14,10 @@ namespace ThugSimpleGame {
             Bounds = new MapRectangle(0, 0, lm.levelWidth, lm.levelHeight);
         }
 
-        public class RepelNode
+        public class MapNode
         {
             public int x, y, r, w, h;
-            public RepelNode(int x, int y, int r, int w, int h)
+            public MapNode(int x, int y, int r, int w, int h)
             {
                 this.x = x; // x coord
                 this.y = y; // y coord
@@ -26,18 +26,18 @@ namespace ThugSimpleGame {
                 this.h = h; // max height of map
             }
 
-            public float DistanceToNode(RepelNode n)
+            public float DistanceToNode(MapNode n)
             {
                 float deltaX = Mathf.Abs(this.x - n.x);
                 float deltaY = Mathf.Abs(this.y - n.y);
                 return Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY);
             }
 
-            public RepelNode FindNearest(List<RepelNode> list)
+            public MapNode FindNearest(List<MapNode> list)
             {
                 float d = 999f;
-                RepelNode candidate = null;
-                foreach (RepelNode n in list)
+                MapNode candidate = null;
+                foreach (MapNode n in list)
                 {
                     if (x != n.x || y != n.y)
                     {
@@ -52,7 +52,7 @@ namespace ThugSimpleGame {
                 return candidate;
             }
 
-            public void Repel(RepelNode n)
+            public void Repel(MapNode n)
             {
                 float d = DistanceToNode(n);
                 if (d < (float)r)
@@ -78,6 +78,10 @@ namespace ThugSimpleGame {
             }
         }
 
+        List<MapNode> questPOIs     = new List<MapNode>();
+        List<MapNode> secondaryPOIs = new List<MapNode>();
+
+
         public override void Generate()
         {
 
@@ -92,46 +96,45 @@ namespace ThugSimpleGame {
             }
 
             int poiCount = 4;
-            List<RepelNode> poi = new List<RepelNode>();
-            poi.Add(
+            questPOIs.Add(
                 // I
-                new RepelNode(
+                new MapNode(
                             Random.Range(lm.levelWidth/2,lm.levelWidth),
                             Random.Range(lm.levelHeight/2,lm.levelHeight),
                             20,
                             lm.levelWidth,
                             lm.levelHeight
             ));
-            poi.Add(
+            questPOIs.Add(
                 // II
-                new RepelNode(
+                new MapNode(
                             Random.Range(0,lm.levelWidth/2),
                             Random.Range(lm.levelHeight/2,lm.levelHeight),
                             20,
                             lm.levelWidth,
                             lm.levelHeight
             ));
-            poi.Add(
+            questPOIs.Add(
                 // III
-                new RepelNode(
+                new MapNode(
                             Random.Range(0,lm.levelWidth/2),
                             Random.Range(0,lm.levelHeight/2),
                             20,
                             lm.levelWidth,
                             lm.levelHeight
             ));
-            poi.Add(
+            questPOIs.Add(
                 // IV
-                new RepelNode(
+                new MapNode(
                             Random.Range(lm.levelWidth/2,lm.levelWidth),
                             Random.Range(0,lm.levelHeight/2),
                             20,
                             lm.levelWidth,
                             lm.levelHeight
             ));
-            while (poi.Count < poiCount)
+            while (questPOIs.Count < poiCount)
             {
-                poi.Add(new RepelNode(
+                questPOIs.Add(new MapNode(
                             Random.Range(0,lm.levelWidth),
                             Random.Range(0,lm.levelHeight),
                             20,
@@ -147,14 +150,14 @@ namespace ThugSimpleGame {
             {
                 tries++;
                 minDistance = 9999;
-                for (int i = 0; i < poi.Count; i++)
+                for (int i = 0; i < questPOIs.Count; i++)
                 {
-                    for (int j = 0; j < poi.Count; j++)
+                    for (int j = 0; j < questPOIs.Count; j++)
                     {
                         if (i != j)
                         {
-                            RepelNode a = poi[i];
-                            RepelNode b = poi[j];
+                            MapNode a = questPOIs[i];
+                            MapNode b = questPOIs[j];
                             if (i != j)
                             {
                                 a.Repel(b);
@@ -167,10 +170,10 @@ namespace ThugSimpleGame {
                 }
             }
 
-            List<RepelNode> secpoi = new List<RepelNode>();
+            List<MapNode> secpoi = new List<MapNode>();
             for (int i = 0; i < 3; i++)
             {
-                secpoi.Add(new RepelNode(
+                secpoi.Add(new MapNode(
                             Random.Range(0,lm.levelWidth),
                             Random.Range(0,lm.levelHeight),
                             20,
@@ -191,8 +194,8 @@ namespace ThugSimpleGame {
                     {
                         if (i != j)
                         {
-                            RepelNode a = secpoi[i];
-                            RepelNode b = secpoi[j];
+                            MapNode a = secpoi[i];
+                            MapNode b = secpoi[j];
                             if (i != j)
                             {
                                 a.Repel(b);
@@ -205,10 +208,10 @@ namespace ThugSimpleGame {
                 }
                 for (int i = 0; i < secpoi.Count; i++)
                 {
-                    for (int j = 0; j < poi.Count; j++)
+                    for (int j = 0; j < questPOIs.Count; j++)
                     {
-                        RepelNode a = secpoi[i];
-                        RepelNode b = poi[j];
+                        MapNode a = secpoi[i];
+                        MapNode b = questPOIs[j];
                         if (i != j)
                         {
                             a.Repel(b);
@@ -224,9 +227,9 @@ namespace ThugSimpleGame {
 
 
 
-            for (int i = 0; i < poi.Count; i++)
+            for (int i = 0; i < questPOIs.Count; i++)
             {
-                map[poi[i].x,poi[i].y] = 2;
+                map[questPOIs[i].x,questPOIs[i].y] = 2;
             }
 
             for (int i = 0; i < secpoi.Count; i++)
@@ -234,9 +237,9 @@ namespace ThugSimpleGame {
                 map[secpoi[i].x,secpoi[i].y] = 1;
             }
 
-            foreach (RepelNode a in poi)
+            foreach (MapNode a in questPOIs)
             {
-                RepelNode b = a.FindNearest(secpoi);
+                MapNode b = a.FindNearest(secpoi);
                 // this is going to be a bit on the silly side as far as algorithms go, but time is of the essence
                 int x = a.x;
                 int y = a.y;
@@ -282,8 +285,8 @@ namespace ThugSimpleGame {
 
             for (int i = 0; i < secpoi.Count - 1; i++)
             {
-                RepelNode a = secpoi[i];
-                RepelNode b = secpoi[i + 1];
+                MapNode a = secpoi[i];
+                MapNode b = secpoi[i + 1];
                 int x = a.x;
                 int y = a.y;
                 if (Random.Range(0,2) == 0)
@@ -492,29 +495,18 @@ namespace ThugSimpleGame {
                     }
                 }
             }
+
         }
         public override void PostProcess()
         {
-//            lm.entity.GetCell(5,39).AddActionCallback("_enter", delegate(Entity e)
-//            {
-//                lm.gm.ActivateCircus();
-//                return false;
-//            });
-//            lm.entity.GetCell(40,36).AddActionCallback("_enter", delegate(Entity e)
-//            {
-//                lm.gm.ActivateCircus();
-//                return false;
-//            });
-//            lm.entity.GetCell(12,23).AddActionCallback("_enter", delegate(Entity e)
-//            {
-//                lm.gm.ActivateCircus();
-//                return false;
-//            });
-//            lm.entity.GetCell(44,15).AddActionCallback("_enter", delegate(Entity e)
-//            {
-//                lm.gm.ActivateCircus();
-//                return false;
-//            });
+            foreach (MapNode poi in questPOIs)
+            {
+                lm.entity.GetCell(poi.x,poi.y).AddActionCallback("_enter", delegate(Entity e)
+                {
+                    lm.gm.ActivateCircus();
+                    return false;
+                });
+            }
         }
 
 
