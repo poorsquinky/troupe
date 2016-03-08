@@ -44,8 +44,10 @@ public class GameManagerScript : MonoBehaviour {
     [HideInInspector]
     public LevelEntity circusEntity;
 
-    public int overworldX = 6;
-    public int overworldY = 39;
+    //public int overworldX = 6;
+    //public int overworldY = 39;
+    public int overworldX = 10;
+    public int overworldY = 10;
 
     private const string helpText =
 @"<b>MOVEMENT:</b>
@@ -74,8 +76,8 @@ public class GameManagerScript : MonoBehaviour {
 
     public void UpdateOverworldCoords(int x, int y)
     {
-        overworldX = x;
-        overworldY = y;
+//        overworldX = x;
+//        overworldY = y;
     }
 
     void CheckRefs()

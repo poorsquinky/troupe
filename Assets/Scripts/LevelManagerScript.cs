@@ -221,14 +221,14 @@ public class LevelManagerScript : MonoBehaviour {
 
         PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
         playerScript.lm = this;
-        playerScript.ForceMoveTo(25,38);
+        playerScript.ForceMoveTo(10,10);
 
         this.active = true;
     }
 
     void init_common()
     {
-        init_common(25,38);
+        init_common(10,10);
     }
 
     void init_common(int player_x, int player_y) {
@@ -272,7 +272,7 @@ public class LevelManagerScript : MonoBehaviour {
         */
 
         mapman.PostProcess();
-        init_common();
+        init_common(10,10);
     }
 
     public void init_circus() {

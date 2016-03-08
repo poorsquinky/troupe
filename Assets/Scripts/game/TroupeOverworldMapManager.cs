@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
+using UnityEngine;
 
 namespace ThugSimpleGame {
     public class TroupeOverworldMapManager : MapManager {
@@ -12,60 +13,441 @@ namespace ThugSimpleGame {
             lm = l;
             Bounds = new MapRectangle(0, 0, lm.levelWidth, lm.levelHeight);
         }
+
+        public class RepelNode
+        {
+            public int x, y, r, w, h;
+            public RepelNode(int x, int y, int r, int w, int h)
+            {
+                this.x = x; // x coord
+                this.y = y; // y coord
+                this.r = r; // radius of repel
+                this.w = w; // max width of map
+                this.h = h; // max height of map
+            }
+
+            public float DistanceToNode(RepelNode n)
+            {
+                float deltaX = Mathf.Abs(this.x - n.x);
+                float deltaY = Mathf.Abs(this.y - n.y);
+                return Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY);
+            }
+
+            public RepelNode FindNearest(List<RepelNode> list)
+            {
+                float d = 999f;
+                RepelNode candidate = null;
+                foreach (RepelNode n in list)
+                {
+                    if (x != n.x || y != n.y)
+                    {
+                        float dd = DistanceToNode(n);
+                        if (dd < d)
+                        {
+                            d = dd;
+                            candidate = n;
+                        }
+                    }
+                }
+                return candidate;
+            }
+
+            public void Repel(RepelNode n)
+            {
+                float d = DistanceToNode(n);
+                if (d < (float)r)
+                {
+                    int moveAmt = (int)r - (int)d + 1;
+                    if (Random.Range(0,2) == 0)
+                    {
+                        x = x + ((x > n.x)? moveAmt : 0 - moveAmt);
+                    }
+                    else
+                    {
+                        y = y + ((y > n.y)? moveAmt : 0 - moveAmt);
+                    }
+                }
+                while (x < 5)
+                    x += 1;
+                while (x + 5 >= h)
+                    x -= 1;
+                while (y < 5)
+                    y += 1;
+                while (y + 5 >= h)
+                    y -= 1;
+            }
+        }
+
         public override void Generate()
         {
-            int[,] prefabOverworld = new int[,] {
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,0,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,3,3,4,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,1,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,4,4,4,4,4,4,4,4,4,0,0,1,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,2,0,0,0,0,4,0,0,0,0},
-                {0,0,0,0,0,0,4,4,4,4,4,4,4,0,0,1,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,0},
-                {0,0,0,0,0,0,0,4,4,4,4,4,4,0,0,1,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,0},
-                {0,0,0,0,0,0,0,0,4,4,4,4,4,0,0,1,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,4,4,4,4,0,0,0,0,4,4,4,4,4,4,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,3,3,0,0,0,0,0,0,4,4,4,4,4,4,4,1,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,0},
-                {0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,3,3,0,0,0,0,0,4,4,4,4,4,4,4,4,1,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4},
-                {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,3,3,0,0,0,4,4,4,4,4,4,4,4,4,4,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,4,4,3,0,0,0,4,4,4,4,4,4,4,4,4,4,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,1,0,0,0,0,4,4,4,4,4,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,1,0,0,0,4,4,0,4,4,4,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0},
-                {0,0,0,0,0,0,0,0,1,1,1,1,2,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,4,4,4,4,4,4,0,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,4,4,4,4,4,4,4,0,0,0,0,3,3,3,3,3,3,3,0,3,3,0,0,0,0,3},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,1,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,4,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,1,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,0,0,1,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,4,4,4,4,4,4,4,4,4,4,0,0,0,0,3,3,3,3,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,0,0,1,0,0,0,0,4,4,4,4,4,4,0,0,0,0,0,0,3,3,3,3,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,0,0,0,2,0,0,0,0,0},
-                {0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,4,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,4,4,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,4,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            };
+
+            int [,] map = new int[lm.levelWidth,lm.levelHeight];
+
+            for (int x = 0; x < lm.levelWidth; x++)
+            {
+                for (int y = 0; y < lm.levelHeight; y++)
+                {
+                    map[x,y] = 0;
+                }
+            }
+
+            int poiCount = 4;
+            List<RepelNode> poi = new List<RepelNode>();
+            poi.Add(
+                // I
+                new RepelNode(
+                            Random.Range(lm.levelWidth/2,lm.levelWidth),
+                            Random.Range(lm.levelHeight/2,lm.levelHeight),
+                            20,
+                            lm.levelWidth,
+                            lm.levelHeight
+            ));
+            poi.Add(
+                // II
+                new RepelNode(
+                            Random.Range(0,lm.levelWidth/2),
+                            Random.Range(lm.levelHeight/2,lm.levelHeight),
+                            20,
+                            lm.levelWidth,
+                            lm.levelHeight
+            ));
+            poi.Add(
+                // III
+                new RepelNode(
+                            Random.Range(0,lm.levelWidth/2),
+                            Random.Range(0,lm.levelHeight/2),
+                            20,
+                            lm.levelWidth,
+                            lm.levelHeight
+            ));
+            poi.Add(
+                // IV
+                new RepelNode(
+                            Random.Range(lm.levelWidth/2,lm.levelWidth),
+                            Random.Range(0,lm.levelHeight/2),
+                            20,
+                            lm.levelWidth,
+                            lm.levelHeight
+            ));
+            while (poi.Count < poiCount)
+            {
+                poi.Add(new RepelNode(
+                            Random.Range(0,lm.levelWidth),
+                            Random.Range(0,lm.levelHeight),
+                            20,
+                            lm.levelWidth,
+                            lm.levelHeight
+                ));
+            }
+
+            float minDistance = 0;
+            int tries = 0; // safety valve
+
+            while (minDistance < 20 && tries < 100)
+            {
+                tries++;
+                minDistance = 9999;
+                for (int i = 0; i < poi.Count; i++)
+                {
+                    for (int j = 0; j < poi.Count; j++)
+                    {
+                        if (i != j)
+                        {
+                            RepelNode a = poi[i];
+                            RepelNode b = poi[j];
+                            if (i != j)
+                            {
+                                a.Repel(b);
+                                float d = a.DistanceToNode(b);
+                                if (d < minDistance)
+                                    minDistance = d;
+                            }
+                        }
+                    }
+                }
+            }
+
+            List<RepelNode> secpoi = new List<RepelNode>();
+            for (int i = 0; i < 3; i++)
+            {
+                secpoi.Add(new RepelNode(
+                            Random.Range(0,lm.levelWidth),
+                            Random.Range(0,lm.levelHeight),
+                            20,
+                            lm.levelWidth,
+                            lm.levelHeight
+                ));
+            }
+            minDistance = 0;
+            tries = 0;
+
+            while (minDistance < 20 && tries < 100)
+            {
+                tries++;
+                minDistance = 9999;
+                for (int i = 0; i < secpoi.Count; i++)
+                {
+                    for (int j = 0; j < secpoi.Count; j++)
+                    {
+                        if (i != j)
+                        {
+                            RepelNode a = secpoi[i];
+                            RepelNode b = secpoi[j];
+                            if (i != j)
+                            {
+                                a.Repel(b);
+                                float d = a.DistanceToNode(b);
+                                if (d < minDistance)
+                                    minDistance = d;
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < secpoi.Count; i++)
+                {
+                    for (int j = 0; j < poi.Count; j++)
+                    {
+                        RepelNode a = secpoi[i];
+                        RepelNode b = poi[j];
+                        if (i != j)
+                        {
+                            a.Repel(b);
+                            float d = a.DistanceToNode(b);
+                            if (d < minDistance)
+                                minDistance = d;
+                        }
+                    }
+                }
+            }
+
+
+
+
+
+            for (int i = 0; i < poi.Count; i++)
+            {
+                map[poi[i].x,poi[i].y] = 2;
+            }
+
+            for (int i = 0; i < secpoi.Count; i++)
+            {
+                map[secpoi[i].x,secpoi[i].y] = 1;
+            }
+
+            foreach (RepelNode a in poi)
+            {
+                RepelNode b = a.FindNearest(secpoi);
+                // this is going to be a bit on the silly side as far as algorithms go, but time is of the essence
+                int x = a.x;
+                int y = a.y;
+                if (Random.Range(0,2) == 0)
+                {
+                    tries = 0;
+                    while (y != b.y && tries < 1000)
+                    {
+                        tries++;
+                        y += ((y < b.y) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                    tries = 0;
+                    while (x != b.x && tries < 1000)
+                    {
+                        tries++;
+                        x += ((x < b.x) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                }
+                else
+                {
+                    tries = 0;
+                    while (x != b.x && tries < 1000)
+                    {
+                        tries++;
+                        x += ((x < b.x) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                    tries = 0;
+                    while (y != b.y && tries < 1000)
+                    {
+                        tries++;
+                        y += ((y < b.y) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                }
+            }
+
+            for (int i = 0; i < secpoi.Count - 1; i++)
+            {
+                RepelNode a = secpoi[i];
+                RepelNode b = secpoi[i + 1];
+                int x = a.x;
+                int y = a.y;
+                if (Random.Range(0,2) == 0)
+                {
+                    tries = 0;
+                    while (y != b.y && tries < 1000)
+                    {
+                        tries++;
+                        y += ((y < b.y) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                    tries = 0;
+                    while (x != b.x && tries < 1000)
+                    {
+                        tries++;
+                        x += ((x < b.x) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                }
+                else
+                {
+                    tries = 0;
+                    while (x != b.x && tries < 1000)
+                    {
+                        tries++;
+                        x += ((x < b.x) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                    tries = 0;
+                    while (y != b.y && tries < 1000)
+                    {
+                        tries++;
+                        y += ((y < b.y) ? 1 : -1);
+                        if (map[x,y] == 0)
+                            map[x,y] = 1;
+                    }
+                }
+            }
+
+            // erode roads
+            bool eroded = true;
+            while (eroded == true)
+            {
+                eroded = false;
+                for (int x = 1; x < lm.levelWidth-1; x++)
+                {
+                    for (int y = 1; y < lm.levelHeight-1; y++)
+                    {
+                        if (map[x,y] == 1)
+                        {
+                            int roadcount = 0;
+                            for (int x1 = x-1; x1 < x+2; x1++)
+                            {
+                                for (int y1 = y-1; y1 < y+2; y1++)
+                                {
+                                    if (map[x1,y1] == 1 || map[x1,y1] == 2)
+                                        roadcount++;
+                                }
+                            }
+                            if (roadcount > 5 || roadcount < 3)
+                            {
+                                map[x,y] = 0;
+                                eroded = true;
+                            }
+                            else if (roadcount <= 4)
+                            {
+                                int orthoroadcount = 0;
+                                if (map[x-1,y] == 1)
+                                    orthoroadcount++;
+                                if (map[x+1,y] == 1)
+                                    orthoroadcount++;
+                                if (map[x,y-1] == 1)
+                                    orthoroadcount++;
+                                if (map[x,y+1] == 1)
+                                    orthoroadcount++;
+                                if (map[x-1,y] == 2)
+                                    orthoroadcount++;
+                                if (map[x+1,y] == 2)
+                                    orthoroadcount++;
+                                if (map[x,y-1] == 2)
+                                    orthoroadcount++;
+                                if (map[x,y+1] == 2)
+                                    orthoroadcount++;
+                                if (orthoroadcount < 2)
+                                {
+                                    map[x,y] = 0;
+                                    eroded = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // now scatter some seeds
+            for (int i = 0; i < 6; i++)
+            {
+                int x = Random.Range(0,lm.levelWidth);
+                int y = Random.Range(0,lm.levelHeight);
+                if (map[x,y] == 0)
+                    map[x,y] = 3;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                int x = Random.Range(0,lm.levelWidth);
+                int y = Random.Range(0,lm.levelHeight);
+                if (map[x,y] == 0)
+                    map[x,y] = 4;
+            }
+
+            // and let our weaksauce CA do its job
+            for (int pass = 0; pass < 8; pass++)
+            {
+                int[,] newmap = (int[,]) map.Clone();
+                for (int x = 0; x < lm.levelWidth; x++)
+                {
+                    for (int y = 0; y < lm.levelHeight; y++)
+                    {
+                        if (map[x,y] == 0)
+                        {
+                            int treecount  = 0;
+                            int watercount = 0;
+                            int citycount  = 0;
+                            for (int x1 = x - 1; x1 < x + 2; x1++)
+                            {
+                                for (int y1 = y - 1; y1 < y + 2; y1++)
+                                {
+                                    if (x1 > 0 && x1 < lm.levelWidth && y1 > 0 && y1 < lm.levelHeight)
+                                    {
+                                        switch (map[x1,y1])
+                                        {
+                                            case 2:
+                                                citycount += 1;
+                                                break;
+                                            case 3:
+                                                watercount += 1;
+                                                break;
+                                            case 4:
+                                                treecount += 1;
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
+                            if (watercount > 2)
+                                newmap[x,y] = 3;
+                            else if (treecount > 2)
+                                newmap[x,y] = 4;
+                            else if (treecount > 0 && Random.Range(0,3) == 0)
+                                newmap[x,y] = 4;
+                            else if (watercount > 0 && Random.Range(0,4) == 0)
+                                newmap[x,y] = 3;
+                            else if (citycount > 0 && Random.Range(0,50) == 0)
+                                newmap[x,y] = 4;
+                            else if (citycount > 0 && Random.Range(0,50) == 0)
+                                newmap[x,y] = 3;
+                        }
+                    }
+                }
+                map = (int[,]) newmap.Clone();
+            }
 
             for (int x = 0; x < lm.levelWidth; x++)
             {
@@ -75,8 +457,7 @@ namespace ThugSimpleGame {
                     TerrainEntity terrain = new TerrainEntity();
                     terrain.index         = lm.gm.entity.RegisterEntity(terrain);
                     terrain.SetCell(cell);
-                    switch (prefabOverworld[49 - y,x])
-                    //switch (prefabOverworld[lm.levelHeight - y - 1,x])
+                    switch (map[x,y])
                     {
                         case 0:
                             terrain.hindrance        = 0f;
@@ -114,26 +495,26 @@ namespace ThugSimpleGame {
         }
         public override void PostProcess()
         {
-            lm.entity.GetCell(5,39).AddActionCallback("_enter", delegate(Entity e)
-            {
-                lm.gm.ActivateCircus();
-                return false;
-            });
-            lm.entity.GetCell(40,36).AddActionCallback("_enter", delegate(Entity e)
-            {
-                lm.gm.ActivateCircus();
-                return false;
-            });
-            lm.entity.GetCell(12,23).AddActionCallback("_enter", delegate(Entity e)
-            {
-                lm.gm.ActivateCircus();
-                return false;
-            });
-            lm.entity.GetCell(44,15).AddActionCallback("_enter", delegate(Entity e)
-            {
-                lm.gm.ActivateCircus();
-                return false;
-            });
+//            lm.entity.GetCell(5,39).AddActionCallback("_enter", delegate(Entity e)
+//            {
+//                lm.gm.ActivateCircus();
+//                return false;
+//            });
+//            lm.entity.GetCell(40,36).AddActionCallback("_enter", delegate(Entity e)
+//            {
+//                lm.gm.ActivateCircus();
+//                return false;
+//            });
+//            lm.entity.GetCell(12,23).AddActionCallback("_enter", delegate(Entity e)
+//            {
+//                lm.gm.ActivateCircus();
+//                return false;
+//            });
+//            lm.entity.GetCell(44,15).AddActionCallback("_enter", delegate(Entity e)
+//            {
+//                lm.gm.ActivateCircus();
+//                return false;
+//            });
         }
 
 

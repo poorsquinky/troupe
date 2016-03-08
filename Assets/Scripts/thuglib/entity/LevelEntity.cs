@@ -27,7 +27,6 @@ namespace ThugLib
             string[] lines = serialFields["cells"].Split(new[] {"<<CELLLINE>>"}, StringSplitOptions.None);
             foreach (string line in lines)
             {
-//                Debug.Log(line);
                 string[] entry = line.Split(new[] {"<<CELLDELIMIT>>"}, StringSplitOptions.None);
                 string[] coords = entry[0].Split(',');
                 int x = Convert.ToInt32(coords[0]);
