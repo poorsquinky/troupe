@@ -139,8 +139,23 @@ namespace ThugSimpleGame {
 
         public override void PostProcess()
         {
+
+            CellEntity gateTriggerCell = lm.entity.GetCell(25,42);
+            gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
+                    {
+                        lm.gm.CallbackMenu(
+                            "This is the signpost.  It will be used for fast travel.",
+                            new[] {
+                                new GameManagerScript.MenuCallback("Exit to world map", delegate() { lm.gm.ActivateOverworld(); }),
+                                new GameManagerScript.MenuCallback("Never mind", delegate() { return; })
+                            }
+                        );
+                        return false;
+                    });
+
+
             // entryway trigger
-            CellEntity gateTriggerCell = lm.entity.GetCell(25,46);
+            gateTriggerCell = lm.entity.GetCell(25,46);
             gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
                     {
                         ActorEntity actor = e as ActorEntity;
