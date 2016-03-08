@@ -147,6 +147,7 @@ namespace ThugSimpleGame {
                             "This is the signpost.  It will be used for fast travel.",
                             new[] {
                                 new GameManagerScript.MenuCallback("Exit to world map", delegate() { lm.gm.ActivateOverworld(); }),
+                                new GameManagerScript.MenuCallback("Try a nearby office building", delegate() { lm.gm.ActivateOffice("foo"); }),
                                 new GameManagerScript.MenuCallback("Never mind", delegate() { return; })
                             }
                         );

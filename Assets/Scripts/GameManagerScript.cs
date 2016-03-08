@@ -21,6 +21,7 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject dungeonLevelManagerPrefab;
     public GameObject circusLevelManagerPrefab;
     public GameObject overworldLevelManagerPrefab;
+    public GameObject officeLevelManagerPrefab;
 
     [HideInInspector]
     public bool menuActive = false;
@@ -76,8 +77,8 @@ public class GameManagerScript : MonoBehaviour {
 
     public void UpdateOverworldCoords(int x, int y)
     {
-//        overworldX = x;
-//        overworldY = y;
+        overworldX = x;
+        overworldY = y;
     }
 
     void CheckRefs()
@@ -413,6 +414,26 @@ public class GameManagerScript : MonoBehaviour {
             }
         }
     }
+
+    public void ActivateOffice(string officeName)
+    {
+        if (lm)
+            lm.Deactivate();
+        if (! lmDict.ContainsKey("office_" + officeName))
+        {
+            GameObject l = Instantiate(officeLevelManagerPrefab) as GameObject;
+            lm = l.GetComponent<LevelManagerScript>();
+            lm.init_office();
+            lmDict["office_" + officeName] = lm;
+        }
+        else
+        {
+            lm = lmDict["office_" + officeName];
+        }
+        lm.Activate();
+        RefreshTiles();
+    }
+
 
     public void ActivateCircus()
     {

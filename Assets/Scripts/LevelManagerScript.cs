@@ -275,6 +275,19 @@ public class LevelManagerScript : MonoBehaviour {
         init_common(10,10);
     }
 
+    public void init_office() {
+        levelWidth=50;
+        levelHeight=50;
+        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+        this.entity.index = gm.entity.RegisterEntity(this.entity);
+
+        mapman = new TroupeOfficeMapManager(this);
+
+        mapman.Generate();
+        mapman.PostProcess();
+        init_common();
+    }
+
     public void init_circus() {
         levelWidth=50;
         levelHeight=50;
