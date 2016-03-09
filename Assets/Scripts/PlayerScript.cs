@@ -66,21 +66,23 @@ public class PlayerScript : MonoBehaviour {
                 {
                     x += this.actor.entity.GetX();
                     y += this.actor.entity.GetY();
-                    actor.MoveTo(x,y);
-                    if (gm.IsOverworldActive())
-                        gm.UpdateOverworldCoords(x,y);
-                    // refresh nearby terrain sprites
-                    // FIXME: don't use hardcoded distance
-                    for (int i = Mathf.Max(0, x - 40); i < Mathf.Max(lm.levelWidth, x + 20); i++)
+                    if (actor.CanMoveTo(x,y))
                     {
-                        for (int j = Mathf.Max(0, y - 40); j < Mathf.Max(lm.levelHeight, y + 20); j++)
+                        actor.MoveTo(x,y);
+                        if (gm.IsOverworldActive())
+                            gm.UpdateOverworldCoords(x,y);
+                        // refresh nearby terrain sprites
+                        // FIXME: don't use hardcoded distance
+                        for (int i = Mathf.Max(0, x - 40); i < Mathf.Max(lm.levelWidth, x + 20); i++)
                         {
-                            GameObject tile = lm.GetTile(i,j);
-                            if (tile != null)
-                                tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
+                            for (int j = Mathf.Max(0, y - 40); j < Mathf.Max(lm.levelHeight, y + 20); j++)
+                            {
+                                GameObject tile = lm.GetTile(i,j);
+                                if (tile != null)
+                                    tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
+                            }
                         }
                     }
-
                 }
                 keyboardX = 0;
                 keyboardY = 0;

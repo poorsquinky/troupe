@@ -37,7 +37,6 @@ public class ActorScript : MonoBehaviour {
         return this.entity.GetY();
     }
 
-    // XXX delete
     public bool CanMoveTo (int x, int y)
     {
         lm = gm.lm;
@@ -47,8 +46,10 @@ public class ActorScript : MonoBehaviour {
                 return false;
             if ((y < 0) || (y >= lm.levelHeight))
                 return false;
-            if (lm.entity.GetCell(x,y).GetHindrance() < 1f)
+            CellEntity cell = lm.entity.GetCell(x,y);
+            if (cell.GetHindrance() < 1f && cell.GetActor() == null)
                 return true;
+
         }
         return false;
     }

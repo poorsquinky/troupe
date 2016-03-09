@@ -35,6 +35,8 @@ namespace ThugSimpleGame {
                         y += (int)body.transform.position.y;
                         if (body.actor.CanMoveTo(x,y))
                             canMove = true;
+                        else
+                            body.currentPath = null;
                     }
                 }
             }

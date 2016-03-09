@@ -43,15 +43,20 @@ namespace ThugSimpleGame {
             else
             {
                 body.brain["random"].active = false;
-                x = (int)body.transform.position.x + PathUtils.StepDX[(int)
-                   body.currentPath.Steps[body.currentPathStep]];
-                y = (int)body.transform.position.y + PathUtils.StepDY[(int)
-                   body.currentPath.Steps[body.currentPathStep]];
-                canMove = body.actor.CanMoveTo(x, y);
-                if (canMove)
+                if (body.lm.entity.GetCell(x,y).GetActor() == null)
                 {
-                    body.currentPathStep++;
-                    body.actor.MoveTo(x, y);
+                    x = (int)body.transform.position.x + PathUtils.StepDX[(int)
+                       body.currentPath.Steps[body.currentPathStep]];
+                    y = (int)body.transform.position.y + PathUtils.StepDY[(int)
+                       body.currentPath.Steps[body.currentPathStep]];
+                    canMove = body.actor.CanMoveTo(x, y);
+                    if (canMove)
+                    {
+                        body.currentPathStep++;
+                        body.actor.MoveTo(x, y);
+                    }
+                    else
+                        body.currentPath = null;
                 }
             }
         }
