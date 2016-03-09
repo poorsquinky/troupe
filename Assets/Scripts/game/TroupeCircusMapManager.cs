@@ -168,7 +168,15 @@ namespace ThugSimpleGame {
                         case "child":
                             actor.AddActionCallback("talk", delegate(Entity e)
                             {
-                                Debug.Log("Talked!");
+                                string[] messages = {
+                                    "\"Wow, are you with the circus?\"",
+                                    "\"Mom says I shouldn't talk to strangers.\"",
+                                    "\"Are you a bandit?\"",
+                                    "\"Are you a mutant?\"",
+                                    "\"Are you a mutant bandit?\"",
+                                    "\"The virus happened before I was born.  Everyone says things were better then.\""
+                                };
+                                lm.gm.Message(messages[Random.Range(0,messages.Length)]);
                                 return true;
                             });
                             break;

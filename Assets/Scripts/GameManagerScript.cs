@@ -156,8 +156,6 @@ public class GameManagerScript : MonoBehaviour {
 
     List<MenuCallback> menuCallbacks = new List<MenuCallback>();
 
-
-
     public void UpdateHelpDisplay()
     {
         if (actionCallbacks.Count == 0)
@@ -174,6 +172,13 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
+    public void DoAction()
+    {
+        if (actionCallbacks.Count == 0)
+            return;
+        else if (actionCallbacks.Count == 1)
+            actionCallbacks[0](playerScript.actor.entity);
+    }
 
     public void CallbackMenu(string header, MenuCallback[] callbacks)
     {
@@ -408,6 +413,12 @@ public class GameManagerScript : MonoBehaviour {
                 lm.playerTurn = false;
         });
 
+        // action menu
+        RegisterCallback("space", delegate(string e)
+        {
+            DoAction();
+        });
+
         // quit
         RegisterCallback("Q", delegate(string e)
         {
@@ -432,10 +443,6 @@ public class GameManagerScript : MonoBehaviour {
                     new MenuCallback("No", delegate() { return; })
                 }
             );
-        });
-        RegisterCallback("O", delegate(string e)
-        {
-            this.ActivateOverworld();
         });
     }
 
