@@ -31,6 +31,8 @@ public class GameManagerScript : MonoBehaviour {
     private GameObject ui_textoverlay;
     private GameObject ui_textcontent;
 
+    private GameObject ui_actioncontent;
+
     private GameObject ui_messagecontent;
     private string     ui_messagebuffer;
 
@@ -93,6 +95,7 @@ public class GameManagerScript : MonoBehaviour {
 
     void Awake()
     {
+        ui_actioncontent    = GameObject.Find("Text-top-left");
         ui_messagecontent = GameObject.Find("Text-bottom");
     }
 
@@ -136,7 +139,41 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
+    public List<string> actionCallbackText = new List<string>();
+
+    public List<Entity.CallbackDelegate> actionCallbacks = new List<Entity.CallbackDelegate>();
+
+    public void ClearActionCallbacks()
+    {
+        actionCallbackText.Clear();
+        actionCallbacks.Clear();
+    }
+    public void AddActionCallback(string txt, Entity.CallbackDelegate d)
+    {
+        actionCallbackText.Add(txt);
+        actionCallbacks.Add(d);
+    }
+
     List<MenuCallback> menuCallbacks = new List<MenuCallback>();
+
+
+
+    public void UpdateHelpDisplay()
+    {
+        if (actionCallbacks.Count == 0)
+        {
+            ui_actioncontent.GetComponent<Text>().text = "";
+        }
+        else if (actionCallbacks.Count == 1)
+        {
+            ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText[0] + "</color>";
+        }
+        else
+        {
+            ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText.Count + " actions available</color>";
+        }
+    }
+
 
     public void CallbackMenu(string header, MenuCallback[] callbacks)
     {

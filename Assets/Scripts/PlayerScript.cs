@@ -48,6 +48,28 @@ public class PlayerScript : MonoBehaviour {
 
     }
 
+    void Moved()
+    {
+        int x = this.actor.entity.GetX();
+        int y = this.actor.entity.GetY();
+        if (gm.IsOverworldActive())
+            gm.UpdateOverworldCoords(x,y);
+        // refresh nearby terrain sprites
+        // FIXME: don't use hardcoded distance
+        for (int i = Mathf.Max(0, x - 40); i < Mathf.Max(lm.levelWidth, x + 20); i++)
+        {
+            for (int j = Mathf.Max(0, y - 40); j < Mathf.Max(lm.levelHeight, y + 20); j++)
+            {
+                GameObject tile = lm.GetTile(i,j);
+                if (tile != null)
+                    tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
+            }
+        }
+        gm.ClearActionCallbacks();
+        gm.UpdateHelpDisplay();
+
+    }
+
     void FixedUpdate()
     {
         if (actor != null && !actor.moving)
@@ -59,6 +81,27 @@ public class PlayerScript : MonoBehaviour {
             }
             else if (lm.playerTurn && !gm.menuActive)
             {
+
+                gm.ClearActionCallbacks();
+                foreach (CellEntity cell in this.actor.entity.GetCell().GetNeighbors())
+                {
+                    ActorEntity a = cell.GetActor();
+                    if (a != null)
+                    {
+                        if (a.GetActionCallbacks("talk").Count > 0)
+                        {
+                            foreach (Entity.CallbackDelegate d in a.GetActionCallbacks("talk"))
+                            {
+                                gm.AddActionCallback(
+                                    "Talk to the " + a.shortDescription,
+                                    d
+                                );
+                            }
+                        }
+                    }
+                }
+                gm.UpdateHelpDisplay();
+
                 int x = keyboardX;
                 int y = keyboardY;
 
@@ -69,19 +112,7 @@ public class PlayerScript : MonoBehaviour {
                     if (actor.CanMoveTo(x,y))
                     {
                         actor.MoveTo(x,y);
-                        if (gm.IsOverworldActive())
-                            gm.UpdateOverworldCoords(x,y);
-                        // refresh nearby terrain sprites
-                        // FIXME: don't use hardcoded distance
-                        for (int i = Mathf.Max(0, x - 40); i < Mathf.Max(lm.levelWidth, x + 20); i++)
-                        {
-                            for (int j = Mathf.Max(0, y - 40); j < Mathf.Max(lm.levelHeight, y + 20); j++)
-                            {
-                                GameObject tile = lm.GetTile(i,j);
-                                if (tile != null)
-                                    tile.GetComponent<ShapeTerrainScript>().ExternalUpdate();
-                            }
-                        }
+                        Moved();
                     }
                 }
                 keyboardX = 0;

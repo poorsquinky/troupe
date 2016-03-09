@@ -135,20 +135,46 @@ namespace ThugSimpleGame {
             doorEntity.shortDescription = "a locked city gate";
             doorEntity.SetCell(lm.entity.GetCell(xx,yy));
 
-            for (int x = 20; x < 31; x++)
+            for (int x = 20; x < 31; x += 4)
             {
                 // one monkey
                 ActorEntity monkey = new ActorEntity();
+                monkey.shortDescription  = "monkey";
                 monkey.attrs["sprite"]  = "monkey";
                 monkey.attrs["hostile"] = "false";
-                monkey.attrs["brain"]   = "random";
+                monkey.attrs["npcType"] = "monkey";
                 lm.entity.GetCell(x,38).ActorForceEnter(monkey);
             }
+
+            // some children
+            ActorEntity c = new ActorEntity();
+            c.shortDescription = "child";
+            c.attrs["sprite"]  = "child";
+            c.attrs["hostile"] = "false";
+            c.attrs["npcType"] = "child";
+            lm.entity.GetCell(25,41).ActorForceEnter(c);
 
         }
 
         public override void PostProcess()
         {
+
+            foreach (ActorEntity actor in lm.entity.GetAllActors())
+            {
+                if (actor.attrs.ContainsKey("npcType"))
+                {
+                    switch(actor.attrs["npcType"])
+                    {
+                        case "child":
+                            actor.AddActionCallback("talk", delegate(Entity e)
+                            {
+                                Debug.Log("Talked!");
+                                return true;
+                            });
+                            break;
+                    }
+                }
+            }
 
             CellEntity gateTriggerCell = lm.entity.GetCell(25,42);
             gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)

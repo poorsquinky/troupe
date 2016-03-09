@@ -44,6 +44,11 @@ namespace ThugLib
             return false;
         }
 
+        public CellEntity GetCell()
+        {
+            return this.parent as CellEntity;
+        }
+
         public ActorEntity()
         {
             this.SetEntityType("Actor");

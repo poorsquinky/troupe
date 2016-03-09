@@ -61,6 +61,27 @@ namespace ThugLib
             serialFields["cells"] = s;
         }
 
+        public List<CellEntity> GetAllCells()
+        {
+            List<CellEntity> c = new List<CellEntity>();
+            for (int x = 0; x < this.cells.Length; x++)
+                for (int y = 0; y < this.cells[x].Length; y++)
+                    c.Add(this.cells[x][y]);
+            return c;
+        }
+
+        public List<ActorEntity> GetAllActors()
+        {
+            List<ActorEntity> actors = new List<ActorEntity>();
+            foreach (CellEntity cell in this.GetAllCells())
+            {
+                ActorEntity actor = cell.GetActor();
+                if (actor != null)
+                    actors.Add(actor);
+            }
+            return actors;
+        }
+
         public CellEntity GetCell(int x, int y)
         {
             if ( x >= 0 && y >= 0

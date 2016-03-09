@@ -206,6 +206,11 @@ namespace ThugLib
             this.parent_index = parent.index;
         }
 
+        public LevelEntity GetLevel()
+        {
+            return this.parent as LevelEntity;
+        }
+
         public float GetOpacity()
         {
             if (this.terrain != null)
@@ -227,6 +232,23 @@ namespace ThugLib
         public bool Visible()
         {
             return (GetOpacity() < 1f);
+        }
+
+        public List<CellEntity> GetNeighbors()
+        {
+
+            int w = this.GetLevel().GetW();
+            int h = this.GetLevel().GetH();
+            List<CellEntity> c = new List<CellEntity>();
+            for (int xx = this.x - 1; xx <= this.x + 1; xx++)
+            {
+                for (int yy = this.y - 1; yy <= this.y + 1; yy++)
+                {
+                    if (xx >= 0 && xx < w && y >= 0 && y < h && (xx != this.x || yy != this.y))
+                        c.Add(this.GetLevel().GetCell(xx,yy));
+                }
+            }
+            return c;
         }
 
     }
