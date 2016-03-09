@@ -135,12 +135,15 @@ namespace ThugSimpleGame {
             doorEntity.shortDescription = "a locked city gate";
             doorEntity.SetCell(lm.entity.GetCell(xx,yy));
 
-            // one monkey
-            ActorEntity monkey = new ActorEntity();
-            monkey.attrs["sprite"]  = "monkey";
-            monkey.attrs["hostile"] = "false";
-            monkey.attrs["brain"]   = "random";
-            lm.entity.GetCell(25,38).ActorForceEnter(monkey);
+            for (int x = 20; x < 31; x++)
+            {
+                // one monkey
+                ActorEntity monkey = new ActorEntity();
+                monkey.attrs["sprite"]  = "monkey";
+                monkey.attrs["hostile"] = "false";
+                monkey.attrs["brain"]   = "random";
+                lm.entity.GetCell(x,38).ActorForceEnter(monkey);
+            }
 
         }
 
@@ -150,6 +153,9 @@ namespace ThugSimpleGame {
             CellEntity gateTriggerCell = lm.entity.GetCell(25,42);
             gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
                     {
+                        ActorEntity actor = e as ActorEntity;
+                        if (actor.isPlayer != true)
+                            return false;
                         lm.gm.CallbackMenu(
                             "This is the signpost.  It will be used for fast travel.",
                             new[] {
@@ -186,6 +192,9 @@ namespace ThugSimpleGame {
             {
                 lm.entity.GetCell(x,0).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateOverworld();
                     return false;
                 });
@@ -194,11 +203,17 @@ namespace ThugSimpleGame {
             {
                 lm.entity.GetCell(0,y).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateOverworld();
                     return false;
                 });
                 lm.entity.GetCell(lm.levelWidth - 1,y).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateOverworld();
                     return false;
                 });

@@ -503,6 +503,9 @@ namespace ThugSimpleGame {
             {
                 lm.entity.GetCell(poi.x,poi.y).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateCircus();
                     return false;
                 });

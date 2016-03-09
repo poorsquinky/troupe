@@ -405,9 +405,9 @@ public class LevelManagerScript : MonoBehaviour {
             ActorScript actor = npc.GetComponent<ActorScript>();
             int x = actor.GetX();
             int y = actor.GetY();
-            npc.GetComponent<SpriteRenderer>().enabled = true;
-//            npc.GetComponent<SpriteRenderer>().enabled = 
-//               (latestVisibility[x][y] == 1);
+//            npc.GetComponent<SpriteRenderer>().enabled = true;
+            npc.GetComponent<SpriteRenderer>().enabled = 
+               (latestVisibility[x][y] == 1);
         }
 
         // load the current player visibility map into the tileGrid

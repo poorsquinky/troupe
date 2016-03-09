@@ -155,11 +155,17 @@ namespace ThugSimpleGame {
             {
                 lm.entity.GetCell(x,0).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateCircus();
                     return false;
                 });
                 lm.entity.GetCell(x,lm.levelHeight - 1).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateCircus();
                     return false;
                 });
@@ -168,11 +174,17 @@ namespace ThugSimpleGame {
             {
                 lm.entity.GetCell(0,y).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateCircus();
                     return false;
                 });
                 lm.entity.GetCell(lm.levelWidth - 1,y).AddActionCallback("_enter", delegate(Entity e)
                 {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
                     lm.gm.ActivateCircus();
                     return false;
                 });
