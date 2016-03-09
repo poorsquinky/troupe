@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
 
-/*
 namespace ThugSimpleGame {
     public class NPCPatrolBrain: NPCBrain {
         // scratch arrays
@@ -57,10 +56,16 @@ namespace ThugSimpleGame {
                 dijkstraMap = MathUtils.Int2DArray(
                    body.lm.levelWidth, body.lm.levelHeight, 0);
             }
-            PathUtils.CalculateBresenhamProductsToRectangle(x, y,
-               body.lm.map, visibleRectangle, (previous, tile) =>
-               ((previous == 0 || !((MapSpaceType)tile).transparent) ?
-               0 : 1), 1, false, true, latestVisibility);
+            PathUtils.CalculateBresenhamProductsToRectangle(
+                    fromX: x,
+                    fromY: y,
+                    map: body.lm.map,
+                    rectangle: visibleRectangle,
+                    update: (previous, cell) => ((previous == 0 || !((CellEntity)cell).Visible()) ? 0 : 1),
+                    startingProduct: 1,
+                    includeFirstSquare: false,
+                    includeLastSquare: true,
+                    outputMap: latestVisibility);
             for (int i = xMin; i <= xMax; i++)
             {
                 for (int j = yMin; j <= yMax; j++)
@@ -78,7 +83,7 @@ namespace ThugSimpleGame {
             {
                 float laziness = 0.2f * ((float)parameters["laziness"]);
                 PathUtils.CalculateDijkstraMap(x, y, 
-                   null, (mx, my) => body.lm.map[mx][my].passable, null,
+                   null, (mx, my) => body.lm.map[mx][my].Passable(), null,
                    (mx, my, d) => (((int)d) % 2 == 1) ? 7 : 5,
                    dijkstraMap, body.lm.fullMapBounds, -1);
                 int oldestTick = currentTick;
@@ -88,7 +93,7 @@ namespace ThugSimpleGame {
                 {
                     for (int j = 0; j < body.lm.levelHeight; j++)
                     {
-                        if (body.lm.map[i][j].transparent &&
+                        if (body.lm.map[i][j].Visible() &&
                             map[i][j] < oldestTick &&
                             dijkstraMap[i][j] != -1)
                         {
@@ -103,7 +108,7 @@ namespace ThugSimpleGame {
                 if (oldestX != -1)
                 {
                     body.currentPath = PathUtils.BFSPath(x, y, oldestX, oldestY,
-                       null, (mx, my) => body.lm.map[mx][my].passable, null,
+                       null, (mx, my) => body.lm.map[mx][my].Passable(), null,
                        (mx, my, d) => (((int)d) % 2 == 1) ? 7 : 5,
                        body.lm.fullMapBounds);
                     body.currentPathStep = 0;
@@ -131,4 +136,3 @@ namespace ThugSimpleGame {
         }
     }
 }
-*/

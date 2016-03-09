@@ -52,11 +52,23 @@ public class LevelManagerScript : MonoBehaviour {
     public List<namedGameObject> gameObjectTypes;
     public Dictionary<string, GameObject> gameObjects = new Dictionary<string, GameObject>();
 
+    [System.Serializable]
+    public struct spriteEntry
+    {
+        public string name;
+        public Sprite neutral;
+        public Sprite hostile;
+    }
+    public List<spriteEntry> spriteEntries;
+    public Dictionary<string, Sprite[]> sprites = new Dictionary<string, Sprite[]>();
 
     void Awake ()
     {
         foreach (namedGameObject go in gameObjectTypes)
             gameObjects[go.name] = go.gameObject;
+
+        foreach (spriteEntry go in spriteEntries)
+            sprites[go.name] = new Sprite[] { go.neutral, go.hostile };
 
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
@@ -221,14 +233,14 @@ public class LevelManagerScript : MonoBehaviour {
 
         PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
         playerScript.lm = this;
-        playerScript.ForceMoveTo(10,10);
+        playerScript.ForceMoveTo(25,40);
 
         this.active = true;
     }
 
     void init_common()
     {
-        init_common(10,10);
+        init_common(25,40);
     }
 
     void init_common(int player_x, int player_y) {
@@ -243,6 +255,48 @@ public class LevelManagerScript : MonoBehaviour {
         scheduleOutbox.Add(playersched);
     }
 
+    void ProcessNPCs()
+    {
+        // FIXME should be able to do a tag search here instead
+        for (int x = 0; x < levelWidth; x++)
+        {
+            for (int y = 0; y < levelHeight; y++)
+            {
+                CellEntity cell         = this.entity.GetCell(x,y);
+                ActorEntity actorEntity = cell.GetActor();
+                if (actorEntity != null)
+                {
+                    GameObject npc    = Instantiate(npcPrefab);
+                    ActorScript actor = npc.GetComponent<ActorScript>();
+                    actor.entity      = actorEntity;
+                    actor.TeleportTo(x,y);
+                    npcs.Add(npc);
+
+                    Sprite sprite = sprites["person"][0];
+                    if (actorEntity.attrs.ContainsKey("sprite"))
+                    {
+                        string spriteName = actorEntity.attrs["sprite"];
+                        if (sprites.ContainsKey(spriteName))
+                        {
+                            if (actorEntity.attrs.ContainsKey("hostile") && actorEntity.attrs["hostile"] != "false")
+                            {
+                                sprite = sprites[actorEntity.attrs["sprite"]][1];
+                            }
+                            else
+                            {
+                                sprite = sprites[actorEntity.attrs["sprite"]][0];
+                            }
+                        }
+                    }
+                    actor.SetSprite(sprite);
+//            monkey.attrs["brain"]   = "random";
+
+                    ScheduleItem sched = new ScheduleItem(npc.GetComponent<NPCScript>().timeUnitsPerTurn, npc);
+                    scheduleOutbox.Add(sched);
+                }
+            }
+        }
+    }
 
     public void init_overworld() {
         levelWidth=50;
@@ -271,6 +325,7 @@ public class LevelManagerScript : MonoBehaviour {
         mapman = new TroupeOverworldMapManager(this);
         */
 
+        ProcessNPCs();
         mapman.PostProcess();
         init_common(10,10);
     }
@@ -297,6 +352,7 @@ public class LevelManagerScript : MonoBehaviour {
         mapman = new TroupeCircusMapManager(this);
 
         mapman.Generate();
+        ProcessNPCs();
         mapman.PostProcess();
         init_common();
     }
@@ -349,8 +405,9 @@ public class LevelManagerScript : MonoBehaviour {
             ActorScript actor = npc.GetComponent<ActorScript>();
             int x = actor.GetX();
             int y = actor.GetY();
-            npc.GetComponent<SpriteRenderer>().enabled = 
-               (latestVisibility[x][y] == 1);
+            npc.GetComponent<SpriteRenderer>().enabled = true;
+//            npc.GetComponent<SpriteRenderer>().enabled = 
+//               (latestVisibility[x][y] == 1);
         }
 
         // load the current player visibility map into the tileGrid
@@ -441,9 +498,7 @@ public class LevelManagerScript : MonoBehaviour {
             {
                 if (item.npc)
                 {
-                    /*
                     item.npc.GetComponent<NPCScript>().Move();
-                    */
                     item.speed = item.npc.GetComponent<NPCScript>().timeUnitsPerTurn;
                 }
                 else

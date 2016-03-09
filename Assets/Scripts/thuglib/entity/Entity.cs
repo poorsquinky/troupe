@@ -13,6 +13,10 @@ namespace ThugLib
         public Dictionary<string,string> serialFields = new Dictionary<string,string>();
 
         [SerializeField]
+        public string attrsString; // this name is almost as stupid as I am
+        public Dictionary<string,string> attrs = new Dictionary<string,string>();
+
+        [SerializeField]
         public string entityType = "NONE"; // we're abusing strings for a lot of these things for extensibility
 
         [SerializeField]
@@ -285,35 +289,49 @@ namespace ThugLib
             return o;
         }
 
-        public void Serialize()
+        // I hate C# right about now
+        public string CheeseDict(Dictionary<string,string> dict)
         {
-            // I hate C# right about now
-            this.SerializeFields();
             string s = "";
             bool first = true;
-            foreach (KeyValuePair<string,string> entry in serialFields)
+            foreach (KeyValuePair<string,string> entry in dict)
             {
                 if (!first)
                     s = s + "<<FL>>";
                 s = s + entry.Key + "<<FD>>" + entry.Value;
                 first = false;
             }
-            this.serialFieldsString = CheesyEscape(s);
+            return CheesyEscape(s);
         }
-        public void Deserialize()
+
+        public Dictionary<string,string> DeCheeseDict(string s)
         {
-            this.serialFields = new Dictionary<string,string>();
-            string[] lines = CheesyUnescape(this.serialFieldsString).Split(new[] {"<<FL>>"}, StringSplitOptions.None);
+            Dictionary<string,string> d = new Dictionary<string,string>();
+            string[] lines = CheesyUnescape(s).Split(new[] {"<<FL>>"}, StringSplitOptions.None);
             foreach (string line in lines)
             {
                 string[] entry = line.Split(new[] {"<<FD>>"}, StringSplitOptions.None);
                 if (entry.Length > 1)
-                    this.serialFields[entry[0]] = entry[1];
+                    d[entry[0]] = entry[1];
             }
+            return d;
+        }
+
+
+        public void Serialize()
+        {
+            this.SerializeFields();
+            this.serialFieldsString = CheeseDict(this.serialFields);
+            this.attrsString        = CheeseDict(this.attrs);
+        }
+        public void Deserialize()
+        {
+            this.serialFields = DeCheeseDict(this.serialFieldsString);
+            this.attrs        = DeCheeseDict(this.attrsString);
 
             // re-initialize some values that don't serialize
-            refreshDelegates = new List<RefreshDelegate>();
-            actionCallbacks  = new Dictionary<string, List<CallbackDelegate>>();
+            this.refreshDelegates = new List<RefreshDelegate>();
+            this.actionCallbacks  = new Dictionary<string, List<CallbackDelegate>>();
 
             this.DeserializeFields();
         }

@@ -23,6 +23,11 @@ public class ActorScript : MonoBehaviour {
         this.entity.index = gm.entity.RegisterEntity(this.entity);
     }
 
+    public void SetSprite(Sprite s)
+    {
+        GetComponent<SpriteRenderer>().sprite = s;
+    }
+
     public int GetX()
     {
         return this.entity.GetX();

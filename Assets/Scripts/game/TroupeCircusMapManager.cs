@@ -135,6 +135,13 @@ namespace ThugSimpleGame {
             doorEntity.shortDescription = "a locked city gate";
             doorEntity.SetCell(lm.entity.GetCell(xx,yy));
 
+            // one monkey
+            ActorEntity monkey = new ActorEntity();
+            monkey.attrs["sprite"]  = "monkey";
+            monkey.attrs["hostile"] = "false";
+            monkey.attrs["brain"]   = "random";
+            lm.entity.GetCell(25,38).ActorForceEnter(monkey);
+
         }
 
         public override void PostProcess()

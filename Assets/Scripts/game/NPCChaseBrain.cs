@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
 
-/*
 namespace ThugSimpleGame {
     public class NPCChaseBrain: NPCBrain {
 
@@ -26,7 +25,7 @@ namespace ThugSimpleGame {
                    (int)body.transform.position.x,
                    (int)body.transform.position.y,
                    (int)body.lm.GetPlayerX(), (int)body.lm.GetPlayerY(),
-                   null, (mx, my) => body.lm.map[mx][my].passable, null,
+                   null, (mx, my) => body.lm.map[mx][my].Passable(), null,
                    (mx, my, d) => (((int)d) % 2 == 1) ? 7 : 5,
                    body.lm.fullMapBounds);
                 body.currentPathStep = 0;
@@ -58,4 +57,3 @@ namespace ThugSimpleGame {
         }
     }
 }
-*/

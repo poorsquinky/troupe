@@ -5,8 +5,11 @@ using ThugLib;
 using ThugSimpleGame;
 
 public class NPCScript : MonoBehaviour {
+    [HideInInspector]
     public LevelManagerScript lm; // LevelManager
+    [HideInInspector]
     public GameManagerScript gm;
+    [HideInInspector]
     public ActorScript actor;
 
     public float timeUnitsPerTurn = 0.75f;
@@ -14,7 +17,15 @@ public class NPCScript : MonoBehaviour {
     public Path currentPath;
     public int currentPathStep;
 
-/*
+    void Awake ()
+    {
+        GameObject g = GameObject.Find("GameManager");
+        gm = g.GetComponent<GameManagerScript>();
+        lm = gm.lm;
+
+        this.actor = GetComponent<ActorScript>();
+    }
+
     public Dictionary<string,NPCBrain> brain;
 
     public void RunBrain()
@@ -39,37 +50,16 @@ public class NPCScript : MonoBehaviour {
         }
     }
 
-    void Awake ()
-    {
-        GameObject g = GameObject.Find("GameManager");
-        gm = g.GetComponent<GameManagerScript>();
-        lm = gm.lm;
-        this.actor = GetComponent<ActorScript>();
-    }
-
-    void PlaceMeRandomly ()
-    {
-        // FIXME: replace this with something less stabby-in-the-dark
-        int x = Random.Range(0,lm.levelWidth);
-        int y = Random.Range(0,lm.levelHeight);
-        while (!actor.CanMoveTo(x,y))
-        {
-            x = Random.Range(0,lm.levelWidth);
-            y = Random.Range(0,lm.levelHeight);
-        }
-        actor.TeleportTo(x,y);
-    }
-
+    /*
     void Start () {
-        PlaceMeRandomly();
         this.actor.entity.AddRefreshDelegate(delegate() {
             // TODO: have this do stuff
         });
     }
+    */
 
     public void Move ()
     {
         RunBrain();
     }
-    */
 }

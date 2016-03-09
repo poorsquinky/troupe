@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ThugLib;
 using ThugSimpleGame;
 
-/*
 namespace ThugSimpleGame {
     public abstract class NPCBrain {
         public Dictionary<string,object> parameters = new Dictionary<string,
@@ -20,4 +19,3 @@ namespace ThugSimpleGame {
         public abstract void Run();
     }
 }
-*/
