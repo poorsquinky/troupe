@@ -114,6 +114,16 @@ public class PlayerScript : MonoBehaviour {
                         actor.MoveTo(x,y);
                         Moved();
                     }
+                    else
+                    {
+                        CellEntity cell = lm.entity.GetCell(x,y);
+                        ActorEntity foe = cell.GetActor();
+                        if (foe != null)
+                        {
+                            lm.gm.Message("You attack the " + foe.shortDescription + "!");
+                            this.actor.Attack(foe);
+                        }
+                    }
                 }
                 keyboardX = 0;
                 keyboardY = 0;

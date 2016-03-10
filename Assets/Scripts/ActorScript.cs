@@ -29,6 +29,21 @@ public class ActorScript : MonoBehaviour {
         s.SetActor(this);
     }
 
+    public void Attack(ActorEntity foe)
+    {
+        if (! foe.stats.ContainsKey("hp"))
+        {
+            foe.stats["hp"] = 2;
+            foe.stats["mhp"] = 3;
+        }
+        else
+        {
+            foe.stats["hp"]--;
+            if (foe.stats["hp"] < 0)
+                foe.stats["hp"] = 0;
+        }
+    }
+
     public void SetSprite(Sprite s)
     {
         GetComponent<SpriteRenderer>().sprite = s;

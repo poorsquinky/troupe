@@ -42,34 +42,47 @@ public class StatusSpriteScript : MonoBehaviour {
                     Destroy(gameObject);
                     return false;
                 }
-                if (d % 4 == 0 && target != null)
+                if (target != null)
                 {
                     ActorEntity e = target.GetComponent<ActorScript>().entity;
-                    if (e.stats.ContainsKey("hp"))
+                    if (e.stats.ContainsKey("hp") && e.stats["hp"] < 1)
                     {
-                        int hp  = e.stats["hp"];
-                        if (e.stats.ContainsKey("mhp"))
+                        this.sprite.sprite  = healthSprites[0];
+                        this.sprite.enabled = true;
+                    }
+                    else if (d % 4 == 0)
+                    {
+                        if (e.stats.ContainsKey("hp"))
                         {
-                            int mhp = e.stats["mhp"];
-                            if (hp >= mhp)
-                                this.sprite.enabled = false;
+                            int hp  = e.stats["hp"];
+                            if (e.stats.ContainsKey("mhp"))
+                            {
+                                int mhp = e.stats["mhp"];
+                                if (hp >= mhp)
+                                    this.sprite.enabled = false;
+                                else
+                                {
+                                    this.sprite.enabled = true;
+                                    int idx = (int)( (float)healthSprites.Count / (mhp > 1? (float)mhp - 1f: 1f) * (float)hp );
+                                    if (idx < healthSprites.Count)
+                                        this.sprite.sprite = healthSprites[idx];
+                                    else
+                                        this.sprite.sprite = healthSprites[healthSprites.Count - 1];
+                                }
+                            }
                             else
                             {
                                 this.sprite.enabled = true;
-                                int idx = (int)( (float)healthSprites.Count / (mhp > 1? (float)mhp - 1f: 1f) * (float)hp );
-                                this.sprite.sprite = healthSprites[idx];
+                                this.sprite.sprite = healthSprites[(hp < healthSprites.Count? hp: healthSprites.Count - 1)];
                             }
                         }
                         else
                         {
-                            this.sprite.enabled = true;
-                            this.sprite.sprite = healthSprites[(hp < healthSprites.Count? hp: healthSprites.Count - 1)];
+                            this.sprite.enabled = false;
                         }
                     }
                     else
-                    {
                         this.sprite.enabled = false;
-                    }
                 }
                 else
                     this.sprite.enabled = false;

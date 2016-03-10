@@ -30,6 +30,8 @@ public class NPCScript : MonoBehaviour {
 
     public void RunBrain()
     {
+        if (actor.entity.stats.ContainsKey("hp") && actor.entity.stats["hp"] < 1)
+            return;
         if (brain == null)
         {
             brain = new Dictionary<string,NPCBrain>();
