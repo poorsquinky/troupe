@@ -13,6 +13,8 @@ public class ActorScript : MonoBehaviour {
 
     public ActorEntity entity = new ActorEntity();
 
+    StatusSpriteScript statusSprite;
+
     void Awake()
     {
         entity.isPlayer = true;
@@ -25,8 +27,8 @@ public class ActorScript : MonoBehaviour {
 
     void Start()
     {
-        StatusSpriteScript s = Instantiate(gm.statusSpritePrefab).GetComponent<StatusSpriteScript>();
-        s.SetActor(this);
+        statusSprite = Instantiate(gm.statusSpritePrefab).GetComponent<StatusSpriteScript>();
+        statusSprite.SetActor(this);
     }
 
     public void Attack(ActorEntity foe)
@@ -42,6 +44,42 @@ public class ActorScript : MonoBehaviour {
             if (foe.stats["hp"] < 0)
                 foe.stats["hp"] = 0;
         }
+
+        int x1 = this.entity.GetX();
+        int y1 = this.entity.GetY();
+        int x2 = foe.GetX();
+        int y2 = foe.GetY();
+
+        if (x1 == x2)
+        {
+            if (y1 < y2)
+                statusSprite.Attack(0);
+            else
+                statusSprite.Attack(4);
+        }
+        else if (y1 == y2)
+        {
+            if (x1 < x2)
+                statusSprite.Attack(2);
+            else
+                statusSprite.Attack(6);
+        }
+        else if (x1 < x2)
+        {
+            if (y1 < y2)
+                statusSprite.Attack(1);
+            else
+                statusSprite.Attack(3);
+        }
+        else if (x1 > x2)
+        {
+            if (y1 < y2)
+                statusSprite.Attack(7);
+            else
+                statusSprite.Attack(5);
+        }
+
+
     }
 
     public void SetSprite(Sprite s)

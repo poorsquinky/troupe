@@ -154,7 +154,7 @@ namespace ThugSimpleGame {
             {
                 // one baddie
                 ActorEntity person = new ActorEntity();
-                person.shortDescription  = "person";
+                person.shortDescription  = "bandit";
                 person.attrs["sprite"]  = "person";
                 person.attrs["hostile"] = "true";
                 person.attrs["npcType"] = "person";

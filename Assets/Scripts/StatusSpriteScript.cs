@@ -14,6 +14,8 @@ public class StatusSpriteScript : MonoBehaviour {
 
     public ActorScript target;
 
+    public float timeout = 0f;
+
     GameManagerScript gm;
 
     void Awake()
@@ -30,11 +32,70 @@ public class StatusSpriteScript : MonoBehaviour {
         target = a;
     }
 
+    public void FixedUpdate() {
+        if (timeout > 0f)
+        {
+            timeout -= Time.deltaTime;
+            if (timeout <= 0f)
+            {
+                timeout = 0f;
+                this.sprite.enabled = false;
+                transform.position = target.transform.position;
+            }
+        }
+    }
+
+    // attack in eight cardinal directions: 0=up, 1=NE, etc.
+    public void Attack(int direction)
+    {
+        Vector3 pos = target.transform.position;
+        this.sprite.sprite = attackSprites[direction];
+        this.sprite.enabled = true;
+        this.timeout = 0.33f;
+        switch(direction)
+        {
+            case 0:
+                pos.y += 0.66f;
+                break;
+            case 1:
+                pos.x += 0.66f;
+                pos.y += 0.66f;
+                break;
+            case 2:
+                pos.x += 0.66f;
+                break;
+            case 3:
+                pos.x += 0.66f;
+                pos.y -= 0.66f;
+                break;
+            case 4:
+                pos.y -= 0.66f;
+                break;
+            case 5:
+                pos.x -= 0.66f;
+                pos.y -= 0.66f;
+                break;
+            case 6:
+                pos.x -= 0.66f;
+                break;
+            case 7:
+                pos.x -= 0.66f;
+                pos.y += 0.66f;
+                break;
+            default:
+                Debug.Log("bad direction!");
+                break;
+        }
+        this.transform.position = pos;
+    }
+
     void Start()
     {
         this.sprite.sprite = healthSprites[6];
         gm.RegisterBlinkDelegate(delegate(int d)
             {
+                if (this.timeout > 0f)
+                    return true;
                 if (this == null)
                     return false;
                 if (target == null)

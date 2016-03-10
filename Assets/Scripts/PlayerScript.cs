@@ -120,8 +120,15 @@ public class PlayerScript : MonoBehaviour {
                         ActorEntity foe = cell.GetActor();
                         if (foe != null)
                         {
-                            lm.gm.Message("You attack the " + foe.shortDescription + "!");
-                            this.actor.Attack(foe);
+                            if (foe.attrs.ContainsKey("hostile") && foe.attrs["hostile"] == "true")
+                            {
+                                lm.gm.Message("You attack the " + foe.shortDescription + "!");
+                                this.actor.Attack(foe);
+                            }
+                            else
+                            {
+                                lm.gm.Message("You can't attack the " + foe.shortDescription + "!");
+                            }
                         }
                     }
                 }
