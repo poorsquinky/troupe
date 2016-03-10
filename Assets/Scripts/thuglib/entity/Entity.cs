@@ -17,6 +17,10 @@ namespace ThugLib
         public Dictionary<string,string> attrs = new Dictionary<string,string>();
 
         [SerializeField]
+        public string statsString;
+        public Dictionary<string,int> stats = new Dictionary<string,int>();
+
+        [SerializeField]
         public string entityType = "NONE"; // we're abusing strings for a lot of these things for extensibility
 
         [SerializeField]
@@ -317,6 +321,7 @@ namespace ThugLib
             return d;
         }
 
+        // XXX TODO FIXME -- no cheesedict for stats
 
         public void Serialize()
         {

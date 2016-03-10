@@ -23,6 +23,12 @@ public class ActorScript : MonoBehaviour {
         this.entity.index = gm.entity.RegisterEntity(this.entity);
     }
 
+    void Start()
+    {
+        StatusSpriteScript s = Instantiate(gm.statusSpritePrefab).GetComponent<StatusSpriteScript>();
+        s.SetActor(this);
+    }
+
     public void SetSprite(Sprite s)
     {
         GetComponent<SpriteRenderer>().sprite = s;

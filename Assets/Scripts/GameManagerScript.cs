@@ -23,6 +23,8 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject overworldLevelManagerPrefab;
     public GameObject officeLevelManagerPrefab;
 
+    public GameObject statusSpritePrefab;
+
     [HideInInspector]
     public bool menuActive = false;
 
@@ -49,8 +51,11 @@ public class GameManagerScript : MonoBehaviour {
 
     //public int overworldX = 6;
     //public int overworldY = 39;
+    [HideInInspector]
     public int overworldX = 10;
+    [HideInInspector]
     public int overworldY = 10;
+
 
     private const string helpText =
 @"<b>MOVEMENT:</b>
@@ -83,20 +88,45 @@ public class GameManagerScript : MonoBehaviour {
         overworldY = y;
     }
 
+    int blinkDelta = 0;
+    public delegate void BlinkDelegate(int delta);
+    public List<BlinkDelegate> blinkDelegates = new List<BlinkDelegate>();
+
+    public void RegisterBlinkDelegate(BlinkDelegate d)
+    {
+        blinkDelegates.Add(d);
+    }
+
+    public void DoBlinkDelegates()
+    {
+        blinkDelta++;
+        if (blinkDelta > 7)
+            blinkDelta = 0;
+        foreach (BlinkDelegate d in blinkDelegates)
+            d(blinkDelta);
+    }
+
     void CheckRefs()
     {
         GameObject l = GameObject.Find("LevelManager");
         if (l)
             lm = l.GetComponent<LevelManagerScript>();
-        GameObject p = GameObject.Find("player(Clone)");
-        if (p)
-            this.playerScript = p.GetComponent<PlayerScript>();
+        if (playerScript == null)
+        {
+            GameObject p = GameObject.Find("player(Clone)");
+            if (p)
+            {
+                this.playerScript    = p.GetComponent<PlayerScript>();
+            }
+        }
     }
 
     void Awake()
     {
         ui_actioncontent    = GameObject.Find("Text-top-left");
         ui_messagecontent = GameObject.Find("Text-bottom");
+
+        InvokeRepeating("DoBlinkDelegates", 1, 0.125f);
     }
 
     public void Message(string msg)
