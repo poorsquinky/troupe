@@ -237,6 +237,7 @@ public class LevelManagerScript : MonoBehaviour {
         PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
         playerScript.lm = this;
         playerScript.ForceMoveTo(25,40);
+        ProcessNPCs();
 
         this.active = true;
     }
@@ -267,7 +268,7 @@ public class LevelManagerScript : MonoBehaviour {
             {
                 CellEntity cell         = this.entity.GetCell(x,y);
                 ActorEntity actorEntity = cell.GetActor();
-                if (actorEntity != null)
+                if (actorEntity != null && actorEntity.isPlayer == false)
                 {
                     GameObject npc    = Instantiate(npcPrefab);
                     ActorScript actor = npc.GetComponent<ActorScript>();
@@ -355,7 +356,6 @@ public class LevelManagerScript : MonoBehaviour {
         mapman = new TroupeCircusMapManager(this);
 
         mapman.Generate();
-        ProcessNPCs();
         mapman.PostProcess();
         init_common();
     }
