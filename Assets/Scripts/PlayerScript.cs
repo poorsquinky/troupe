@@ -131,8 +131,18 @@ public class PlayerScript : MonoBehaviour {
                         {
                             if (foe.attrs.ContainsKey("hostile") && foe.attrs["hostile"] == "true")
                             {
-                                lm.gm.Message("You attack the " + foe.shortDescription + "!");
-                                this.actor.Attack(foe);
+                                if (foe.GetHP() == 0)
+                                {
+                                    lm.gm.Message("You can't attack the dead " + foe.shortDescription + "!");
+                                }
+                                else
+                                {
+                                    lm.gm.Message("You hit the " + foe.shortDescription + "!");
+                                    this.actor.Attack(foe);
+                                    if (foe.GetHP() < 1)
+                                        lm.gm.Message("You killed the " + foe.shortDescription + "!");
+                                    lm.playerTurn = false;
+                                }
                             }
                             else
                             {

@@ -37,7 +37,7 @@ public class NPCScript : MonoBehaviour {
             {
                 int oldHP = a.stats["hp"];
                 this.actor.Attack(a);
-                lm.gm.Message("The " + actor.entity.shortDescription + " attacks you!");
+                lm.gm.Message("The " + actor.entity.shortDescription + " hits you!");
                 int hp = a.stats["hp"];
                 if (hp < 1 && oldHP > 0)
                     lm.GetPlayer().killedBy = "a " + actor.entity.shortDescription;
@@ -51,7 +51,7 @@ public class NPCScript : MonoBehaviour {
     {
 
         bool attacked = false;
-        if (actor.entity.attrs.ContainsKey("hostile") && actor.entity.attrs["hostile"] == "true")
+        if (actor.entity.attrs.ContainsKey("hostile") && actor.entity.attrs["hostile"] == "true" && actor.entity.GetHP() > 0)
         {
             attacked = AttackCheck();
         }

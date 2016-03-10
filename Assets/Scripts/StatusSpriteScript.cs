@@ -101,7 +101,7 @@ public class StatusSpriteScript : MonoBehaviour {
                     return true;
                 if (this == null)
                     return false;
-                if (gm.lm.GetPlayer().actor.entity.stats["hp"] > 0)
+                if (gm.lm.GetPlayer().actor.entity.stats["hp"] <= 0)
                 {
                     this.sprite.enabled = false;
                     return false;

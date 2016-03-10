@@ -36,17 +36,10 @@ public class ActorScript : MonoBehaviour {
 
     public void Attack(ActorEntity foe)
     {
-        if (! foe.stats.ContainsKey("hp"))
-        {
-            foe.stats["hp"] = 2;
-            foe.stats["mhp"] = 3;
-        }
-        else
-        {
-            foe.stats["hp"]--;
-            if (foe.stats["hp"] < 0)
-                foe.stats["hp"] = 0;
-        }
+        foe.GetHP();
+        foe.stats["hp"]--;
+        if (foe.stats["hp"] < 0)
+            foe.stats["hp"] = 0;
 
         int x1 = this.entity.GetX();
         int y1 = this.entity.GetY();

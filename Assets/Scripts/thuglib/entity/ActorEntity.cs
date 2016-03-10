@@ -44,6 +44,16 @@ namespace ThugLib
             return false;
         }
 
+        public int GetHP()
+        {
+            if (!this.stats.ContainsKey("hp"))
+            {
+                this.stats["hp"]  = 3;
+                this.stats["mhp"] = 3;
+            }
+            return this.stats["hp"];
+        }
+
         public CellEntity GetCell()
         {
             return this.parent as CellEntity;
