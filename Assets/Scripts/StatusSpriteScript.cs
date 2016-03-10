@@ -35,6 +35,13 @@ public class StatusSpriteScript : MonoBehaviour {
         this.sprite.sprite = healthSprites[6];
         gm.RegisterBlinkDelegate(delegate(int d)
             {
+                if (this == null)
+                    return false;
+                if (target == null)
+                {
+                    Destroy(gameObject);
+                    return false;
+                }
                 if (d % 4 == 0 && target != null)
                 {
                     ActorEntity e = target.GetComponent<ActorScript>().entity;
@@ -66,6 +73,7 @@ public class StatusSpriteScript : MonoBehaviour {
                 }
                 else
                     this.sprite.enabled = false;
+                return true;
             }
         );
     }

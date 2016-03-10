@@ -224,6 +224,9 @@ public class LevelManagerScript : MonoBehaviour {
     public void Deactivate()
     {
         DestroySprites();
+        foreach (GameObject npc in npcs)
+            Destroy(npc);
+        npcs.Clear();
     }
 
     public void Activate()
@@ -465,12 +468,17 @@ public class LevelManagerScript : MonoBehaviour {
         public float speed;        // speed is expressed in Moves Per Arbitrary Time Unit
         public float timer;        // how much time is left before this item activates
         public GameObject npc;      // the NPC Script in question, or null if it's the player
+        public bool isPlayer;
 
         public ScheduleItem(float s, GameObject n)
         {
             speed = s;
             timer = s;
             npc   = n;
+            if (npc == null)
+                isPlayer = true;
+            else
+                isPlayer = false;
         }
     }
 
@@ -493,22 +501,25 @@ public class LevelManagerScript : MonoBehaviour {
         } else {
             ScheduleItem item = scheduleInbox[0];
             scheduleInbox.RemoveAt(0);
-            item.timer -= timeDecrement;
-            if (item.timer <= 0f)
+            if (item.isPlayer || (item.npc != null))
             {
-                if (item.npc)
+                item.timer -= timeDecrement;
+                if (item.timer <= 0f)
                 {
-                    item.npc.GetComponent<NPCScript>().Move();
-                    item.speed = item.npc.GetComponent<NPCScript>().timeUnitsPerTurn;
+                    if (item.npc)
+                    {
+                        item.npc.GetComponent<NPCScript>().Move();
+                        item.speed = item.npc.GetComponent<NPCScript>().timeUnitsPerTurn;
+                    }
+                    else
+                    {
+                        playerTurn = true;
+                        item.speed = gm.player.GetComponent<PlayerScript>().timeUnitsPerTurn;
+                    }
+                    item.timer += 1f / item.speed;
                 }
-                else
-                {
-                    playerTurn = true;
-                    item.speed = gm.player.GetComponent<PlayerScript>().timeUnitsPerTurn;
-                }
-                item.timer += 1f / item.speed;
+                scheduleOutbox.Add(item);
             }
-            scheduleOutbox.Add(item);
         }
     }
 

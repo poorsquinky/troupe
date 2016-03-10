@@ -68,9 +68,6 @@ public class PlayerScript : MonoBehaviour {
         gm.ClearActionCallbacks();
         gm.UpdateHelpDisplay();
 
-        this.actor.entity.stats["mhp"] = 8;
-        this.actor.entity.stats["hp"]  = 4;
-
     }
 
     void FixedUpdate()

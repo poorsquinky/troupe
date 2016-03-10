@@ -148,6 +148,20 @@ namespace ThugSimpleGame {
                 }
             }
 
+            // let's fill the level with baddies
+            //for (int x = 0; x < Random.Range(1,5) + Random.Range(1,5); x++)
+            for (int x = 0; x < 20; x++)
+            {
+                // one baddie
+                ActorEntity person = new ActorEntity();
+                person.shortDescription  = "person";
+                person.attrs["sprite"]  = "person";
+                person.attrs["hostile"] = "true";
+                person.attrs["npcType"] = "person";
+                lm.entity.GetCell(Random.Range(2,lm.levelWidth - 3),Random.Range(2,lm.levelHeight - 3)).ActorForceEnter(person);
+            }
+
+
         }
         public override void PostProcess()
         {

@@ -89,7 +89,7 @@ public class GameManagerScript : MonoBehaviour {
     }
 
     int blinkDelta = 0;
-    public delegate void BlinkDelegate(int delta);
+    public delegate bool BlinkDelegate(int delta);
     public List<BlinkDelegate> blinkDelegates = new List<BlinkDelegate>();
 
     public void RegisterBlinkDelegate(BlinkDelegate d)
@@ -99,11 +99,14 @@ public class GameManagerScript : MonoBehaviour {
 
     public void DoBlinkDelegates()
     {
+        List<BlinkDelegate> newDelegates = new List<BlinkDelegate>();
         blinkDelta++;
         if (blinkDelta > 7)
             blinkDelta = 0;
         foreach (BlinkDelegate d in blinkDelegates)
-            d(blinkDelta);
+            if (d(blinkDelta))
+                newDelegates.Add(d);
+        blinkDelegates = newDelegates;
     }
 
     void CheckRefs()
