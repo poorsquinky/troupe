@@ -35,12 +35,15 @@ public class StatusSpriteScript : MonoBehaviour {
     public void FixedUpdate() {
         if (timeout > 0f)
         {
-            timeout -= Time.deltaTime;
-            if (timeout <= 0f)
+            if (gm.lm.GetPlayer().actor.entity.stats["hp"] > 0)
             {
-                timeout = 0f;
-                this.sprite.enabled = false;
-                transform.position = target.transform.position;
+                timeout -= Time.deltaTime;
+                if (timeout <= 0f)
+                {
+                    timeout = 0f;
+                    this.sprite.enabled = false;
+                    transform.position = target.transform.position;
+                }
             }
         }
     }
@@ -98,6 +101,11 @@ public class StatusSpriteScript : MonoBehaviour {
                     return true;
                 if (this == null)
                     return false;
+                if (gm.lm.GetPlayer().actor.entity.stats["hp"] > 0)
+                {
+                    this.sprite.enabled = false;
+                    return false;
+                }
                 if (target == null)
                 {
                     Destroy(gameObject);

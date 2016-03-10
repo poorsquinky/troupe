@@ -19,6 +19,9 @@ public class ActorScript : MonoBehaviour {
     {
         entity.isPlayer = true;
 
+        entity.stats["hp"] = 8;
+        entity.stats["mhp"] = 8;
+
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
 

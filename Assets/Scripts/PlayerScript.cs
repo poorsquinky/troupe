@@ -70,8 +70,17 @@ public class PlayerScript : MonoBehaviour {
 
     }
 
+    public string killedBy = "something";
+
     void FixedUpdate()
     {
+        if (this.actor.entity.stats["hp"] <= 0)
+            gm.CallbackMenu(
+                "You were killed by " + killedBy + ".\nYou have 0 points because we have no points yet.",
+                new[] {
+                    new GameManagerScript.MenuCallback("Quit", delegate() { Application.Quit(); }),
+                }
+            );
         if (actor != null && !actor.moving)
         {
             if (wasMoving)

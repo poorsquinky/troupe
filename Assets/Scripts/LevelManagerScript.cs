@@ -374,13 +374,17 @@ public class LevelManagerScript : MonoBehaviour {
             return false;
         }
     }
+    public PlayerScript GetPlayer()
+    {
+        return gm.player.GetComponent<PlayerScript>();
+    }
     public int GetPlayerX()
     {
-        return gm.player.GetComponent<PlayerScript>().actor.GetX();
+        return GetPlayer().actor.GetX();
     }
     public int GetPlayerY()
     {
-        return gm.player.GetComponent<PlayerScript>().actor.GetY();
+        return GetPlayer().actor.GetY();
     }
     private bool[][] wasEverVisible = null;
 

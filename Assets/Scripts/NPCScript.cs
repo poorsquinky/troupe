@@ -28,27 +28,56 @@ public class NPCScript : MonoBehaviour {
 
     public Dictionary<string,NPCBrain> brain;
 
-    public void RunBrain()
+    bool AttackCheck()
     {
-        if (actor.entity.stats.ContainsKey("hp") && actor.entity.stats["hp"] < 1)
-            return;
-        if (brain == null)
+        foreach (CellEntity cell in actor.entity.GetCell().GetNeighbors())
         {
-            brain = new Dictionary<string,NPCBrain>();
-            int brainType = Random.Range(0, 3);
-            switch (brainType)
+            ActorEntity a = cell.GetActor();
+            if (a != null && a.isPlayer)
             {
-                case 0: brain["patrol"] = new NPCPatrolBrain(this); break;
-                case 1: brain["chase"] = new NPCChaseBrain(this); 
-                   brain["random"] = new NPCRandomBrain(this);
-                   brain["random"].active = false;
-                   break;
-                case 2: brain["random"] = new NPCRandomBrain(this); break;
+                int oldHP = a.stats["hp"];
+                this.actor.Attack(a);
+                lm.gm.Message("The " + actor.entity.shortDescription + " attacks you!");
+                int hp = a.stats["hp"];
+                if (hp < 1 && oldHP > 0)
+                    lm.GetPlayer().killedBy = "a " + actor.entity.shortDescription;
+                return true;
             }
         }
-        foreach (string s in brain.Keys)
+        return false;
+    }
+
+    public void RunBrain()
+    {
+
+        bool attacked = false;
+        if (actor.entity.attrs.ContainsKey("hostile") && actor.entity.attrs["hostile"] == "true")
         {
-            if (brain[s].active) brain[s].Run();
+            attacked = AttackCheck();
+        }
+
+        if (attacked == false)
+        {
+            if (actor.entity.stats.ContainsKey("hp") && actor.entity.stats["hp"] < 1)
+                return;
+            if (brain == null)
+            {
+                brain = new Dictionary<string,NPCBrain>();
+                int brainType = Random.Range(0, 3);
+                switch (brainType)
+                {
+                    case 0: brain["patrol"] = new NPCPatrolBrain(this); break;
+                    case 1: brain["chase"] = new NPCChaseBrain(this); 
+                       brain["random"] = new NPCRandomBrain(this);
+                       brain["random"].active = false;
+                       break;
+                    case 2: brain["random"] = new NPCRandomBrain(this); break;
+                }
+            }
+            foreach (string s in brain.Keys)
+            {
+                if (brain[s].active) brain[s].Run();
+            }
         }
     }
 
