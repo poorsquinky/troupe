@@ -163,10 +163,14 @@ public class ActorScript : MonoBehaviour {
             CellEntity cell           = this.entity.parent as CellEntity;
             GameObject corpse         = Instantiate(gm.itemPrefab) as GameObject;
             Vector3 pos               = new Vector3(cell.x,cell.y,0);
+            ItemEntity corpseEntity   = corpse.GetComponent<ItemScript>().entity;
             corpse.transform.position = pos;
 
+            corpseEntity.shortDescription = "corpse";
+            corpseEntity.longDescription = "the corpse of a " + entity.shortDescription;
+
             cell.ActorForceExit();
-            cell.AddItem(corpse.GetComponent<ItemScript>().entity);
+            cell.AddItem(corpseEntity);
             Destroy(this.gameObject);
             return;
         }
