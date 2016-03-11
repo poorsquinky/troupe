@@ -199,7 +199,7 @@ public class GameManagerScript : MonoBehaviour {
 
         if (IsOverworldActive())
         {
-            ui_actioncontent.GetComponent<Text>().text = "Food: " + playerScript.actor.entity.stats["food"];
+            ui_actioncontent.GetComponent<Text>().text = "Food: " + playerScript.actor.entity.stats["food"] + "  Performers: " + playerScript.CountPerformers();
         }
         else
         {

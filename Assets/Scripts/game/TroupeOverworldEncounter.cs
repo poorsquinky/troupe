@@ -22,27 +22,6 @@ namespace ThugLib
             "food spoiled",
             "bandits",
             "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
-            "disease",
         };
 
         string[] grassEncounters = {
@@ -98,7 +77,7 @@ namespace ThugLib
             "buffalo fight",
             "giant locust fight",
             "giant locust fight",
-            "performer - trickshooter",
+            "performer - knife thrower",
             "robot - household",
             "robot - military",
             "robot - military",
@@ -181,25 +160,28 @@ namespace ThugLib
 
             PlayerScript player = gm.playerScript;
 
+            string performerName;
+            string fullName;
+
             switch(selectedEncounter)
             {
                 case "bad water":
                     gm.Message("Bad water.  Everyone consumes an extra share of food.");
-                    player.SetFood(player.GetFood() - player.CountPerformers(), false);
+                    player.SetFood(player.GetFood() - player.FoodConsumption(), false);
                     break;
                 case "no water":
                     gm.Message("You have run out of water.  Everyone consumes an extra share of food.");
-                    player.SetFood(player.GetFood() - player.CountPerformers(), true);
-                    break;
-                case "bandits":
-                    break;
-                case "bear fight":
+                    player.SetFood(player.GetFood() - player.FoodConsumption(), true);
                     break;
                 case "berries":
-                    break;
-                case "buffalo fight":
+                    int bonusFood = player.CountPerformers() * Random.Range(2,4);
+                    gm.Message("You found some wild berries!  You and the performers collected " + bonusFood + " food.");
+                    player.SetFood(player.GetFood() + bonusFood);
                     break;
                 case "dead end":
+                    int foodDec = Mathf.Max(1, player.FoodConsumption() / 2);
+                    gm.Message("You came to a dead end on the trail and had to set up camp.  " + foodDec + " food was consumed.");
+                    player.SetFood(player.GetFood() - player.FoodConsumption(), false);
                     break;
                 case "disease":
                     string randomPerformer = player.RandomPerformer();
@@ -218,21 +200,52 @@ namespace ThugLib
                     }
                     break;
                 case "food spoiled":
+                    int food = player.GetFood();
+                    if (food > 0)
+                    {
+                        int s = (int)Mathf.Max((float)food * 0.2f, 1f);
+                        gm.Message(s + " food has spoiled.");
+                        player.SetFood(food - s);
+                    }
+                    break;
+                case "performer - acrobat":
+                    performerName = nameUtils.RandomPersonName();
+                    fullName      = performerName + " the acrobat";
+                    player.AddPerformer(performerName, "acrobat");
+                    gm.Message(fullName + " has joined your circus!");
+                    break;
+                case "performer - musician":
+                    performerName = nameUtils.RandomPersonName();
+                    fullName      = performerName + " the musician";
+                    player.AddPerformer(performerName, "musician");
+                    gm.Message(fullName + " has joined your circus!");
+                    break;
+                case "performer - mystic":
+                    performerName = nameUtils.RandomPersonName();
+                    fullName      = performerName + " the magician";
+                    player.AddPerformer(performerName, "magician");
+                    gm.Message(fullName + " has joined your circus!");
+                    break;
+                case "performer - knife thrower":
+                    performerName = nameUtils.RandomPersonName();
+                    fullName      = performerName + " the knife thrower";
+                    player.AddPerformer(performerName, "knife thrower");
+                    gm.Message(fullName + " has joined your circus!");
+                    break;
+                case "bandits":
+                    break;
+                case "bear fight":
+                    break;
+                case "buffalo fight":
                     break;
                 case "vehicle breakdown":
                     break;
                 case "vehicle crash":
                     break;
-//                case "giant locust fight":
-//                    break;
-//                case "performer - acrobat":
-//                    break;
-//                case "performer - musician":
-//                    break;
-//                case "performer - mystic":
-//                    break;
-//                case "performer - trickshooter":
-//                    break;
+                case "yeti fight":
+                    break;
+                case "giant locust fight":
+                    break;
 //                case "robot - household"
 //                    break;
 //                case "robot - household":
@@ -244,10 +257,6 @@ namespace ThugLib
 //                case "robot - military":
 //                    break;
 //                case "robot - mule":
-//                    break;
-//                case "yeti fight":
-//                    break;
-//                case "yeti fight":
 //                    break;
                 default:
                     Debug.Log("Unhandled encounter: " + selectedEncounter);

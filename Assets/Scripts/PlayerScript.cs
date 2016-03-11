@@ -62,7 +62,7 @@ public class PlayerScript : MonoBehaviour {
                 }
             }
         }
-        Debug.Log(System.String.Join(", ", performers.ToArray()));
+//        Debug.Log(System.String.Join(", ", performers.ToArray()));
         return performers;
     }
 
@@ -95,7 +95,7 @@ public class PlayerScript : MonoBehaviour {
         List<string> performers = new List<string>();
         if (actor.entity.attrs.ContainsKey("diseased_performers") && actor.entity.attrs["diseased_performers"] != "")
             performers.AddRange(actor.entity.attrs["diseased_performers"].Split(','));
-        Debug.Log("DISEASED: " + System.String.Join(", ", performers.ToArray()));
+//        Debug.Log("DISEASED: " + System.String.Join(", ", performers.ToArray()));
         return performers;
     }
     public void RemovePerformer(string fullPerformer)
@@ -195,12 +195,17 @@ public class PlayerScript : MonoBehaviour {
 
     }
 
+    public int FoodConsumption()
+    {
+        return CountPerformers() + GetAllDiseasedPerformers().Count;
+    }
+
     void FoodCheck(int turns)
     {
         if (gm.turnCount % turns == 0)
         {
-            int food = GetFood();
-            int foodDec = CountPerformers() + GetAllDiseasedPerformers().Count;
+            int food    = GetFood();
+            int foodDec = FoodConsumption();
             SetFood(food - foodDec);
             if (actor.entity.stats["food"] > 0)
             {
