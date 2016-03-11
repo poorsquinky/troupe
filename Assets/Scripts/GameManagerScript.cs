@@ -205,7 +205,7 @@ public class GameManagerScript : MonoBehaviour {
             {
                 if (actionCallbacks.Count == 0)
                 {
-                    ui_actioncontent.GetComponent<Text>().text = "";
+                    ui_actioncontent.GetComponent<Text>().text = lm.entity.parent.longDescription;
                 }
                 else if (actionCallbacks.Count == 1)
                 {

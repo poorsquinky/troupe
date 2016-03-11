@@ -333,6 +333,7 @@ public class PlayerScript : MonoBehaviour {
                             {
                                 if (foe.GetHP() == 0)
                                 {
+                                    // XXX does this happen anymore?
                                     lm.gm.Message("You can't attack the dead " + foe.shortDescription + "!");
                                 }
                                 else
@@ -346,7 +347,7 @@ public class PlayerScript : MonoBehaviour {
                             }
                             else
                             {
-                                lm.gm.Message("You can't attack the " + foe.shortDescription + "!");
+                                lm.gm.Message("You can't attack " + foe.longDescription + "!");
                             }
                         }
                     }

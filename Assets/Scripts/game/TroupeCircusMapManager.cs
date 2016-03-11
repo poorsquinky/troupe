@@ -216,7 +216,7 @@ namespace ThugSimpleGame {
                         List<GameManagerScript.MenuCallback> menuItems = new List<GameManagerScript.MenuCallback>();
                         menuItems.Add(new GameManagerScript.MenuCallback("Exit to world map", delegate() { lm.gm.ActivateOverworld(); }));
                         PlaceEntity place = lm.entity.parent as PlaceEntity;
-                        Debug.Log(place);
+//                        Debug.Log(place);
                         foreach (PlaceEntity subPlace in place.subPlaces)
                         {
                             menuItems.Add(new GameManagerScript.MenuCallback("Visit " + subPlace.longDescription, delegate() { lm.gm.ActivateOffice(subPlace); }));
