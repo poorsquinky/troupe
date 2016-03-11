@@ -108,7 +108,7 @@ public class PlayerScript : MonoBehaviour {
                             foreach (Entity.CallbackDelegate d in a.GetActionCallbacks("talk"))
                             {
                                 gm.AddActionCallback(
-                                    "Talk to the " + a.shortDescription,
+                                    "Talk to " + a.longDescription,
                                     d,
                                     a as Entity
                                 );

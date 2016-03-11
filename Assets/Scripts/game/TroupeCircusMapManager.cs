@@ -140,9 +140,10 @@ namespace ThugSimpleGame {
             for (int x = 20; x < 31; x += 4)
             {
                 // one monkey
+                string monkeyName = nameUtils.RandomPersonName();
                 ActorEntity monkey = new ActorEntity();
-                monkey.shortDescription = "monkey";
-                monkey.longDescription  = nameUtils.RandomPersonName() + " the monkey";
+                monkey.shortDescription = monkeyName + " the monkey";
+                monkey.longDescription  = "a monkey named " + nameUtils.RandomPersonName();
                 monkey.attrs["sprite"]  = "monkey";
                 monkey.attrs["hostile"] = "false";
                 monkey.attrs["npcType"] = "monkey";
@@ -150,9 +151,10 @@ namespace ThugSimpleGame {
             }
 
             // some children
+            string childName = nameUtils.RandomPersonName();
             ActorEntity c = new ActorEntity();
-            c.shortDescription = "child";
-            c.longDescription  = nameUtils.RandomPersonName();
+            c.shortDescription = childName;
+            c.longDescription  = "a child named " + childName;
             c.attrs["sprite"]  = "child";
             c.attrs["hostile"] = "false";
             c.attrs["npcType"] = "child";
@@ -194,7 +196,7 @@ namespace ThugSimpleGame {
                                     "\"Are you a bandit?\"",
                                     "\"Are you a mutant?\"",
                                     "\"Are you a mutant bandit?\"",
-                                    "\"My name is " + self.longDescription + ".  What's yours?\"",
+                                    "\"My name is " + self.shortDescription + ".  What's yours?\"",
                                     "\"The virus happened before I was born.  Everyone says things were better then.\""
                                 };
                                 lm.gm.Message(messages[Random.Range(0,messages.Length)]);
