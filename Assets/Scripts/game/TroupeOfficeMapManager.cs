@@ -163,45 +163,35 @@ namespace ThugSimpleGame {
 
 
         }
+
+        public bool exitDelegate(Entity e)
+        {
+            ActorEntity actor = e as ActorEntity;
+            if (actor.isPlayer != true)
+                return false;
+
+            lm.gm.CallbackMenu(
+                "Do you really want to leave this place?",
+                new[] {
+                    new GameManagerScript.MenuCallback("Yes", delegate() { lm.gm.ActivateCircus(); }),
+                    new GameManagerScript.MenuCallback("No", delegate() { return; })
+                }
+            );
+            return false;
+        }
+
         public override void PostProcess()
         {
+
             for (int x = 0; x < lm.levelWidth; x++)
             {
-                lm.entity.GetCell(x,0).AddActionCallback("_enter", delegate(Entity e)
-                {
-                    ActorEntity actor = e as ActorEntity;
-                    if (actor.isPlayer != true)
-                        return false;
-                    lm.gm.ActivateCircus();
-                    return false;
-                });
-                lm.entity.GetCell(x,lm.levelHeight - 1).AddActionCallback("_enter", delegate(Entity e)
-                {
-                    ActorEntity actor = e as ActorEntity;
-                    if (actor.isPlayer != true)
-                        return false;
-                    lm.gm.ActivateCircus();
-                    return false;
-                });
+                lm.entity.GetCell(x,0).AddActionCallback("_enter", exitDelegate);
+                lm.entity.GetCell(x,lm.levelHeight - 1).AddActionCallback("_enter", exitDelegate);
             }
             for (int y = 0; y < lm.levelHeight; y++)
             {
-                lm.entity.GetCell(0,y).AddActionCallback("_enter", delegate(Entity e)
-                {
-                    ActorEntity actor = e as ActorEntity;
-                    if (actor.isPlayer != true)
-                        return false;
-                    lm.gm.ActivateCircus();
-                    return false;
-                });
-                lm.entity.GetCell(lm.levelWidth - 1,y).AddActionCallback("_enter", delegate(Entity e)
-                {
-                    ActorEntity actor = e as ActorEntity;
-                    if (actor.isPlayer != true)
-                        return false;
-                    lm.gm.ActivateCircus();
-                    return false;
-                });
+                lm.entity.GetCell(0,y).AddActionCallback("_enter", exitDelegate);
+                lm.entity.GetCell(lm.levelWidth - 1,y).AddActionCallback("_enter", exitDelegate);
             }
         }
 
