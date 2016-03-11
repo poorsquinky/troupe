@@ -9,6 +9,9 @@ namespace ThugLib
     {
         public CellEntity[][] cells;
 
+        // FIXME: this should not be here
+        public LevelManagerScript lm;
+
         public override void DeserializeFields()
         {
             int w = Convert.ToInt32(serialFields["cells_w"]);

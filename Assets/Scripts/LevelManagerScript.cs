@@ -351,6 +351,16 @@ public class LevelManagerScript : MonoBehaviour {
         init_common();
     }
 
+    public void load_circus(LevelEntity e)
+    {
+        this.entity = e;
+        levelWidth  = e.GetW();
+        levelHeight = e.GetH();
+        mapman = new TroupeCircusMapManager(this);
+        mapman.PostProcess();
+        init_common();
+    }
+
     public void init_circus() {
         levelWidth=50;
         levelHeight=50;

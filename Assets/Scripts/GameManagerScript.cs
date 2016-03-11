@@ -47,8 +47,6 @@ public class GameManagerScript : MonoBehaviour {
 
     [HideInInspector]
     public LevelEntity overworldEntity;
-    [HideInInspector]
-    public LevelEntity circusEntity;
 
     //public int overworldX = 6;
     //public int overworldY = 39;
@@ -197,23 +195,26 @@ public class GameManagerScript : MonoBehaviour {
     public void UpdateHelpDisplay()
     {
 
-        if (IsOverworldActive())
+        if (playerScript != null)
         {
-            ui_actioncontent.GetComponent<Text>().text = "Food: " + playerScript.actor.entity.stats["food"] + "  Performers: " + playerScript.CountPerformers();
-        }
-        else
-        {
-            if (actionCallbacks.Count == 0)
+            if (IsOverworldActive())
             {
-                ui_actioncontent.GetComponent<Text>().text = "";
-            }
-            else if (actionCallbacks.Count == 1)
-            {
-                ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText[0] + "</color>";
+                ui_actioncontent.GetComponent<Text>().text = "Food: " + playerScript.actor.entity.stats["food"] + "  Performers: " + playerScript.CountPerformers();
             }
             else
             {
-                ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText.Count + " actions available</color>";
+                if (actionCallbacks.Count == 0)
+                {
+                    ui_actioncontent.GetComponent<Text>().text = "";
+                }
+                else if (actionCallbacks.Count == 1)
+                {
+                    ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText[0] + "</color>";
+                }
+                else
+                {
+                    ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText.Count + " actions available</color>";
+                }
             }
         }
     }
@@ -525,21 +526,31 @@ public class GameManagerScript : MonoBehaviour {
     }
 
 
-    public void ActivateCircus()
+    public void ActivateCircus(PlaceEntity place)
     {
+        // create the level manager if needed
         if (lm)
             lm.Deactivate();
         if (! lmDict.ContainsKey("circus"))
         {
             GameObject l = Instantiate(circusLevelManagerPrefab) as GameObject;
             lm = l.GetComponent<LevelManagerScript>();
-            lm.init_circus();
-            this.circusEntity = lm.entity;
             lmDict["circus"] = lm;
         }
         else
         {
             lm = lmDict["circus"];
+        }
+
+        // create the level entities if needed
+        if (place.levels.Count == 0)
+        {
+            lm.init_circus();
+            place.AddLevel(lm.entity);
+        }
+        else
+        {
+            lm.load_circus(place.levels[0]);
         }
         lm.Activate();
         RefreshTiles();
@@ -573,9 +584,10 @@ public class GameManagerScript : MonoBehaviour {
         }
         lm.Activate();
         RefreshTiles();
-        playerScript.ForceMoveTo(overworldX,overworldY);
+//        playerScript.ForceMoveTo(overworldX,overworldY);
     }
 
+    /*
     void SwitchToLevel(string levelName)
     {
         lm.Deactivate();
@@ -589,6 +601,7 @@ public class GameManagerScript : MonoBehaviour {
             ActivateCircus();
         }
     }
+    */
 
     void Start()
     {
@@ -601,7 +614,8 @@ public class GameManagerScript : MonoBehaviour {
         cam.transform.position = pos;
         cam.GetComponent<CameraScript>().target = player.transform;
 
-        ActivateCircus();
+        //ActivateCircus();
+        ActivateOverworld();
 
         SetupBasicInputCallbacks();
 

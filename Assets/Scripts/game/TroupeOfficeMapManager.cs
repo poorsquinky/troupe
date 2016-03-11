@@ -173,7 +173,7 @@ namespace ThugSimpleGame {
             lm.gm.CallbackMenu(
                 "Do you really want to leave this place?",
                 new[] {
-                    new GameManagerScript.MenuCallback("Yes", delegate() { lm.gm.ActivateCircus(); }),
+//                    new GameManagerScript.MenuCallback("Yes", delegate() { lm.gm.ActivateCircus(); }),
                     new GameManagerScript.MenuCallback("No", delegate() { return; })
                 }
             );

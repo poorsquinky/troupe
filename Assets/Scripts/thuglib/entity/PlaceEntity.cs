@@ -49,9 +49,13 @@ namespace ThugLib
         // FIXME this should be done with delegates but it's not because tick tock
         public void Activate()
         {
-            ActorEntity actor = gm.playerScript.actor.entity;
             gm.Message("Entering " + this.longDescription + "...");
-            gm.ActivateCircus();
+            switch (this.placeType)
+            {
+                case "city":
+                    gm.ActivateCircus(this);
+                    break;
+            }
         }
 
         public PlaceEntity()
@@ -60,6 +64,16 @@ namespace ThugLib
             gm = g.GetComponent<GameManagerScript>();
             this.SetEntityType("Place");
             this.levels = new List<LevelEntity>();
+        }
+
+        public void AddLevel(LevelEntity l)
+        {
+            this.levels.Add(l);
+        }
+
+        public CellEntity GetCell()
+        {
+            return this.parent as CellEntity;
         }
 
         public void SetCell(CellEntity location)
