@@ -120,6 +120,12 @@ public class PlayerScript : MonoBehaviour {
                     y += this.actor.entity.GetY();
                     if (actor.CanMoveTo(x,y))
                     {
+                        if (lm.isOverworld)
+                        {
+                            TroupeOverworldEncounter encounter = new TroupeOverworldEncounter(gm, x, y);
+                            if (encounter.callback != null)
+                                encounter.callback();
+                        }
                         actor.MoveTo(x,y);
                         Moved();
                     }

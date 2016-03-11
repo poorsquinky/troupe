@@ -8,7 +8,7 @@ using ThugLib;
 
 public class GameManagerScript : MonoBehaviour {
 
-    private PlayerScript playerScript;
+    public PlayerScript playerScript;
     [HideInInspector]
     public GameObject player;
     public GameObject playerPrefab;

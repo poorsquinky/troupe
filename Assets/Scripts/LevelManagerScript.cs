@@ -38,6 +38,9 @@ public class LevelManagerScript : MonoBehaviour {
     [HideInInspector]
     public GameManagerScript gm;
 
+    [HideInInspector]
+    public bool isOverworld = false;
+
     private bool IsVisibleAndBlocked(int x, int y) {
         return (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight &&
             visibility_map[x][y] && !map[x][y].Passable());
@@ -303,6 +306,7 @@ public class LevelManagerScript : MonoBehaviour {
     }
 
     public void init_overworld() {
+        isOverworld = true;
         levelWidth=50;
         levelHeight=50;
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
