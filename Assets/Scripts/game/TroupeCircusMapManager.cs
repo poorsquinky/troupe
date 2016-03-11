@@ -213,13 +213,18 @@ namespace ThugSimpleGame {
                         ActorEntity actor = e as ActorEntity;
                         if (actor.isPlayer != true)
                             return false;
+                        List<GameManagerScript.MenuCallback> menuItems = new List<GameManagerScript.MenuCallback>();
+                        menuItems.Add(new GameManagerScript.MenuCallback("Exit to world map", delegate() { lm.gm.ActivateOverworld(); }));
+                        PlaceEntity place = lm.entity.parent as PlaceEntity;
+                        Debug.Log(place);
+                        foreach (PlaceEntity subPlace in place.subPlaces)
+                        {
+                            menuItems.Add(new GameManagerScript.MenuCallback("Visit " + subPlace.longDescription, delegate() { lm.gm.ActivateOffice(subPlace); }));
+                        }
+                        menuItems.Add(new GameManagerScript.MenuCallback("Never mind", delegate() { return; }));
                         lm.gm.CallbackMenu(
                             "This is the signpost.  It will be used for fast travel.",
-                            new[] {
-                                new GameManagerScript.MenuCallback("Exit to world map", delegate() { lm.gm.ActivateOverworld(); }),
-                                new GameManagerScript.MenuCallback("Try a nearby office building", delegate() { lm.gm.ActivateOffice("foo"); }),
-                                new GameManagerScript.MenuCallback("Never mind", delegate() { return; })
-                            }
+                            menuItems.ToArray()
                         );
                         return false;
                     });

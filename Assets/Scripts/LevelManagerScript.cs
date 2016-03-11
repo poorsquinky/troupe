@@ -338,15 +338,26 @@ public class LevelManagerScript : MonoBehaviour {
         init_common(10,10);
     }
 
-    public void init_office() {
+    public void init_office(PlaceEntity place) {
         levelWidth=50;
         levelHeight=50;
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
         this.entity.index = gm.entity.RegisterEntity(this.entity);
+        place.AddLevel(this.entity);
 
         mapman = new TroupeOfficeMapManager(this);
 
         mapman.Generate();
+        mapman.PostProcess();
+        init_common();
+    }
+
+    public void load_office(LevelEntity e)
+    {
+        this.entity = e;
+        levelWidth  = e.GetW();
+        levelHeight = e.GetH();
+        mapman = new TroupeOfficeMapManager(this);
         mapman.PostProcess();
         init_common();
     }
@@ -361,11 +372,19 @@ public class LevelManagerScript : MonoBehaviour {
         init_common();
     }
 
-    public void init_circus() {
+    public void init_circus(PlaceEntity place) {
         levelWidth=50;
         levelHeight=50;
         this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
         this.entity.index = gm.entity.RegisterEntity(this.entity);
+        place.AddLevel(this.entity);
+
+        PlaceEntity office      = new PlaceEntity();
+        office.shortDescription = "office";
+        office.longDescription  = "an office building";
+        office.placeType        = "office";
+        office.index            = gm.entity.RegisterEntity(office);
+        place.AddSubPlace(office);
 
         mapman = new TroupeCircusMapManager(this);
 

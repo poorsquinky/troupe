@@ -14,6 +14,9 @@ namespace ThugLib
         public string placeType;
         public List<LevelEntity> levels;
 
+        // FIXME: serialize
+        public List<PlaceEntity> subPlaces;
+
         // FIXME: not here
         GameManagerScript gm;
 
@@ -63,12 +66,20 @@ namespace ThugLib
             GameObject g = GameObject.Find("GameManager");
             gm = g.GetComponent<GameManagerScript>();
             this.SetEntityType("Place");
-            this.levels = new List<LevelEntity>();
+            this.levels    = new List<LevelEntity>();
+            this.subPlaces = new List<PlaceEntity>();
+        }
+
+        public void AddSubPlace(PlaceEntity p)
+        {
+            this.subPlaces.Add(p);
+            p.SetParent(this as Entity);
         }
 
         public void AddLevel(LevelEntity l)
         {
             this.levels.Add(l);
+            l.SetParent(this as Entity);
         }
 
         public CellEntity GetCell()

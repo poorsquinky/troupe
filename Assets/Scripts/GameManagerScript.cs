@@ -506,25 +506,32 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    public void ActivateOffice(string officeName)
+    public void ActivateOffice(PlaceEntity place)
     {
         if (lm)
             lm.Deactivate();
-        if (! lmDict.ContainsKey("office_" + officeName))
+        if (! lmDict.ContainsKey("office"))
         {
             GameObject l = Instantiate(officeLevelManagerPrefab) as GameObject;
             lm = l.GetComponent<LevelManagerScript>();
-            lm.init_office();
-            lmDict["office_" + officeName] = lm;
+            lmDict["office"] = lm;
         }
         else
         {
-            lm = lmDict["office_" + officeName];
+            lm = lmDict["office"];
+        }
+
+        if (place.levels.Count == 0)
+        {
+            lm.init_office(place);
+        }
+        else
+        {
+            lm.load_office(place.levels[0]);
         }
         lm.Activate();
         RefreshTiles();
     }
-
 
     public void ActivateCircus(PlaceEntity place)
     {
@@ -545,8 +552,7 @@ public class GameManagerScript : MonoBehaviour {
         // create the level entities if needed
         if (place.levels.Count == 0)
         {
-            lm.init_circus();
-            place.AddLevel(lm.entity);
+            lm.init_circus(place);
         }
         else
         {
