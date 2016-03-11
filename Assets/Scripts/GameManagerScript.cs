@@ -196,17 +196,25 @@ public class GameManagerScript : MonoBehaviour {
 
     public void UpdateHelpDisplay()
     {
-        if (actionCallbacks.Count == 0)
+
+        if (IsOverworldActive())
         {
-            ui_actioncontent.GetComponent<Text>().text = "";
-        }
-        else if (actionCallbacks.Count == 1)
-        {
-            ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText[0] + "</color>";
+            ui_actioncontent.GetComponent<Text>().text = "Food: " + playerScript.actor.entity.stats["food"];
         }
         else
         {
-            ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText.Count + " actions available</color>";
+            if (actionCallbacks.Count == 0)
+            {
+                ui_actioncontent.GetComponent<Text>().text = "";
+            }
+            else if (actionCallbacks.Count == 1)
+            {
+                ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText[0] + "</color>";
+            }
+            else
+            {
+                ui_actioncontent.GetComponent<Text>().text = "<color=#cc99ffff>[Space]</color><color=#ffff66ff> - " + actionCallbackText.Count + " actions available</color>";
+            }
         }
     }
 

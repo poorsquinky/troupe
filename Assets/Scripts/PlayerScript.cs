@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using ThugLib;
 
 public class PlayerScript : MonoBehaviour {
@@ -15,6 +16,46 @@ public class PlayerScript : MonoBehaviour {
     public int keyboardX = 0;
     public int keyboardY = 0;
 
+    void AddPerformer(string performerType, string performerName)
+    {
+        List<string> performers = GetPerformers(performerType);
+        performers.Add(performerName);
+        actor.entity.attrs["performer_" + performerType] = System.String.Join(",", performers.ToArray());
+    }
+
+    void RemovePerformer(string performerType, string performerName)
+    {
+        List<string> performers = GetPerformers(performerType);
+        performers.Remove(performerName);
+        if (performers.Count == 0)
+            actor.entity.attrs["performer_" + performerType] = "";
+        else
+            actor.entity.attrs["performer_" + performerType] = System.String.Join(",", performers.ToArray());
+    }
+
+    List<string> GetPerformers(string performerType)
+    {
+        List<string> performers = new List<string>();
+        if (! actor.entity.attrs.ContainsKey("performer_" + performerType) || actor.entity.attrs["performer_" + performerType] == "")
+            return performers;
+        performers.AddRange(actor.entity.attrs["performer_" + performerType].Split(','));
+        return performers;
+    }
+
+    int CountPerformers()
+    {
+        int ct = 0;
+        foreach (string k in actor.entity.attrs.Keys)
+        {
+            if (k.StartsWith("performer_"))
+            {
+                string performerType = k.Split('_')[1];
+                ct += GetPerformers(performerType).Count;
+            }
+        }
+        return ct;
+    }
+
     void Awake ()
     {
         GameObject g = GameObject.Find("GameManager");
@@ -25,6 +66,16 @@ public class PlayerScript : MonoBehaviour {
         actor.entity.isPlayer     = true;
         actor.entity.stats["hp"]  = 8;
         actor.entity.stats["mhp"] = 8;
+
+        actor.entity.stats["food"] = 50;
+
+        NameUtils nameUtils = new NameUtils();
+        for (int i = 0; i < 3; i++)
+            AddPerformer("monkey", nameUtils.RandomPersonName());
+        for (int i = 0; i < 2; i++)
+            AddPerformer("clown", nameUtils.RandomPersonName());
+        for (int i = 0; i < 2; i++)
+            AddPerformer("acrobat", nameUtils.RandomPersonName());
 
     }
 
@@ -53,12 +104,57 @@ public class PlayerScript : MonoBehaviour {
 
     }
 
+    void FoodCheck(int turns)
+    {
+        if (gm.turnCount % turns == 0)
+        {
+            // TODO: starvation effects?
+            int foodDec = CountPerformers();
+            actor.entity.stats["food"] -= foodDec;
+            if (actor.entity.stats["food"] < 0)
+            {
+                actor.entity.stats["food"] = 0;
+                lm.gm.Message("You have run out of food.");
+            }
+            else
+            {
+                lm.gm.Message("Your performers ate " + foodDec + " food.");
+            }
+        }
+    }
+
     void Moved()
     {
         int x = this.actor.entity.GetX();
         int y = this.actor.entity.GetY();
         if (gm.IsOverworldActive())
+        {
             gm.UpdateOverworldCoords(x,y);
+            CellEntity cell = lm.entity.GetCell(x,y);
+            int foodTurns = 1;
+            switch(cell.terrain.shortDescription)
+            {
+                case "road":
+                    foodTurns = 5;
+                    break;
+                case "city":
+                    foodTurns = 99999;
+                    break;
+                case "grass":
+                    foodTurns = 4;
+                    break;
+                case "trees":
+                    foodTurns = 3;
+                    break;
+                case "mountains":
+                    foodTurns = 2;
+                    break;
+                case "desert":
+                    foodTurns = 1;
+                    break;
+            }
+            FoodCheck(foodTurns);
+        }
         // refresh nearby terrain sprites
         // FIXME: don't use hardcoded distance
         for (int i = Mathf.Max(0, x - 40); i < Mathf.Max(lm.levelWidth, x + 20); i++)
