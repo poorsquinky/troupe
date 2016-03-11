@@ -399,6 +399,20 @@ namespace ThugSimpleGame {
                 if (map[x,y] == 0)
                     map[x,y] = 4;
             }
+            for (int i = 0; i < 4; i++)
+            {
+                int x = Random.Range(0,lm.levelWidth);
+                int y = Random.Range(0,lm.levelHeight);
+                if (map[x,y] == 0)
+                    map[x,y] = 5;
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                int x = Random.Range(0,lm.levelWidth);
+                int y = Random.Range(0,lm.levelHeight);
+                if (map[x,y] == 0)
+                    map[x,y] = 6;
+            }
 
             // and let our weaksauce CA do its job
             for (int pass = 0; pass < 8; pass++)
@@ -410,9 +424,11 @@ namespace ThugSimpleGame {
                     {
                         if (map[x,y] == 0)
                         {
-                            int treecount  = 0;
-                            int watercount = 0;
-                            int citycount  = 0;
+                            int treecount     = 0;
+                            int watercount    = 0;
+                            int citycount     = 0;
+                            int desertcount   = 0;
+                            int mountaincount = 0;
                             for (int x1 = x - 1; x1 < x + 2; x1++)
                             {
                                 for (int y1 = y - 1; y1 < y + 2; y1++)
@@ -430,14 +446,28 @@ namespace ThugSimpleGame {
                                             case 4:
                                                 treecount += 1;
                                                 break;
+                                            case 5:
+                                                desertcount += 1;
+                                                break;
+                                            case 6:
+                                                mountaincount += 1;
+                                                break;
                                         }
                                     }
                                 }
                             }
                             if (watercount > 2)
                                 newmap[x,y] = 3;
+                            else if (desertcount > 2)
+                                newmap[x,y] = 5;
                             else if (treecount > 2)
                                 newmap[x,y] = 4;
+                            else if (mountaincount > 2)
+                                newmap[x,y] = 6;
+                            else if (desertcount > 0 && Random.Range(0,4) == 0)
+                                newmap[x,y] = 5;
+                            else if (mountaincount > 0 && Random.Range(0,4) == 0)
+                                newmap[x,y] = 6;
                             else if (treecount > 0 && Random.Range(0,3) == 0)
                                 newmap[x,y] = 4;
                             else if (watercount > 0 && Random.Range(0,4) == 0)
@@ -446,6 +476,10 @@ namespace ThugSimpleGame {
                                 newmap[x,y] = 4;
                             else if (citycount > 0 && Random.Range(0,50) == 0)
                                 newmap[x,y] = 3;
+                            else if (citycount > 0 && Random.Range(0,75) == 0)
+                                newmap[x,y] = 5;
+                            else if (citycount > 0 && Random.Range(0,100) == 0)
+                                newmap[x,y] = 6;
                         }
                     }
                 }
@@ -491,6 +525,18 @@ namespace ThugSimpleGame {
                             terrain.opacity          = 0f;
                             terrain.shortDescription = "trees";
                             terrain.longDescription  = "Dense woodlands";
+                            break;
+                        case 5:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "desert";
+                            terrain.longDescription  = "A barren desert";
+                            break;
+                        case 6:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "mountains";
+                            terrain.longDescription  = "Treacherous mountains";
                             break;
                     }
                 }

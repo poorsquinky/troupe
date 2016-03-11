@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: dfaa0fb563927f54ab52fcc2a6435ecb
-timeCreated: 1457402014
+timeCreated: 1457671733
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -67,6 +67,7 @@ TextureImporter:
     21300120: tileset_60
     21300122: tileset_61
     21300124: tileset_62
+    21300126: tileset_63
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -721,8 +722,8 @@ TextureImporter:
     - name: tileset_55
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
+        x: 71
+        y: 11
         width: 8
         height: 8
       alignment: 0
@@ -732,7 +733,7 @@ TextureImporter:
     - name: tileset_56
       rect:
         serializedVersion: 2
-        x: 11
+        x: 1
         y: 1
         width: 8
         height: 8
@@ -743,7 +744,7 @@ TextureImporter:
     - name: tileset_57
       rect:
         serializedVersion: 2
-        x: 21
+        x: 11
         y: 1
         width: 8
         height: 8
@@ -754,7 +755,7 @@ TextureImporter:
     - name: tileset_58
       rect:
         serializedVersion: 2
-        x: 31
+        x: 21
         y: 1
         width: 8
         height: 8
@@ -765,7 +766,7 @@ TextureImporter:
     - name: tileset_59
       rect:
         serializedVersion: 2
-        x: 41
+        x: 31
         y: 1
         width: 8
         height: 8
@@ -776,7 +777,7 @@ TextureImporter:
     - name: tileset_60
       rect:
         serializedVersion: 2
-        x: 51
+        x: 41
         y: 1
         width: 8
         height: 8
@@ -787,7 +788,7 @@ TextureImporter:
     - name: tileset_61
       rect:
         serializedVersion: 2
-        x: 61
+        x: 51
         y: 1
         width: 8
         height: 8
@@ -796,6 +797,17 @@ TextureImporter:
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: tileset_62
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 1
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: tileset_63
       rect:
         serializedVersion: 2
         x: 71
