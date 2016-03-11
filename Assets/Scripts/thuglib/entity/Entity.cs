@@ -46,7 +46,7 @@ namespace ThugLib
         public delegate void RefreshDelegate();
         protected List<RefreshDelegate> refreshDelegates = new List<RefreshDelegate>();
 
-        public delegate bool CallbackDelegate(Entity subject);
+        public delegate bool CallbackDelegate(Entity subject, Entity target);
         protected Dictionary<string, List<CallbackDelegate>> actionCallbacks = new Dictionary<string, List<CallbackDelegate>>();
 
         [SerializeField]
@@ -146,7 +146,7 @@ namespace ThugLib
             bool passed = true;
             foreach (CallbackDelegate d in this.GetActionCallbacks(action))
             {
-                passed = passed & d(subject);
+                passed = passed & d(subject, this);
             }
             return passed;
         }

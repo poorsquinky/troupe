@@ -164,7 +164,7 @@ namespace ThugSimpleGame {
 
         }
 
-        public bool exitDelegate(Entity e)
+        public bool exitDelegate(Entity e, Entity self)
         {
             ActorEntity actor = e as ActorEntity;
             if (actor.isPlayer != true)

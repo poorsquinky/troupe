@@ -20,7 +20,12 @@ public class PlayerScript : MonoBehaviour {
         GameObject g = GameObject.Find("GameManager");
         gm = g.GetComponent<GameManagerScript>();
         lm = gm.lm;
+
         this.actor = GetComponent<ActorScript>();
+        actor.entity.isPlayer     = true;
+        actor.entity.stats["hp"]  = 8;
+        actor.entity.stats["mhp"] = 8;
+
     }
 
     void Start ()
@@ -67,7 +72,7 @@ public class PlayerScript : MonoBehaviour {
         }
         gm.ClearActionCallbacks();
         gm.UpdateHelpDisplay();
-
+        gm.turnCount++;
     }
 
     public string killedBy = "something";
@@ -76,7 +81,8 @@ public class PlayerScript : MonoBehaviour {
     {
         if (this.actor.entity.stats["hp"] <= 0)
             gm.CallbackMenu(
-                "You were killed by " + killedBy + ".\nYou have 0 points because we have no points yet.",
+                "You were killed by " + killedBy + " after " + gm.turnCount + " turns.\n"
+                + "You have 0 points because we have no points yet.",
                 new[] {
                     new GameManagerScript.MenuCallback("Quit", delegate() { Application.Quit(); }),
                 }
@@ -103,7 +109,8 @@ public class PlayerScript : MonoBehaviour {
                             {
                                 gm.AddActionCallback(
                                     "Talk to the " + a.shortDescription,
-                                    d
+                                    d,
+                                    a as Entity
                                 );
                             }
                         }

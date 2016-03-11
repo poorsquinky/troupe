@@ -23,7 +23,7 @@ namespace ThugLib
             location.SetProp(this);
 
             // for now let's say all props are impassible
-            this.parent.AddActionCallback("_enter", delegate(Entity actor)
+            this.parent.AddActionCallback("_enter", delegate(Entity actor, Entity self)
             {
                 return false;
             });

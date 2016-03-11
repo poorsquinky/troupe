@@ -31,7 +31,7 @@ namespace ThugLib
             this.parent_index = location.index;
             location.SetTerrain(this);
 
-            this.parent.AddActionCallback("_enter", delegate(Entity actor)
+            this.parent.AddActionCallback("_enter", delegate(Entity actor, Entity self)
             {
                 // TODO: apply movement speed hindrance to actor
                 // TODO: confirm player movement into slow space

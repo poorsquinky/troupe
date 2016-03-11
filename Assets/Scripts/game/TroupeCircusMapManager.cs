@@ -9,6 +9,8 @@ using UnityEngine;
 namespace ThugSimpleGame {
     public class TroupeCircusMapManager : MapManager {
 
+        private NameUtils nameUtils = new NameUtils();
+
         private LevelManagerScript lm;
 
         public TroupeCircusMapManager(LevelManagerScript l) {
@@ -139,7 +141,8 @@ namespace ThugSimpleGame {
             {
                 // one monkey
                 ActorEntity monkey = new ActorEntity();
-                monkey.shortDescription  = "monkey";
+                monkey.shortDescription = "monkey";
+                monkey.longDescription  = nameUtils.RandomPersonName() + " the monkey";
                 monkey.attrs["sprite"]  = "monkey";
                 monkey.attrs["hostile"] = "false";
                 monkey.attrs["npcType"] = "monkey";
@@ -149,6 +152,7 @@ namespace ThugSimpleGame {
             // some children
             ActorEntity c = new ActorEntity();
             c.shortDescription = "child";
+            c.longDescription  = nameUtils.RandomPersonName();
             c.attrs["sprite"]  = "child";
             c.attrs["hostile"] = "false";
             c.attrs["npcType"] = "child";
@@ -156,7 +160,7 @@ namespace ThugSimpleGame {
 
         }
 
-        public bool exitDelegate(Entity e)
+        public bool exitDelegate(Entity e, Entity self)
         {
             ActorEntity actor = e as ActorEntity;
             if (actor.isPlayer != true)
@@ -182,7 +186,7 @@ namespace ThugSimpleGame {
                     switch(actor.attrs["npcType"])
                     {
                         case "child":
-                            actor.AddActionCallback("talk", delegate(Entity e)
+                            actor.AddActionCallback("talk", delegate(Entity e, Entity self)
                             {
                                 string[] messages = {
                                     "\"Wow, are you with the circus?\"",
@@ -190,6 +194,7 @@ namespace ThugSimpleGame {
                                     "\"Are you a bandit?\"",
                                     "\"Are you a mutant?\"",
                                     "\"Are you a mutant bandit?\"",
+                                    "\"My name is " + self.longDescription + ".  What's yours?\"",
                                     "\"The virus happened before I was born.  Everyone says things were better then.\""
                                 };
                                 lm.gm.Message(messages[Random.Range(0,messages.Length)]);
@@ -201,7 +206,7 @@ namespace ThugSimpleGame {
             }
 
             CellEntity gateTriggerCell = lm.entity.GetCell(25,42);
-            gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
+            gateTriggerCell.AddActionCallback("_enter", delegate(Entity e, Entity self)
                     {
                         ActorEntity actor = e as ActorEntity;
                         if (actor.isPlayer != true)
@@ -220,7 +225,7 @@ namespace ThugSimpleGame {
 
             // entryway trigger
             gateTriggerCell = lm.entity.GetCell(25,46);
-            gateTriggerCell.AddActionCallback("_enter", delegate(Entity e)
+            gateTriggerCell.AddActionCallback("_enter", delegate(Entity e, Entity self)
                     {
                         ActorEntity actor = e as ActorEntity;
                         if (actor.isPlayer == true)

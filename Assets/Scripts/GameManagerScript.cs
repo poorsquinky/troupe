@@ -57,6 +57,7 @@ public class GameManagerScript : MonoBehaviour {
     [HideInInspector]
     public int overworldY = 10;
 
+    public int turnCount = 0;
 
     private const string helpText =
 @"<b>MOVEMENT:</b>
@@ -173,17 +174,20 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    public List<string> actionCallbackText = new List<string>();
+    public List<string> actionCallbackText    = new List<string>();
+    public List<Entity> actionCallbackTargets = new List<Entity>();
 
     public List<Entity.CallbackDelegate> actionCallbacks = new List<Entity.CallbackDelegate>();
 
     public void ClearActionCallbacks()
     {
+        actionCallbackTargets.Clear();
         actionCallbackText.Clear();
         actionCallbacks.Clear();
     }
-    public void AddActionCallback(string txt, Entity.CallbackDelegate d)
+    public void AddActionCallback(string txt, Entity.CallbackDelegate d, Entity e)
     {
+        actionCallbackTargets.Add(e);
         actionCallbackText.Add(txt);
         actionCallbacks.Add(d);
     }
@@ -211,7 +215,7 @@ public class GameManagerScript : MonoBehaviour {
         if (actionCallbacks.Count == 0)
             return;
         else if (actionCallbacks.Count == 1)
-            actionCallbacks[0](playerScript.actor.entity);
+            actionCallbacks[0](playerScript.actor.entity,actionCallbackTargets[0]);
     }
 
     public void CallbackMenu(string header, MenuCallback[] callbacks)
