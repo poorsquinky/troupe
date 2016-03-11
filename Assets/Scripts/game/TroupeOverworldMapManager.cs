@@ -592,10 +592,17 @@ namespace ThugSimpleGame {
                             terrain.longDescription  = "A crumbling but still-functional stretch of road";
                             break;
                         case 2:
+                            string cityName = nameUtils.RandomCityName();
                             terrain.hindrance        = 0f;
                             terrain.opacity          = 0f;
                             terrain.shortDescription = "city";
-                            terrain.longDescription  = nameUtils.RandomCityName();
+                            terrain.longDescription  = cityName;
+
+                            PlaceEntity city      = new PlaceEntity();
+                            city.shortDescription = cityName;
+                            city.longDescription  = cityName;
+                            city.placeType        = "city";
+                            cell.SetPlace(city);
                             break;
                         case 3:
                             terrain.hindrance        = 1f;
@@ -628,6 +635,7 @@ namespace ThugSimpleGame {
         }
         public override void PostProcess()
         {
+            /*
             foreach (MapNode poi in questPOIs)
             {
                 CellEntity c = lm.entity.GetCell(poi.x,poi.y);
@@ -655,7 +663,7 @@ namespace ThugSimpleGame {
                     return false;
                 });
             }
-
+            */
 
         }
 

@@ -210,6 +210,11 @@ namespace ThugLib
         }
         public bool ActorEnter(ActorEntity actor)
         {
+            if (this.place != null && actor.isPlayer)
+            {
+                this.place.Activate();
+                return true;
+            }
             if (this.terrain != null)
                 if (! this.terrain.RunActionCallbacks(actor, "_enter"))
                     return false;

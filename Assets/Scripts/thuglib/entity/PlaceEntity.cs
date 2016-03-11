@@ -10,7 +10,12 @@ namespace ThugLib
 
         // FIXME: serialize levelsUp
         public bool levelsUp = true; // do levels increase in the upward direction
+        // FIXME: also serialize placeType
+        public string placeType;
         public List<LevelEntity> levels;
+
+        // FIXME: not here
+        GameManagerScript gm;
 
         public override void DeserializeFields()
         {
@@ -41,8 +46,18 @@ namespace ThugLib
             serialFields["levels"] = JsonUtility.ToJson(levelList);
         }
 
+        // FIXME this should be done with delegates but it's not because tick tock
+        public void Activate()
+        {
+            ActorEntity actor = gm.playerScript.actor.entity;
+            gm.Message("Entering " + this.longDescription + "...");
+            gm.ActivateCircus();
+        }
+
         public PlaceEntity()
         {
+            GameObject g = GameObject.Find("GameManager");
+            gm = g.GetComponent<GameManagerScript>();
             this.SetEntityType("Place");
             this.levels = new List<LevelEntity>();
         }
