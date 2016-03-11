@@ -543,6 +543,16 @@ public class GameManagerScript : MonoBehaviour {
         }
         lm.Activate();
         RefreshTiles();
+
+        if (playerScript != null)
+        {
+            if (playerScript.actor.entity.GetHP() < playerScript.actor.entity.GetMHP())
+            {
+                playerScript.actor.entity.SetHP(playerScript.actor.entity.GetMHP());
+                Message("You drink some snake oil to restore your health.");
+            }
+        }
+
     }
 
     public void ActivateOverworld()

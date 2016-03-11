@@ -44,6 +44,11 @@ namespace ThugLib
             return false;
         }
 
+        public void SetHP(int hp)
+        {
+            this.stats["hp"] = hp;
+        }
+
         public int GetHP()
         {
             if (!this.stats.ContainsKey("hp"))
@@ -52,6 +57,15 @@ namespace ThugLib
                 this.stats["mhp"] = 3;
             }
             return this.stats["hp"];
+        }
+        public int GetMHP()
+        {
+            if (!this.stats.ContainsKey("mhp"))
+            {
+                this.stats["hp"]  = 3;
+                this.stats["mhp"] = 3;
+            }
+            return this.stats["mhp"];
         }
 
         public CellEntity GetCell()

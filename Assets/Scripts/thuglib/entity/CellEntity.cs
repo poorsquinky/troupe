@@ -18,6 +18,10 @@ namespace ThugLib
         public int actorIndex;
         public ActorEntity actor;
 
+        // place contained in this cell
+        public int placeIndex;
+        public PlaceEntity place;
+
         public List<int> items_index;
         public List<ItemEntity> items;
 
@@ -30,6 +34,7 @@ namespace ThugLib
             this.terrain = JsonUtility.FromJson<TerrainEntity>(serialFields["terrain"]);
             this.prop    = JsonUtility.FromJson<PropEntity>(serialFields["prop"]);
             this.actor   = JsonUtility.FromJson<ActorEntity>(serialFields["actor"]);
+            this.place   = JsonUtility.FromJson<PlaceEntity>(serialFields["place"]);
 
             this.items = new List<ItemEntity>();
             List<string> itemlist = JsonUtility.FromJson<List<string>>(serialFields["items"]);
@@ -63,6 +68,11 @@ namespace ThugLib
                 this.actor.Deserialize();
                 this.actor.SetParent(this as Entity);
             }
+            if (this.place != null)
+            {
+                this.place.Deserialize();
+                this.place.SetCell(this);
+            }
 
         }
         public override void  SerializeFields()
@@ -76,10 +86,13 @@ namespace ThugLib
                 this.prop.Serialize();
             if (this.actor != null)
                 this.actor.Serialize();
+            if (this.place != null)
+                this.place.Serialize();
 
             serialFields["terrain"] = JsonUtility.ToJson(this.terrain);
             serialFields["prop"] = JsonUtility.ToJson(this.prop);
             serialFields["actor"] = JsonUtility.ToJson(this.actor);
+            serialFields["place"] = JsonUtility.ToJson(this.place);
 
             List<string> itemList = new List<string>();
             if (this.items != null)
@@ -110,6 +123,18 @@ namespace ThugLib
         public TerrainEntity GetTerrain()
         {
             return this.terrain;
+        }
+
+        public void SetPlace(PlaceEntity t)
+        {
+            this.place = t;
+            placeIndex = t.index;
+            t.parent = this;
+            t.parent_index = this.index;
+        }
+        public PlaceEntity GetPlace()
+        {
+            return this.place;
         }
 
         public void SetProp(PropEntity p)
