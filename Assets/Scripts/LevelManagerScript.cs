@@ -407,14 +407,26 @@ public class LevelManagerScript : MonoBehaviour {
                 includeLastSquare: false,
                 outputMap: latestVisibility);
 
+        List<GameObject> newnpcs = new List<GameObject>();
+        foreach (GameObject npc in npcs)
+            if (npc != null)
+                newnpcs.Add(npc);
+        npcs = newnpcs;
+
         foreach (GameObject npc in npcs)
         {
-            ActorScript actor = npc.GetComponent<ActorScript>();
-            int x = actor.GetX();
-            int y = actor.GetY();
-//            npc.GetComponent<SpriteRenderer>().enabled = true;
-            npc.GetComponent<SpriteRenderer>().enabled = 
-               (latestVisibility[x][y] == 1);
+            if (npc == null)
+            {
+                npcs.Remove(npc);
+            }
+            else
+            {
+                ActorScript actor = npc.GetComponent<ActorScript>();
+                int x = actor.GetX();
+                int y = actor.GetY();
+                npc.GetComponent<SpriteRenderer>().enabled = 
+                   (latestVisibility[x][y] == 1);
+            }
         }
 
         // load the current player visibility map into the tileGrid

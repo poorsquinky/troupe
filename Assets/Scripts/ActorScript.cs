@@ -158,6 +158,18 @@ public class ActorScript : MonoBehaviour {
 
     void FixedUpdate ()
     {
+        if (entity.GetHP() < 1 && entity.isPlayer == false)
+        {
+            CellEntity cell           = this.entity.parent as CellEntity;
+            GameObject corpse         = Instantiate(gm.itemPrefab) as GameObject;
+            Vector3 pos               = new Vector3(cell.x,cell.y,0);
+            corpse.transform.position = pos;
+
+            cell.ActorForceExit();
+            cell.AddItem(corpse.GetComponent<ItemScript>().entity);
+            Destroy(this.gameObject);
+            return;
+        }
         if (moving)
         {
             Vector3 newPos = transform.position;

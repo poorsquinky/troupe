@@ -12,7 +12,7 @@ namespace ThugLib
         public override void  SerializeFields()
         {
         }
-        public ItemEntity(int w, int h)
+        public ItemEntity()
         {
             this.SetEntityType("Item");
             // TODO

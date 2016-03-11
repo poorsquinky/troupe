@@ -24,6 +24,7 @@ public class GameManagerScript : MonoBehaviour {
     public GameObject officeLevelManagerPrefab;
 
     public GameObject statusSpritePrefab;
+    public GameObject itemPrefab;
 
     [HideInInspector]
     public bool menuActive = false;

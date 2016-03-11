@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: b3607d5658852f04b8beefcd747a7f33
-timeCreated: 1457582105
+timeCreated: 1457662431
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -28,6 +28,8 @@ TextureImporter:
     21300042: tileset4_21
     21300044: tileset4_22
     21300046: tileset4_23
+    21300048: tileset4_24
+    21300050: tileset4_25
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -332,6 +334,28 @@ TextureImporter:
         serializedVersion: 2
         x: 64
         y: 46
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: tileset4_24
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 37
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: tileset4_25
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 37
         width: 8
         height: 8
       alignment: 0

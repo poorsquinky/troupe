@@ -144,6 +144,12 @@ namespace ThugLib
 
         public void AddItem(ItemEntity i)
         {
+            if (this.items == null)
+            {
+                this.items       = new List<ItemEntity>();
+                this.items_index = new List<int>();
+            }
+
             this.items.Add(i);
             this.items_index.Add(i.index);
             i.parent = this;
@@ -156,6 +162,11 @@ namespace ThugLib
         }
         public List<ItemEntity> GetItems()
         {
+            if (this.items == null)
+            {
+                this.items       = new List<ItemEntity>();
+                this.items_index = new List<int>();
+            }
             return this.items;
         }
 
