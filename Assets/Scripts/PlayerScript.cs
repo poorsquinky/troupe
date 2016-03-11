@@ -16,14 +16,14 @@ public class PlayerScript : MonoBehaviour {
     public int keyboardX = 0;
     public int keyboardY = 0;
 
-    void AddPerformer(string performerType, string performerName)
+    public void AddPerformer(string performerType, string performerName)
     {
         List<string> performers = GetPerformers(performerType);
         performers.Add(performerName);
         actor.entity.attrs["performer_" + performerType] = System.String.Join(",", performers.ToArray());
     }
 
-    void RemovePerformer(string performerType, string performerName)
+    public void RemovePerformer(string performerType, string performerName)
     {
         List<string> performers = GetPerformers(performerType);
         performers.Remove(performerName);
@@ -33,7 +33,7 @@ public class PlayerScript : MonoBehaviour {
             actor.entity.attrs["performer_" + performerType] = System.String.Join(",", performers.ToArray());
     }
 
-    List<string> GetPerformers(string performerType)
+    public List<string> GetPerformers(string performerType)
     {
         List<string> performers = new List<string>();
         if (! actor.entity.attrs.ContainsKey("performer_" + performerType) || actor.entity.attrs["performer_" + performerType] == "")
@@ -42,18 +42,109 @@ public class PlayerScript : MonoBehaviour {
         return performers;
     }
 
-    int CountPerformers()
+    public int CountPerformers()
     {
-        int ct = 0;
+        return ListAllPerformers().Count;
+    }
+
+    public List<string> ListAllPerformers()
+    {
+        List<string> performers = new List<string>();
         foreach (string k in actor.entity.attrs.Keys)
         {
             if (k.StartsWith("performer_"))
             {
                 string performerType = k.Split('_')[1];
-                ct += GetPerformers(performerType).Count;
+                foreach (string name in actor.entity.attrs[k].Split(','))
+                {
+                    if (name != "")
+                        performers.Add(name + " the " + performerType);
+                }
             }
         }
-        return ct;
+        Debug.Log(System.String.Join(", ", performers.ToArray()));
+        return performers;
+    }
+
+    public string RandomPerformer()
+    {
+        List<string> ap = ListAllPerformers();
+        return ap[Random.Range(0, ap.Count)];
+    }
+
+    public bool PerformerHasDisease(string fullPerformer)
+    {
+        if (GetDiseasedPerformer(fullPerformer) == null)
+            return false;
+        return true;
+    }
+
+    public string GetDiseasedPerformer(string fullPerformer)
+    {
+        List<string> d = GetAllDiseasedPerformers();
+        foreach (string p in d)
+        {
+            if (p.StartsWith(fullPerformer + " has "))
+                return p;
+        }
+        return null;
+    }
+
+    public List<string> GetAllDiseasedPerformers()
+    {
+        List<string> performers = new List<string>();
+        if (actor.entity.attrs.ContainsKey("diseased_performers") && actor.entity.attrs["diseased_performers"] != "")
+            performers.AddRange(actor.entity.attrs["diseased_performers"].Split(','));
+        Debug.Log("DISEASED: " + System.String.Join(", ", performers.ToArray()));
+        return performers;
+    }
+    public void RemovePerformer(string fullPerformer)
+    {
+        RemovePerformerDisease(fullPerformer);
+        string[] pattrs = fullPerformer.Split(new string[] {" the "}, System.StringSplitOptions.None);
+        RemovePerformer(pattrs[1], pattrs[0]);
+    }
+    public void RemovePerformerDisease(string fullPerformer)
+    {
+        List<string> allDiseases = GetAllDiseasedPerformers();
+        List<string> newDiseases = new List<string>();
+        foreach (string p in allDiseases)
+        {
+            string[] pattrs = p.Split(new string[] {" has "}, System.StringSplitOptions.None);
+            if (pattrs[0] != fullPerformer)
+                newDiseases.Add(p);
+        }
+        actor.entity.attrs["diseased_performers"] = System.String.Join(",", newDiseases.ToArray());
+    }
+    public void AddPerformerDisease(string fullPerformer, string diseaseName)
+    {
+        List<string> performers = GetAllDiseasedPerformers();
+        string entry = fullPerformer + " has " + diseaseName;
+        performers.Add(entry);
+        actor.entity.attrs["diseased_performers"] = System.String.Join(",", performers.ToArray());
+    }
+
+
+    public int GetFood()
+    {
+        return actor.entity.stats["food"];
+    }
+    public void SetFood(int amt, bool handleStarvation)
+    {
+        if (amt <= 0)
+        {
+            actor.entity.stats["food"] = 0;
+            lm.gm.Message("You have run out of food.");
+            // XXX handle starvation
+        }
+        else
+        {
+            actor.entity.stats["food"] = amt;
+        }
+    }
+    public void SetFood(int amt)
+    {
+        SetFood(amt, false);
     }
 
     void Awake ()
@@ -108,15 +199,10 @@ public class PlayerScript : MonoBehaviour {
     {
         if (gm.turnCount % turns == 0)
         {
-            // TODO: starvation effects?
-            int foodDec = CountPerformers();
-            actor.entity.stats["food"] -= foodDec;
-            if (actor.entity.stats["food"] < 0)
-            {
-                actor.entity.stats["food"] = 0;
-                lm.gm.Message("You have run out of food.");
-            }
-            else
+            int food = GetFood();
+            int foodDec = CountPerformers() + GetAllDiseasedPerformers().Count;
+            SetFood(food - foodDec);
+            if (actor.entity.stats["food"] > 0)
             {
                 lm.gm.Message("Your performers ate " + foodDec + " food.");
             }

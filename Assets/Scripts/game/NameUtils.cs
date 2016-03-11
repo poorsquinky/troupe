@@ -17961,6 +17961,67 @@ namespace ThugLib
             "Zulma"
         };
 
+        private string[] diseaseNames = {
+            "bird flu",
+            "chicken pox",
+            "cholera",
+            "cholera",
+            "cholera",
+            "cholera",
+            "diphtheria",
+            "diphtheria",
+            "diphtheria",
+            "diphtheria",
+            "dysentery",
+            "dysentery",
+            "dysentery",
+            "dysentery",
+            "dysentery",
+            "dysentery",
+            "dysentery",
+            "dysentery",
+            "the flu",
+            "measels",
+            "swine flu",
+            "typhoid fever",
+            "typhoid fever",
+            "typhoid fever",
+        };
+
+        private string[] sillyDiseaseNames = {
+            "Hawaiian cat flu",
+            "MacGregor's syndrome",
+            "Shanti virus",
+            "affluenza",
+            "cobbles",
+            "cooties",
+            "cutie pox",
+            "dandruff",
+            "diathronitis",
+            "dragon pox",
+            "entitilitus",
+            "greyscale",
+            "hopping cough",
+            "iocaine poisoning",
+            "lycanthropy",
+            "mono",
+            "pac-man fever",
+            "pink eye",
+            "snow crash",
+            "space rabies",
+            "stinkfoot",
+            "the rat plague",
+            "the suds",
+            "tiberium poisoning",
+            "toxoplasmosis",
+        };
+
+        public string RandomDiseaseName()
+        {
+            if (Random.Range(20,1) == 0)
+                return sillyDiseaseNames[Random.Range(0,sillyDiseaseNames.Length)];
+            return diseaseNames[Random.Range(0,diseaseNames.Length)];
+        }
 
         public string RandomCityName()
         {

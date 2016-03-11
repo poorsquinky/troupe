@@ -9,6 +9,8 @@ namespace ThugLib
     public class TroupeOverworldEncounter
     {
 
+        NameUtils nameUtils = new NameUtils();
+
         // encounter types are listed here.  They will be picked at random from a joined list of the
         // common ones and the special ones to the zone.
 
@@ -19,6 +21,27 @@ namespace ThugLib
             "bad water",
             "food spoiled",
             "bandits",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
             "disease",
         };
 
@@ -49,6 +72,8 @@ namespace ThugLib
         };
 
         string[] mountainEncounters = {
+            "bad water",
+            "no water",
             "vehicle breakdown",
             "berries",
             "bandits",
@@ -66,6 +91,8 @@ namespace ThugLib
 
         string[] desertEncounters = {
             "bad water",
+            "no water",
+            "no water",
             "food spoiled",
             "disease",
             "buffalo fight",
@@ -152,29 +179,50 @@ namespace ThugLib
 
             string selectedEncounter = callbackSelection[Random.Range(0,callbackSelection.Count)];
 
+            PlayerScript player = gm.playerScript;
 
             switch(selectedEncounter)
             {
-//                case "bad water":
-//                    break;
-//                case "bandits":
-//                    break;
-//                case "bear fight":
-//                    break;
-//                case "berries":
-//                    break;
-//                case "buffalo fight":
-//                    break;
-//                case "dead end":
-//                    break;
-//                case "disease"
-//                    break;
-//                case "disease":
-//                    break;
-//                case "food spoiled"
-//                    break;
-//                case "food spoiled":
-//                    break;
+                case "bad water":
+                    gm.Message("Bad water.  Everyone consumes an extra share of food.");
+                    player.SetFood(player.GetFood() - player.CountPerformers(), false);
+                    break;
+                case "no water":
+                    gm.Message("You have run out of water.  Everyone consumes an extra share of food.");
+                    player.SetFood(player.GetFood() - player.CountPerformers(), true);
+                    break;
+                case "bandits":
+                    break;
+                case "bear fight":
+                    break;
+                case "berries":
+                    break;
+                case "buffalo fight":
+                    break;
+                case "dead end":
+                    break;
+                case "disease":
+                    string randomPerformer = player.RandomPerformer();
+                    if (player.PerformerHasDisease(randomPerformer))
+                    {
+                        string dp = player.GetDiseasedPerformer(randomPerformer);
+                        string disease = dp.Split(new string[] {" has "}, System.StringSplitOptions.None)[1];
+                        gm.Message(randomPerformer + " has died of " + disease + ".");
+                        player.RemovePerformer(randomPerformer);
+                    }
+                    else
+                    {
+                        string diseaseName = nameUtils.RandomDiseaseName();
+                        player.AddPerformerDisease(randomPerformer, diseaseName);
+                        gm.Message(randomPerformer + " has " + diseaseName + ".");
+                    }
+                    break;
+                case "food spoiled":
+                    break;
+                case "vehicle breakdown":
+                    break;
+                case "vehicle crash":
+                    break;
 //                case "giant locust fight":
 //                    break;
 //                case "performer - acrobat":
@@ -196,12 +244,6 @@ namespace ThugLib
 //                case "robot - military":
 //                    break;
 //                case "robot - mule":
-//                    break;
-//                case "vehicle breakdown":
-//                    break;
-//                case "vehicle crash"
-//                    break;
-//                case "vehicle crash":
 //                    break;
 //                case "yeti fight":
 //                    break;
