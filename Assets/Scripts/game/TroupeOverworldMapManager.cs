@@ -83,6 +83,17 @@ namespace ThugSimpleGame {
         List<MapNode> questPOIs     = new List<MapNode>();
         List<MapNode> secondaryPOIs = new List<MapNode>();
 
+        void AddSecondaryPOI(int x, int y)
+        {
+            MapNode node = new MapNode(
+                x,
+                y,
+                20,
+                lm.levelWidth,
+                lm.levelHeight
+            );
+            secondaryPOIs.Add(node);
+        }
 
         public override void Generate()
         {
@@ -239,12 +250,15 @@ namespace ThugSimpleGame {
                 map[secpoi[i].x,secpoi[i].y] = 1;
             }
 
+            // add roads and cities
+            int cityChance = 10;
             foreach (MapNode a in questPOIs)
             {
                 MapNode b = a.FindNearest(secpoi);
                 // this is going to be a bit on the silly side as far as algorithms go, but time is of the essence
                 int x = a.x;
                 int y = a.y;
+                int lastCity = 0;
                 if (Random.Range(0,2) == 0)
                 {
                     tries = 0;
@@ -254,6 +268,13 @@ namespace ThugSimpleGame {
                         y += ((y < b.y) ? 1 : -1);
                         if (map[x,y] == 0)
                             map[x,y] = 1;
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                     tries = 0;
                     while (x != b.x && tries < 1000)
@@ -262,6 +283,13 @@ namespace ThugSimpleGame {
                         x += ((x < b.x) ? 1 : -1);
                         if (map[x,y] == 0)
                             map[x,y] = 1;
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                 }
                 else
@@ -273,6 +301,13 @@ namespace ThugSimpleGame {
                         x += ((x < b.x) ? 1 : -1);
                         if (map[x,y] == 0)
                             map[x,y] = 1;
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                     tries = 0;
                     while (y != b.y && tries < 1000)
@@ -281,6 +316,13 @@ namespace ThugSimpleGame {
                         y += ((y < b.y) ? 1 : -1);
                         if (map[x,y] == 0)
                             map[x,y] = 1;
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                 }
             }
@@ -291,6 +333,7 @@ namespace ThugSimpleGame {
                 MapNode b = secpoi[i + 1];
                 int x = a.x;
                 int y = a.y;
+                int lastCity = 0;
                 if (Random.Range(0,2) == 0)
                 {
                     tries = 0;
@@ -299,7 +342,16 @@ namespace ThugSimpleGame {
                         tries++;
                         y += ((y < b.y) ? 1 : -1);
                         if (map[x,y] == 0)
+                        {
                             map[x,y] = 1;
+                        }
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                     tries = 0;
                     while (x != b.x && tries < 1000)
@@ -307,7 +359,16 @@ namespace ThugSimpleGame {
                         tries++;
                         x += ((x < b.x) ? 1 : -1);
                         if (map[x,y] == 0)
+                        {
                             map[x,y] = 1;
+                        }
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                 }
                 else
@@ -318,7 +379,16 @@ namespace ThugSimpleGame {
                         tries++;
                         x += ((x < b.x) ? 1 : -1);
                         if (map[x,y] == 0)
+                        {
                             map[x,y] = 1;
+                        }
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                     tries = 0;
                     while (y != b.y && tries < 1000)
@@ -326,11 +396,21 @@ namespace ThugSimpleGame {
                         tries++;
                         y += ((y < b.y) ? 1 : -1);
                         if (map[x,y] == 0)
+                        {
                             map[x,y] = 1;
+                        }
+                        lastCity++;
+                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        {
+                            lastCity = 0;
+                            AddSecondaryPOI(x,y);
+                            map[x,y] = 2;
+                        }
                     }
                 }
             }
 
+            /*
             // erode roads
             bool eroded = true;
             while (eroded == true)
@@ -385,6 +465,7 @@ namespace ThugSimpleGame {
                     }
                 }
             }
+            */
 
             // now scatter some seeds
             for (int i = 0; i < 6; i++)
@@ -560,6 +641,22 @@ namespace ThugSimpleGame {
                     return false;
                 });
             }
+
+            foreach (MapNode poi in secondaryPOIs)
+            {
+                CellEntity c = lm.entity.GetCell(poi.x,poi.y);
+                c.AddActionCallback("_enter", delegate(Entity e, Entity self)
+                {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer != true)
+                        return false;
+                    lm.gm.Message("Entering " + c.terrain.longDescription + "...");
+                    lm.gm.ActivateCircus();
+                    return false;
+                });
+            }
+
+
         }
 
 
