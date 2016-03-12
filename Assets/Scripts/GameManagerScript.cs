@@ -483,6 +483,7 @@ public class GameManagerScript : MonoBehaviour {
             );
         });
 
+        /*
         RegisterCallback("S", delegate(string e)
         {
             CallbackMenu(
@@ -496,6 +497,7 @@ public class GameManagerScript : MonoBehaviour {
                 }
             );
         });
+        */
     }
 
     void RefreshTiles()
@@ -613,12 +615,12 @@ public class GameManagerScript : MonoBehaviour {
         }
         GameObject l = Instantiate(overworldLevelManagerPrefab) as GameObject;
         lm = l.GetComponent<LevelManagerScript>();
-        lm.init_overworld();
+        lm.init_overworld(overworldEntity);
         this.overworldEntity = lm.entity;
         lmDict["overworld"] = lm;
         lm.Activate();
         RefreshTiles();
-        Debug.Log(lm.entity.parent);
+//        Debug.Log(lm.entity.parent);
 //        playerScript.ForceMoveTo(overworldX,overworldY);
     }
 

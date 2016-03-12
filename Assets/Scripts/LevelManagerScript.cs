@@ -255,7 +255,6 @@ public class LevelManagerScript : MonoBehaviour {
 
         PlayerScript playerScript = gm.player.GetComponent<PlayerScript>();
         playerScript.lm = this;
-        playerScript.ForceMoveTo(25,40);
         ProcessNPCs();
 
         this.active = true;
@@ -263,7 +262,7 @@ public class LevelManagerScript : MonoBehaviour {
 
     void init_common()
     {
-        init_common(25,40);
+        init_common(levelWidth / 2,1);
     }
 
     void init_common(int player_x, int player_y) {
@@ -321,15 +320,22 @@ public class LevelManagerScript : MonoBehaviour {
         }
     }
 
-    public void init_overworld() {
+    public void init_overworld(LevelEntity e) {
         isOverworld = true;
         levelWidth=50;
         levelHeight=50;
-        this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
-        this.entity.index = gm.entity.RegisterEntity(this.entity);
-
         mapman = new TroupeOverworldMapManager(this);
-        mapman.Generate();
+        if (e == null)
+        {
+            this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
+            this.entity.index = gm.entity.RegisterEntity(this.entity);
+            mapman.Generate();
+        }
+        else
+        {
+            this.entity = e;
+        }
+
 
         // uncomment all of this stuff in order to test serialize/deserialize
         /*
@@ -349,9 +355,9 @@ public class LevelManagerScript : MonoBehaviour {
         mapman = new TroupeOverworldMapManager(this);
         */
 
-        ProcessNPCs();
+//        ProcessNPCs();
         mapman.PostProcess();
-        init_common(10,10);
+        init_common(gm.overworldX,gm.overworldY);
     }
 
     public void init_office(PlaceEntity place) {
