@@ -92,6 +92,20 @@ public class StatusSpriteScript : MonoBehaviour {
         this.transform.position = pos;
     }
 
+    void SetDirection(int x, int y)
+    {
+        Vector3 pos = target.transform.position;
+        int fromx = (int)pos.x;
+        int fromy = (int)pos.y;
+        float theta = Mathf.Atan2(x - fromx,y - fromy);
+        int cardinal = (int)(theta * 8 / (2 * Mathf.PI) + 8) % 8;
+        this.sprite.sprite = directionSprites[cardinal];
+        float roundedAngle = (float)cardinal / 8f * (2f * Mathf.PI);
+        pos.x += 0.75f * Mathf.Sin(roundedAngle);
+        pos.y += 0.75f * Mathf.Cos(roundedAngle);
+        transform.position = pos;
+    }
+
     void Start()
     {
         this.sprite.sprite = healthSprites[6];
@@ -113,9 +127,13 @@ public class StatusSpriteScript : MonoBehaviour {
                 }
                 if (target != null)
                 {
+                    Vector3 pos = target.transform.position;
+                    transform.position = pos;
                     ActorEntity e = target.GetComponent<ActorScript>().entity;
                     if (e.stats.ContainsKey("hp") && e.stats["hp"] < 1)
                     {
+                        pos.y += 0.25f;
+                        transform.position = pos;
                         this.sprite.sprite  = healthSprites[0];
                         this.sprite.enabled = true;
                     }
@@ -123,6 +141,8 @@ public class StatusSpriteScript : MonoBehaviour {
                     {
                         if (e.stats.ContainsKey("hp"))
                         {
+                            pos.y += 0.125f;
+                            transform.position = pos;
                             int hp  = e.stats["hp"];
                             if (e.stats.ContainsKey("mhp"))
                             {
@@ -149,6 +169,14 @@ public class StatusSpriteScript : MonoBehaviour {
                         {
                             this.sprite.enabled = false;
                         }
+                    }
+                    else if (e.isPlayer && gm.lm.isOverworld && (d % 4 == 2))
+                    {
+                        int wx = gm.lm.entity.stats["poi_0_x"];
+                        int wy = gm.lm.entity.stats["poi_0_y"];
+
+                        SetDirection(wx,wy);
+                        this.sprite.enabled = true;
                     }
                     else
                         this.sprite.enabled = false;
