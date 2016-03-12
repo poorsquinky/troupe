@@ -36,12 +36,22 @@ namespace ThugLib
                 {
                     return true;
                 }
-//                else
-//                {
-//                    oldCell.ActorForceEnter(this);
-//                }
             }
             return false;
+        }
+
+        public void TeleportTo(int x, int y)
+        {
+            GameObject g = GameObject.Find("GameManager");
+            GameManagerScript gm = g.GetComponent<GameManagerScript>();
+            LevelEntity level = gm.lm.entity;
+
+            CellEntity oldCell = this.parent as CellEntity;
+            CellEntity newCell = level.GetCell(x,y);
+
+            if (oldCell != null)
+                oldCell.SetActor(null);
+            newCell.SetActor(this);
         }
 
         public void SetHP(int hp)

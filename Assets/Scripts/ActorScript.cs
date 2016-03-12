@@ -107,7 +107,7 @@ public class ActorScript : MonoBehaviour {
     public void TeleportTo (Vector3 destination)
     {
         transform.position = destination;
-        this.entity.MoveTo((int)destination.x, (int)destination.y);
+        this.entity.TeleportTo((int)destination.x, (int)destination.y);
         moving = false;
         movingTo = destination;
         UpdateVisibility();
