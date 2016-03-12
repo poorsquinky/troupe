@@ -506,28 +506,22 @@ public class GameManagerScript : MonoBehaviour {
         }
     }
 
-    public void ActivateOffice(PlaceEntity place)
+    public void ActivateOffice(PlaceEntity place, int level)
     {
         if (lm)
             lm.Deactivate();
-        if (! lmDict.ContainsKey("office"))
-        {
-            GameObject l = Instantiate(officeLevelManagerPrefab) as GameObject;
-            lm = l.GetComponent<LevelManagerScript>();
-            lmDict["office"] = lm;
-        }
-        else
-        {
-            lm = lmDict["office"];
-        }
-
-        if (place.levels.Count == 0)
+        Destroy(lm.gameObject);
+        lm = null;
+        GameObject l = Instantiate(officeLevelManagerPrefab) as GameObject;
+        lm = l.GetComponent<LevelManagerScript>();
+        lmDict["office"] = lm;
+        if (place.levels.Count <= level)
         {
             lm.init_office(place);
         }
         else
         {
-            lm.load_office(place.levels[0]);
+            lm.load_office(place.levels[level]);
         }
         lm.Activate();
         RefreshTiles();
@@ -538,16 +532,9 @@ public class GameManagerScript : MonoBehaviour {
         // create the level manager if needed
         if (lm)
             lm.Deactivate();
-        if (! lmDict.ContainsKey("circus"))
-        {
-            GameObject l = Instantiate(circusLevelManagerPrefab) as GameObject;
-            lm = l.GetComponent<LevelManagerScript>();
-            lmDict["circus"] = lm;
-        }
-        else
-        {
-            lm = lmDict["circus"];
-        }
+        GameObject l = Instantiate(circusLevelManagerPrefab) as GameObject;
+        lm = l.GetComponent<LevelManagerScript>();
+        lmDict["circus"] = lm;
 
         // create the level entities if needed
         if (place.levels.Count == 0)

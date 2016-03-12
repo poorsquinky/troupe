@@ -219,7 +219,7 @@ namespace ThugSimpleGame {
 //                        Debug.Log(place);
                         foreach (PlaceEntity subPlace in place.subPlaces)
                         {
-                            menuItems.Add(new GameManagerScript.MenuCallback("Visit " + subPlace.longDescription, delegate() { lm.gm.ActivateOffice(subPlace); }));
+                            menuItems.Add(new GameManagerScript.MenuCallback("Visit " + subPlace.longDescription, delegate() { lm.gm.ActivateOffice(subPlace,0); }));
                         }
                         menuItems.Add(new GameManagerScript.MenuCallback("Never mind", delegate() { return; }));
                         lm.gm.CallbackMenu(

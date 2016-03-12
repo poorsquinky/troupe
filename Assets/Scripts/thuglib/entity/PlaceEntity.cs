@@ -50,7 +50,7 @@ namespace ThugLib
         }
 
         // FIXME this should be done with delegates but it's not because tick tock
-        public void Activate()
+        public void Activate(int level)
         {
             gm.Message("Entering " + this.longDescription + "...");
             switch (this.placeType)
@@ -58,7 +58,14 @@ namespace ThugLib
                 case "city":
                     gm.ActivateCircus(this);
                     break;
+                case "office":
+                    gm.ActivateOffice(this, level);
+                    break;
             }
+        }
+        public void Activate()
+        {
+            Activate(0);
         }
 
         public PlaceEntity()

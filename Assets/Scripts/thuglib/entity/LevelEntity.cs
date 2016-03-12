@@ -12,6 +12,9 @@ namespace ThugLib
         // FIXME: this should not be here
         public LevelManagerScript lm;
 
+        // FIXME serialize
+        public int levelNumber = 0;
+
         public override void DeserializeFields()
         {
             int w = Convert.ToInt32(serialFields["cells_w"]);

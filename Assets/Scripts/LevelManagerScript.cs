@@ -224,6 +224,20 @@ public class LevelManagerScript : MonoBehaviour {
 
     }
 
+    public void Ascend()
+    {
+        Debug.Log(entity.levelNumber + " -> " + (entity.levelNumber + 1));
+        PlaceEntity place = this.entity.parent as PlaceEntity;
+        gm.ActivateOffice(place,entity.levelNumber + 1);
+    }
+
+    public void Descend()
+    {
+        Debug.Log(entity.levelNumber + " -> " + (entity.levelNumber - 1));
+        PlaceEntity place = this.entity.parent as PlaceEntity;
+        gm.ActivateOffice(place,entity.levelNumber - 1);
+    }
+
     public void Deactivate()
     {
         DestroySprites();
@@ -349,6 +363,7 @@ public class LevelManagerScript : MonoBehaviour {
 
         mapman.Generate();
         mapman.PostProcess();
+
         init_common();
     }
 
@@ -357,8 +372,10 @@ public class LevelManagerScript : MonoBehaviour {
         this.entity = e;
         levelWidth  = e.GetW();
         levelHeight = e.GetH();
+
         mapman = new TroupeOfficeMapManager(this);
         mapman.PostProcess();
+
         init_common();
     }
 

@@ -144,10 +144,11 @@ namespace ThugLib
         public bool RunActionCallbacks(Entity subject, string action)
         {
             bool passed = true;
+            List<CallbackDelegate> ld = new List<CallbackDelegate>();
             foreach (CallbackDelegate d in this.GetActionCallbacks(action))
-            {
+                ld.Add(d);
+            foreach (CallbackDelegate d in ld)
                 passed = passed & d(subject, this);
-            }
             return passed;
         }
 

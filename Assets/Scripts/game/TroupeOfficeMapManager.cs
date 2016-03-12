@@ -50,15 +50,49 @@ namespace ThugSimpleGame {
                 }
             }
 
-            // put the stairs in
-            MapNode upStairs   = new MapNode(Random.Range(leftWall + 5, rightWall - 5), Random.Range(bottomWall + 5, topWall - 5));
-            MapNode downStairs = new MapNode(Random.Range(leftWall + 5, rightWall - 5), Random.Range(bottomWall + 5, topWall - 5));
+            PlaceEntity place = lm.entity.parent as PlaceEntity;
+            int levelNumber = place.levels.Count - 1;
+            lm.entity.levelNumber  = levelNumber;
 
-            int doorX = Random.Range(leftWall + 5, rightWall - 5);
-            map[doorX,bottomWall]     = 3;
-            map[doorX - 1,bottomWall] = 3;
+            MapNode upStairs;
+            MapNode downStairs;
+            MapNode midHall;
 
-            MapNode midHall = new MapNode(doorX,upStairs.y - (upStairs.y - downStairs.y) / 2);
+            Debug.Log(levelNumber);
+
+            if (levelNumber == 0)
+            {
+                int doorX = Random.Range(leftWall + 5, rightWall - 5);
+                map[doorX,bottomWall]     = 3;
+                map[doorX - 1,bottomWall] = 3;
+
+                upStairs   = new MapNode(Random.Range(leftWall + 5, rightWall - 5), Random.Range(bottomWall + 5, topWall - 5));
+                downStairs = new MapNode(Random.Range(leftWall + 5, rightWall - 5), Random.Range(bottomWall + 5, topWall - 5));
+                midHall    = new MapNode(doorX,upStairs.y - (upStairs.y - downStairs.y) / 2);
+
+                place.stats["upstairs_x"] = upStairs.x;
+                place.stats["upstairs_y"] = upStairs.y;
+                place.stats["downstairs_x"] = downStairs.x;
+                place.stats["downstairs_y"] = downStairs.y;
+                place.stats["midhall_x"] = midHall.x;
+                place.stats["midhall_y"] = midHall.y;
+            }
+            else
+            {
+                if (levelNumber % 2 == 0)
+                {
+                    upStairs   = new MapNode(place.stats["upstairs_x"],place.stats["upstairs_y"]);
+                    downStairs = new MapNode(place.stats["downstairs_x"],place.stats["downstairs_x"]);
+                }
+                else
+                {
+                    upStairs   = new MapNode(place.stats["downstairs_x"],place.stats["downstairs_x"]);
+                    downStairs = new MapNode(place.stats["upstairs_x"],place.stats["upstairs_y"]);
+                }
+                midHall    = new MapNode(place.stats["midhall_x"],place.stats["midhall_x"]);
+            }
+
+
 
             for (int x = -1; x <= 1; x++)
             {
@@ -154,8 +188,13 @@ namespace ThugSimpleGame {
                 hy += dy3;
             }
 
-            map[upStairs.x,upStairs.y]     = 6;
-            map[downStairs.x,downStairs.y] = 7;
+
+            // put the stairs in
+            int upnum = 6;
+            int dnnum = 7;
+            map[upStairs.x,upStairs.y]         = upnum;
+            if (levelNumber > 0)
+                map[downStairs.x,downStairs.y] = dnnum;
 
             // CA hollow out
             int[,] newmap = (int[,]) map.Clone();
@@ -191,7 +230,8 @@ namespace ThugSimpleGame {
 
             int tries = 0;
 
-            while (tries < 20)
+            //while (tries < 20)
+            while (tries < 2)
             {
                 tries++;
                 MapNode rn = new MapNode(Random.Range(leftWall + 1, rightWall - 1), Random.Range(bottomWall + 1, topWall - 1));
@@ -425,6 +465,45 @@ namespace ThugSimpleGame {
                 lm.entity.GetCell(0,y).AddActionCallback("_enter", exitDelegate);
                 lm.entity.GetCell(lm.levelWidth - 1,y).AddActionCallback("_enter", exitDelegate);
             }
+
+            // staircases
+
+            PlaceEntity place = lm.entity.parent as PlaceEntity;
+            CellEntity upCell, downCell;
+            if (lm.entity.levelNumber % 2 == 0)
+            {
+                upCell   = lm.entity.GetCell(place.stats["upstairs_x"], place.stats["upstairs_y"]);
+                downCell = lm.entity.GetCell(place.stats["downstairs_x"], place.stats["downstairs_y"]);
+            }
+            else
+            {
+                upCell   = lm.entity.GetCell(place.stats["downstairs_x"], place.stats["downstairs_y"]);
+                downCell = lm.entity.GetCell(place.stats["upstairs_x"], place.stats["upstairs_y"]);
+            }
+            upCell.AddActionCallback("_enter", delegate(Entity e, Entity self)
+                {
+                    ActorEntity actor = e as ActorEntity;
+                    if (actor.isPlayer == true)
+                    {
+                        lm.Ascend();
+                    }
+                    return true;
+                });
+            if (lm.entity.levelNumber > 0)
+            {
+                downCell.AddActionCallback("_enter", delegate(Entity e, Entity self)
+                    {
+                        ActorEntity actor = e as ActorEntity;
+                        if (actor.isPlayer == true)
+                        {
+                            lm.Descend();
+                        }
+                        return true;
+                    });
+            }
+
+
+
         }
 
 
