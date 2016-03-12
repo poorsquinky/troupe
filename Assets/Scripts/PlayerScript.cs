@@ -136,6 +136,36 @@ public class PlayerScript : MonoBehaviour {
             actor.entity.stats["food"] = 0;
             lm.gm.Message("You have run out of food.");
             // XXX handle starvation
+            if (handleStarvation)
+            {
+                int needed = FoodConsumption();
+                int fpp = needed / CountPerformers() + 1;
+                List<string> dead = new List<string>();
+                for (int i = 0; i < Mathf.Abs(needed); i += fpp)
+                {
+                    if (Random.Range(0,1) == 0 && CountPerformers() > 0)
+                    {
+                        string p = RandomPerformer();
+                        RemovePerformer(p);
+                        dead.Add(p);
+                    }
+                }
+                if (dead.Count > 1)
+                {
+                    lm.gm.Message(dead.Count + " performers have starved to death: " + System.String.Join(", ", dead.ToArray()));
+                }
+                else if (dead.Count == 1)
+                    lm.gm.Message(dead[0] + " has died of starvation.");
+            }
+            else // we'll sort of handle it anyway
+            {
+                if (FoodConsumption() + amt < 0)
+                {
+                    string p = RandomPerformer();
+                    RemovePerformer(p);
+                    lm.gm.Message(p + " has died of starvation.");
+                }
+            }
         }
         else
         {
@@ -266,7 +296,15 @@ public class PlayerScript : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (this.actor.entity.stats["hp"] <= 0)
+        if (CountPerformers() < 1)
+            gm.CallbackMenu(
+                "You have run out of performers after " + gm.turnCount + " turns.\n"
+                + "You have 0 points because we have no points yet.",
+                new[] {
+                    new GameManagerScript.MenuCallback("Quit", delegate() { Application.Quit(); }),
+                }
+            );
+        if (this.actor.entity.stats.ContainsKey("hp") && this.actor.entity.stats["hp"] < 1 )
             gm.CallbackMenu(
                 "You were killed by " + killedBy + " after " + gm.turnCount + " turns.\n"
                 + "You have 0 points because we have no points yet.",

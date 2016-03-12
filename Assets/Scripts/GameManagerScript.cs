@@ -78,6 +78,8 @@ public class GameManagerScript : MonoBehaviour {
 <color=#cc99ffff>[SHIFT-Q]</color> - <color=#ffff66ff>Quit the game without saving (give up)</color>
 ";
 
+    public int waypoint = -1;
+
     public bool IsOverworldActive() {
         if (lm.entity == overworldEntity)
             return true;
@@ -598,8 +600,17 @@ public class GameManagerScript : MonoBehaviour {
             menuItems.Add(new GameManagerScript.MenuCallback("Visit " + subPlace.longDescription, delegate() { lm.gm.ActivateOffice(subPlace,0); }));
         }
         menuItems.Add(new MenuCallback("Return to world map", ActivateOverworld ));
+        string menuText = "Welcome to " + place.shortDescription;
+
+        if (waypoint < 0)
+        {
+            menuText = "You arrive outside of " + place.shortDescription + ".";
+            // FIXME TBD
+            waypoint++;
+        }
+
         lm.gm.CallbackMenu(
-            "Welcome to " + place.shortDescription,
+            menuText,
             menuItems.ToArray()
         );
 
@@ -620,6 +631,8 @@ public class GameManagerScript : MonoBehaviour {
         lmDict["overworld"] = lm;
         lm.Activate();
         RefreshTiles();
+        if (waypoint < 0)
+            ActivateCircus(lm.entity.GetCell(overworldX,overworldY).place);
 //        Debug.Log(lm.entity.parent);
 //        playerScript.ForceMoveTo(overworldX,overworldY);
     }

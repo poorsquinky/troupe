@@ -20,7 +20,11 @@ namespace ThugLib
             "vehicle crash",
             "bad water",
             "food spoiled",
-            "bandits",
+//            "bandits",
+            "disease",
+            "disease",
+            "disease",
+            "disease",
             "disease",
         };
 
@@ -166,11 +170,11 @@ namespace ThugLib
             switch(selectedEncounter)
             {
                 case "bad water":
-                    gm.Message("Bad water.  Everyone consumes an extra share of food.");
+                    gm.Message("Bad water.  Everyone needs an extra share of food.");
                     player.SetFood(player.GetFood() - player.FoodConsumption(), false);
                     break;
                 case "no water":
-                    gm.Message("You have run out of water.  Everyone consumes an extra share of food.");
+                    gm.Message("You have run out of water.  Everyone needs an extra share of food.");
                     player.SetFood(player.GetFood() - player.FoodConsumption(), true);
                     break;
                 case "berries":
@@ -211,41 +215,41 @@ namespace ThugLib
                 case "performer - acrobat":
                     performerName = nameUtils.RandomPersonName();
                     fullName      = performerName + " the acrobat";
-                    player.AddPerformer(performerName, "acrobat");
+                    player.AddPerformer("acrobat", performerName);
                     gm.Message(fullName + " has joined your circus!");
                     break;
                 case "performer - musician":
                     performerName = nameUtils.RandomPersonName();
                     fullName      = performerName + " the musician";
-                    player.AddPerformer(performerName, "musician");
+                    player.AddPerformer("musician", performerName);
                     gm.Message(fullName + " has joined your circus!");
                     break;
                 case "performer - mystic":
                     performerName = nameUtils.RandomPersonName();
                     fullName      = performerName + " the magician";
-                    player.AddPerformer(performerName, "magician");
+                    player.AddPerformer("magician", performerName);
                     gm.Message(fullName + " has joined your circus!");
                     break;
                 case "performer - knife thrower":
                     performerName = nameUtils.RandomPersonName();
                     fullName      = performerName + " the knife thrower";
-                    player.AddPerformer(performerName, "knife thrower");
+                    player.AddPerformer("knife thrower", performerName);
                     gm.Message(fullName + " has joined your circus!");
                     break;
-                case "bandits":
-                    break;
-                case "bear fight":
-                    break;
-                case "buffalo fight":
-                    break;
-                case "vehicle breakdown":
-                    break;
-                case "vehicle crash":
-                    break;
-                case "yeti fight":
-                    break;
-                case "giant locust fight":
-                    break;
+//                case "bandits":
+//                    break;
+//                case "bear fight":
+//                    break;
+//                case "buffalo fight":
+//                    break;
+//                case "vehicle breakdown":
+//                    break;
+//                case "vehicle crash":
+//                    break;
+//                case "yeti fight":
+//                    break;
+//                case "giant locust fight":
+//                    break;
 //                case "robot - household"
 //                    break;
 //                case "robot - household":
