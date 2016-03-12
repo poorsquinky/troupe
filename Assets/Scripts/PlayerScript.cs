@@ -186,13 +186,13 @@ public class PlayerScript : MonoBehaviour {
         // force a refresh every time, in case the level changed
         lm = gm.lm;
         this.actor.lm = lm;
-
-        CellEntity c = lm.entity.GetCell(x, y);
-
-        this.actor.entity.SetParent(c);
-        c.ActorForceEnter(this.actor.entity);
         this.actor.TeleportTo(x,y);
 
+        if (actor.entity.isPlayer && lm.entity.isOverworld)
+        {
+            gm.overworldX = x;
+            gm.overworldY = y;
+        }
     }
 
     public int FoodConsumption()
