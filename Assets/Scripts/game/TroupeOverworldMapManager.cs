@@ -236,10 +236,6 @@ namespace ThugSimpleGame {
                 }
             }
 
-
-
-
-
             for (int i = 0; i < questPOIs.Count; i++)
             {
                 map[questPOIs[i].x,questPOIs[i].y] = 2;

@@ -57,6 +57,8 @@ public class GameManagerScript : MonoBehaviour {
 
     public int turnCount = 0;
 
+    public List<string> messageScrollback = new List<string>();
+
     private const string helpText =
 @"<b>MOVEMENT:</b>
  Arrows, gamepad and WASD (probably) work, but vi keys are recommended:
@@ -134,7 +136,10 @@ public class GameManagerScript : MonoBehaviour {
 
     public void Message(string msg)
     {
-        ui_messagecontent.GetComponent<Text>().text = msg;
+        messageScrollback.Add(msg);
+        List<string> l = new List<string>(messageScrollback);
+        l.Reverse();
+        ui_messagecontent.GetComponent<Text>().text = System.String.Join("\n", l.ToArray());
     }
 
     void ToggleHelpMenu()

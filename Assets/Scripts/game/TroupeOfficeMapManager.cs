@@ -58,7 +58,7 @@ namespace ThugSimpleGame {
             MapNode downStairs;
             MapNode midHall;
 
-            Debug.Log(levelNumber);
+//            Debug.Log(levelNumber);
 
             if (levelNumber == 0)
             {
@@ -231,7 +231,7 @@ namespace ThugSimpleGame {
             int tries = 0;
 
             //while (tries < 20)
-            while (tries < 2)
+            while (tries < 10)
             {
                 tries++;
                 MapNode rn = new MapNode(Random.Range(leftWall + 1, rightWall - 1), Random.Range(bottomWall + 1, topWall - 1));
@@ -266,7 +266,7 @@ namespace ThugSimpleGame {
                         h++;
                         hy++;
                     }
-                    if (w >3 && h > 3) // we are go for split
+                    if (w >5 && h > 5) // we are go for split
                     {
                         map[rn.x,rn.y] = 3;
                         if (w > h)
@@ -417,8 +417,7 @@ namespace ThugSimpleGame {
                 }
             }
 
-            // let's fill the level with baddies
-            //for (int x = 0; x < 20; x++)
+            // some bandits
             for (int x = 0; x < Random.Range(1,5) + Random.Range(1,5); x++)
             {
                 // one baddie

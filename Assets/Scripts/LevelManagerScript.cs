@@ -226,14 +226,16 @@ public class LevelManagerScript : MonoBehaviour {
 
     public void Ascend()
     {
-        Debug.Log(entity.levelNumber + " -> " + (entity.levelNumber + 1));
+//        Debug.Log(entity.levelNumber + " -> " + (entity.levelNumber + 1));
+        gm.Message("You climb the stairs.");
         PlaceEntity place = this.entity.parent as PlaceEntity;
         gm.ActivateOffice(place,entity.levelNumber + 1);
     }
 
     public void Descend()
     {
-        Debug.Log(entity.levelNumber + " -> " + (entity.levelNumber - 1));
+//        Debug.Log(entity.levelNumber + " -> " + (entity.levelNumber - 1));
+        gm.Message("You descend the stairs.");
         PlaceEntity place = this.entity.parent as PlaceEntity;
         gm.ActivateOffice(place,entity.levelNumber - 1);
     }
