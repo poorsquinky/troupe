@@ -156,16 +156,6 @@ namespace ThugSimpleGame {
                 ));
             }
 
-            // save our POI locations for quests
-            lm.entity.stats["poi_0_x"] = questPOIs[0].x;
-            lm.entity.stats["poi_0_y"] = questPOIs[0].y;
-            lm.entity.stats["poi_1_x"] = questPOIs[1].x;
-            lm.entity.stats["poi_1_y"] = questPOIs[1].y;
-            lm.entity.stats["poi_2_x"] = questPOIs[2].x;
-            lm.entity.stats["poi_2_y"] = questPOIs[2].y;
-            lm.entity.stats["poi_3_x"] = questPOIs[3].x;
-            lm.entity.stats["poi_3_y"] = questPOIs[3].y;
-
             float minDistance = 0;
             int tries = 0; // safety valve
 
@@ -638,6 +628,14 @@ namespace ThugSimpleGame {
                 }
             }
 
+
+            // save our POI locations for quests
+            lm.entity.stats["poi_0_x"] = questPOIs[1].x;
+            lm.entity.stats["poi_0_y"] = questPOIs[1].y;
+            lm.entity.stats["poi_1_x"] = questPOIs[2].x;
+            lm.entity.stats["poi_1_y"] = questPOIs[2].y;
+            lm.entity.stats["poi_2_x"] = questPOIs[3].x;
+            lm.entity.stats["poi_2_y"] = questPOIs[3].y;
             lm.gm.overworldX = questPOIs[0].x;
             lm.gm.overworldY = questPOIs[0].y;
 
