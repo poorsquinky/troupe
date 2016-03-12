@@ -14,6 +14,16 @@ namespace ThugSimpleGame {
             Bounds = new MapRectangle(0, 0, lm.levelWidth, lm.levelHeight);
         }
 
+        public class MapNode
+        {
+            public int x, y;
+            public MapNode(int x, int y)
+            {
+                this.x = x; // x coord
+                this.y = y; // y coord
+            }
+        }
+
         public override void Generate()
         {
 
@@ -34,20 +44,227 @@ namespace ThugSimpleGame {
 
             for (int x = leftWall; x <= rightWall; x++)
             {
-                map[x,topWall]    = 1;
-                map[x,bottomWall] = 1;
+                for (int y = bottomWall; y <= topWall; y++)
+                {
+                    map[x,y] = 1;
+                }
             }
-            for (int y = bottomWall; y <= topWall; y++)
+
+            // put the stairs in
+            MapNode upStairs   = new MapNode(Random.Range(leftWall + 5, rightWall - 5), Random.Range(bottomWall + 5, topWall - 5));
+            MapNode downStairs = new MapNode(Random.Range(leftWall + 5, rightWall - 5), Random.Range(bottomWall + 5, topWall - 5));
+
+            int doorX = Random.Range(leftWall + 5, rightWall - 5);
+            map[doorX,bottomWall]     = 3;
+            map[doorX - 1,bottomWall] = 3;
+
+            MapNode midHall = new MapNode(doorX,upStairs.y - (upStairs.y - downStairs.y) / 2);
+
+            for (int x = -1; x <= 1; x++)
             {
-                map[leftWall, y]  = 1;
-                map[rightWall,y] = 1;
+                for (int y = -1; y <= 1; y++)
+                {
+                    if (map[upStairs.x + x, upStairs.y + y] == 1)
+                        map[upStairs.x + x, upStairs.y + y] = 2;
+                    if (map[downStairs.x + x, downStairs.y + y] == 1)
+                        map[downStairs.x + x, downStairs.y + y] = 2;
+                    if (map[midHall.x + x, midHall.y + y] == 1)
+                        map[midHall.x + x, midHall.y + y] = 2;
+                }
             }
-            for (int y = bottomWall + 1; y < topWall; y++)
+            int dx1 = 0;
+            int dy1 = 0;
+            int dx2 = 0;
+            int dy2 = 0;
+            int dx3 = 0;
+            int dy3 = 0;
+            int wallChoice = Random.Range(0,4);
+            switch (wallChoice)
             {
-                for (int x = leftWall + 1; x < rightWall; x++)
-                    map[x,y] = 2;
+                case 0:
+                    dx1 = 1;
+                    break;
+                case 1:
+                    dx1 = -1;
+                    break;
+                case 2:
+                    dy1 = 1;
+                    break;
+                default:
+                    dy1 = -1;
+                    break;
             }
-            map[Random.Range(leftWall + 5, rightWall - 5),bottomWall] = 3;
+            wallChoice = Random.Range(0,4);
+            switch (wallChoice)
+            {
+                case 0:
+                    dx2 = 1;
+                    break;
+                case 1:
+                    dx2 = -1;
+                    break;
+                case 2:
+                    dy2 = 1;
+                    break;
+                default:
+                    dy2 = -1;
+                    break;
+            }
+            wallChoice = Random.Range(0,4);
+            switch (wallChoice)
+            {
+                case 0:
+                    dx3 = 1;
+                    break;
+                case 1:
+                    dx3 = -1;
+                    break;
+                case 2:
+                    dy3 = 1;
+                    break;
+                default:
+                    dy3 = -1;
+                    break;
+            }
+            int hx = upStairs.x;
+            int hy = upStairs.y;
+            while (hx > leftWall && hx < rightWall && hy > bottomWall && hy < topWall)
+            {
+                if (map[hx,hy] == 1)
+                    map[hx,hy] = 3;
+                hx += dx1;
+                hy += dy1;
+            }
+            hx = downStairs.x;
+            hy = downStairs.y;
+            while (hx > leftWall && hx < rightWall && hy > bottomWall && hy < topWall)
+            {
+                if (map[hx,hy] == 1)
+                    map[hx,hy] = 3;
+                hx += dx2;
+                hy += dy2;
+            }
+            hx = midHall.x;
+            hy = midHall.y;
+            while (hx > leftWall && hx < rightWall && hy > bottomWall && hy < topWall)
+            {
+                if (map[hx,hy] == 1)
+                    map[hx,hy] = 3;
+                hx += dx3;
+                hy += dy3;
+            }
+
+            map[upStairs.x,upStairs.y]     = 6;
+            map[downStairs.x,downStairs.y] = 7;
+
+            // CA hollow out
+            int[,] newmap = (int[,]) map.Clone();
+
+            for (int x = leftWall; x <= rightWall; x++)
+            {
+                for (int y = bottomWall; y <= topWall; y++)
+                {
+                    int wallcount = 0;
+                    for (int x1 = x - 1; x1 < x + 2; x1++)
+                    {
+                        for (int y1 = y - 1; y1 < y + 2; y1++)
+                        {
+                            if (x1 > 0 && x1 < lm.levelWidth && y1 > 0 && y1 < lm.levelHeight)
+                            {
+                                switch (map[x1,y1])
+                                {
+                                    case 1:
+                                        wallcount++;
+                                        break;
+                                    case 3:
+                                        wallcount++;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    if (wallcount == 9)
+                        newmap[x,y] = 2;
+                }
+            }
+            map = (int[,]) newmap.Clone();
+
+            int tries = 0;
+
+            while (tries < 20)
+            {
+                tries++;
+                MapNode rn = new MapNode(Random.Range(leftWall + 1, rightWall - 1), Random.Range(bottomWall + 1, topWall - 1));
+                if (map[rn.x,rn.y] == 2)
+                {
+                    // check the size of the surrounding space
+                    int w = 1;
+                    int h = 1;
+                    hx = rn.x - 1;
+                    hy = rn.y;
+                    while (map[hx,hy] == 2)
+                    {
+                        w++;
+                        hx--;
+                    }
+                    hx = rn.x + 1;
+                    while (map[hx,hy] == 2)
+                    {
+                        w++;
+                        hx++;
+                    }
+                    hx = rn.x;
+                    hy = rn.y - 1;
+                    while (map[hx,hy] == 2)
+                    {
+                        h++;
+                        hy--;
+                    }
+                    hy = rn.y + 1;
+                    while (map[hx,hy] == 2)
+                    {
+                        h++;
+                        hy++;
+                    }
+                    if (w >3 && h > 3) // we are go for split
+                    {
+                        map[rn.x,rn.y] = 3;
+                        if (w > h)
+                        {
+                            hx = rn.x;
+                            hy = rn.y + 1;
+                            while (map[hx,hy] == 2)
+                            {
+                                map[hx,hy] = 1;
+                                hy++;
+                            }
+                            hy = rn.y - 1;
+                            while (map[hx,hy] == 2)
+                            {
+                                map[hx,hy] = 1;
+                                hy--;
+                            }
+                        }
+                        else
+                        {
+                            hx = rn.x + 1;
+                            hy = rn.y;
+                            while (map[hx,hy] == 2)
+                            {
+                                map[hx,hy] = 1;
+                                hx++;
+                            }
+                            hx = rn.x - 1;
+                            while (map[hx,hy] == 2)
+                            {
+                                map[hx,hy] = 1;
+                                hx--;
+                            }
+                        }
+                    }
+
+                }
+            }
 
 
             for (int x = 0; x < lm.levelWidth; x++)
@@ -63,7 +280,7 @@ namespace ThugSimpleGame {
             {
                 for (int y = bottomWall - 2; y <= topWall + 2; y++)
                 {
-                    if (map[x,y] == 0 && Random.Range(0,10) == 0)
+                    if (map[x,y] == 0 && Random.Range(0,15) == 0)
                         map[x,y] = 1;
                 }
             }
@@ -144,13 +361,25 @@ namespace ThugSimpleGame {
                             terrain.shortDescription = "road";
                             terrain.longDescription  = "A crumbling road.";
                             break;
+                        case 6:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "stairway up";
+                            terrain.longDescription  = "A staircase leading up.";
+                            break;
+                        case 7:
+                            terrain.hindrance        = 0f;
+                            terrain.opacity          = 0f;
+                            terrain.shortDescription = "stairway down";
+                            terrain.longDescription  = "A staircase leading down.";
+                            break;
                     }
                 }
             }
 
             // let's fill the level with baddies
-            //for (int x = 0; x < Random.Range(1,5) + Random.Range(1,5); x++)
-            for (int x = 0; x < 20; x++)
+            //for (int x = 0; x < 20; x++)
+            for (int x = 0; x < Random.Range(1,5) + Random.Range(1,5); x++)
             {
                 // one baddie
                 ActorEntity person = new ActorEntity();
@@ -173,7 +402,10 @@ namespace ThugSimpleGame {
             lm.gm.CallbackMenu(
                 "Do you really want to leave this place?",
                 new[] {
-//                    new GameManagerScript.MenuCallback("Yes", delegate() { lm.gm.ActivateCircus(); }),
+                    new GameManagerScript.MenuCallback("Yes", delegate() {
+                        PlaceEntity parentEntity = lm.entity.parent.parent as PlaceEntity;
+                        parentEntity.Activate();
+                    }),
                     new GameManagerScript.MenuCallback("No", delegate() { return; })
                 }
             );
