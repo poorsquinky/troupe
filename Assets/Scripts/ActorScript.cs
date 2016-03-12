@@ -160,6 +160,7 @@ public class ActorScript : MonoBehaviour {
             Vector3 pos               = new Vector3(cell.x,cell.y,0);
             ItemEntity corpseEntity   = corpse.GetComponent<ItemScript>().entity;
             corpse.transform.position = pos;
+            lm.items.Add(corpse);
 
             corpseEntity.shortDescription = "corpse";
             corpseEntity.longDescription = "the corpse of a " + entity.shortDescription;

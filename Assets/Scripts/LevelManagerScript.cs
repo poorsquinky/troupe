@@ -65,6 +65,8 @@ public class LevelManagerScript : MonoBehaviour {
     public List<spriteEntry> spriteEntries;
     public Dictionary<string, Sprite[]> sprites = new Dictionary<string, Sprite[]>();
 
+    public List<GameObject> items = new List<GameObject>();
+
     void Awake ()
     {
         foreach (namedGameObject go in gameObjectTypes)
@@ -221,6 +223,9 @@ public class LevelManagerScript : MonoBehaviour {
             }
             subTileGrid.RemoveAt(0);
         }
+
+        foreach (GameObject item in items)
+            Destroy(item);
 
     }
 
