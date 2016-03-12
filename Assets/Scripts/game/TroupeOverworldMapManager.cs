@@ -166,9 +166,6 @@ namespace ThugSimpleGame {
             lm.entity.stats["poi_3_x"] = questPOIs[3].x;
             lm.entity.stats["poi_3_y"] = questPOIs[3].y;
 
-            lm.gm.overworldX = questPOIs[0].x;
-            lm.gm.overworldY = questPOIs[0].y;
-
             float minDistance = 0;
             int tries = 0; // safety valve
 
@@ -640,6 +637,9 @@ namespace ThugSimpleGame {
                     }
                 }
             }
+
+            lm.gm.overworldX = questPOIs[0].x;
+            lm.gm.overworldY = questPOIs[0].y;
 
         }
         public override void PostProcess()
