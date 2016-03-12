@@ -534,6 +534,12 @@ public class GameManagerScript : MonoBehaviour {
 
     public void ActivateCircus(PlaceEntity place)
     {
+
+        
+
+        // we're short-circuiting the circus activation because of time
+
+        /*
         // create the level manager if needed
         if (lm)
             lm.Deactivate();
@@ -550,6 +556,7 @@ public class GameManagerScript : MonoBehaviour {
         {
             lm.load_circus(place.levels[0]);
         }
+        
         lm.Activate();
         RefreshTiles();
 
@@ -561,27 +568,57 @@ public class GameManagerScript : MonoBehaviour {
                 Message("You drink some snake oil to restore your health.");
             }
         }
+        */
+
+        if (playerScript != null)
+        {
+            if (playerScript.actor.entity.GetHP() < playerScript.actor.entity.GetMHP())
+            {
+                playerScript.actor.entity.SetHP(playerScript.actor.entity.GetMHP());
+                Message("You drink some snake oil to restore your health.");
+            }
+        }
+
+        if (place.subPlaces.Count < 1)
+        {
+            PlaceEntity office      = new PlaceEntity();
+            office.shortDescription = "office";
+            office.longDescription  = "an office building";
+            office.placeType        = "office";
+            office.index            = this.entity.RegisterEntity(office);
+            place.AddSubPlace(office);
+        }
+
+        List<MenuCallback> menuItems = new List<MenuCallback>();
+//                        Debug.Log(place);
+        foreach (PlaceEntity subPlace in place.subPlaces)
+        {
+            menuItems.Add(new GameManagerScript.MenuCallback("Visit " + subPlace.longDescription, delegate() { lm.gm.ActivateOffice(subPlace,0); }));
+        }
+        menuItems.Add(new MenuCallback("Return to world map", ActivateOverworld ));
+        lm.gm.CallbackMenu(
+            "Welcome to " + place.shortDescription,
+            menuItems.ToArray()
+        );
+
 
     }
 
     public void ActivateOverworld()
     {
         if (lm)
+        {
             lm.Deactivate();
-        if (! lmDict.ContainsKey("overworld"))
-        {
-            GameObject l = Instantiate(overworldLevelManagerPrefab) as GameObject;
-            lm = l.GetComponent<LevelManagerScript>();
-            lm.init_overworld();
-            this.overworldEntity = lm.entity;
-            lmDict["overworld"] = lm;
+            Destroy(lm.gameObject);
         }
-        else
-        {
-            lm = lmDict["overworld"];
-        }
+        GameObject l = Instantiate(overworldLevelManagerPrefab) as GameObject;
+        lm = l.GetComponent<LevelManagerScript>();
+        lm.init_overworld();
+        this.overworldEntity = lm.entity;
+        lmDict["overworld"] = lm;
         lm.Activate();
         RefreshTiles();
+        Debug.Log(lm.entity.parent);
 //        playerScript.ForceMoveTo(overworldX,overworldY);
     }
 
