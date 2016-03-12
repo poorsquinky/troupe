@@ -212,6 +212,10 @@ namespace ThugLib
         {
             if (this.place != null && actor.isPlayer)
             {
+                // FIXME: stupid hack ahoy
+                LevelEntity l = this.parent as LevelEntity;
+                if (l.isOverworld)
+                    ActorForceEnter(actor);
                 this.place.Activate();
                 return true;
             }

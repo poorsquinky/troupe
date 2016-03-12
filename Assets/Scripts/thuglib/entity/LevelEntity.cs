@@ -11,9 +11,12 @@ namespace ThugLib
 
         // FIXME: this should not be here
         public LevelManagerScript lm;
+        public GameManagerScript gm;
 
         // FIXME serialize
         public int levelNumber = 0;
+
+        public bool isOverworld = false;
 
         public override void DeserializeFields()
         {

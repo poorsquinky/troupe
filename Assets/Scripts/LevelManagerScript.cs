@@ -329,6 +329,7 @@ public class LevelManagerScript : MonoBehaviour {
         {
             this.entity       = new LevelEntity(levelWidth, levelHeight, gm.entity);
             this.entity.index = gm.entity.RegisterEntity(this.entity);
+            this.entity.isOverworld = true;
             mapman.Generate();
         }
         else
