@@ -323,7 +323,7 @@ public class PlayerScript : MonoBehaviour {
                         actor.MoveTo(x,y);
                         Moved();
                     }
-                    else
+                    else if (x >= 0 && y >= 0 && x < lm.levelWidth - 1 && y < lm.levelHeight - 1)
                     {
                         CellEntity cell = lm.entity.GetCell(x,y);
                         ActorEntity foe = cell.GetActor();
@@ -331,19 +331,11 @@ public class PlayerScript : MonoBehaviour {
                         {
                             if (foe.attrs.ContainsKey("hostile") && foe.attrs["hostile"] == "true")
                             {
-                                if (foe.GetHP() == 0)
-                                {
-                                    // XXX does this happen anymore?
-                                    lm.gm.Message("You can't attack the dead " + foe.shortDescription + "!");
-                                }
-                                else
-                                {
-                                    lm.gm.Message("You hit the " + foe.shortDescription + "!");
-                                    this.actor.Attack(foe);
-                                    if (foe.GetHP() < 1)
-                                        lm.gm.Message("You killed the " + foe.shortDescription + "!");
-                                    lm.playerTurn = false;
-                                }
+                                lm.gm.Message("You hit the " + foe.shortDescription + "!");
+                                this.actor.Attack(foe);
+                                if (foe.GetHP() < 1)
+                                    lm.gm.Message("You killed the " + foe.shortDescription + "!");
+                                lm.playerTurn = false;
                             }
                             else
                             {

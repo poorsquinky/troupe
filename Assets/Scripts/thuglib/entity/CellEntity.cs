@@ -289,7 +289,7 @@ namespace ThugLib
             {
                 for (int yy = this.y - 1; yy <= this.y + 1; yy++)
                 {
-                    if (xx >= 0 && xx < w && y >= 0 && y < h && (xx != this.x || yy != this.y))
+                    if (xx >= 0 && xx < w - 1 && yy >= 0 && yy < h - 1 && (xx != this.x || yy != this.y))
                         c.Add(this.GetLevel().GetCell(xx,yy));
                 }
             }
