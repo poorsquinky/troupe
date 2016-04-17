@@ -247,17 +247,18 @@ namespace ThugSimpleGame {
             }
 
             // add roads and cities
-            int cityChance = 10;
-            foreach (MapNode a in questPOIs)
+            int cityChance = 5;
+            foreach (MapNode a in questPOIs) // each quest POI to its nearest secondary point
             {
                 MapNode b = a.FindNearest(secpoi);
                 // this is going to be a bit on the silly side as far as algorithms go, but time is of the essence
                 int x = a.x;
                 int y = a.y;
                 int lastCity = 0;
-                if (Random.Range(0,2) == 0)
+                if (Random.Range(0,2) == 0) // follow along Y axis first
                 {
                     tries = 0;
+                    lastCity = 0;
                     while (y != b.y && tries < 1000)
                     {
                         tries++;
@@ -265,7 +266,7 @@ namespace ThugSimpleGame {
                         if (map[x,y] == 0)
                             map[x,y] = 1;
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -280,7 +281,7 @@ namespace ThugSimpleGame {
                         if (map[x,y] == 0)
                             map[x,y] = 1;
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -288,9 +289,10 @@ namespace ThugSimpleGame {
                         }
                     }
                 }
-                else
+                else // follow along X axis first
                 {
                     tries = 0;
+                    lastCity = 0;
                     while (x != b.x && tries < 1000)
                     {
                         tries++;
@@ -298,7 +300,7 @@ namespace ThugSimpleGame {
                         if (map[x,y] == 0)
                             map[x,y] = 1;
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -313,7 +315,7 @@ namespace ThugSimpleGame {
                         if (map[x,y] == 0)
                             map[x,y] = 1;
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -323,7 +325,7 @@ namespace ThugSimpleGame {
                 }
             }
 
-            for (int i = 0; i < secpoi.Count - 1; i++)
+            for (int i = 0; i < secpoi.Count - 1; i++) // each secondary point to the next one on the list
             {
                 MapNode a = secpoi[i];
                 MapNode b = secpoi[i + 1];
@@ -333,6 +335,7 @@ namespace ThugSimpleGame {
                 if (Random.Range(0,2) == 0)
                 {
                     tries = 0;
+                    lastCity = 0;
                     while (y != b.y && tries < 1000)
                     {
                         tries++;
@@ -342,7 +345,7 @@ namespace ThugSimpleGame {
                             map[x,y] = 1;
                         }
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -359,7 +362,7 @@ namespace ThugSimpleGame {
                             map[x,y] = 1;
                         }
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -370,6 +373,7 @@ namespace ThugSimpleGame {
                 else
                 {
                     tries = 0;
+                    lastCity = 0;
                     while (x != b.x && tries < 1000)
                     {
                         tries++;
@@ -379,7 +383,7 @@ namespace ThugSimpleGame {
                             map[x,y] = 1;
                         }
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
@@ -396,7 +400,7 @@ namespace ThugSimpleGame {
                             map[x,y] = 1;
                         }
                         lastCity++;
-                        if (lastCity > 2 && (Random.Range(0, cityChance) == 0))
+                        if (lastCity > 4 && (Random.Range(0, cityChance) == 0))
                         {
                             lastCity = 0;
                             AddSecondaryPOI(x,y);
