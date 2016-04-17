@@ -60,9 +60,10 @@ namespace ThugSimpleGame {
 
 //            Debug.Log(levelNumber);
 
+            int doorX = 0;
             if (levelNumber == 0)
             {
-                int doorX = Random.Range(leftWall + 5, rightWall - 5);
+                doorX = Random.Range(leftWall + 5, rightWall - 5);
                 map[doorX,bottomWall]     = 3;
                 map[doorX - 1,bottomWall] = 3;
 
@@ -311,7 +312,7 @@ namespace ThugSimpleGame {
             {
                 for (int y = 0; y < lm.levelHeight; y++)
                 {
-                    if (map[x,y] == 0 && Random.Range(0,10) == 0)
+                    if (map[x,y] == 0 && Random.Range(0,2) == 0)
                         map[x,y] = 4;
                 }
             }
@@ -354,6 +355,55 @@ namespace ThugSimpleGame {
                 else
                     map[lm.levelWidth - 1,y] = 5;
             }
+
+            if (levelNumber == 0)
+            {
+                for (int x = leftWall - 1; x < rightWall + 1; x++)
+                {
+                    if (map[x, bottomWall - 1] == 0)
+                    {
+                        if (Random.Range(0,2) == 0)
+                            map[x,bottomWall - 1] = 4;
+                    }
+                    if (map[x, topWall + 1] == 0)
+                    {
+                        if (Random.Range(0,2) == 0)
+                            map[x,topWall + 1] = 4;
+                    }
+                }
+                for (int y = bottomWall - 1; y < topWall + 1; y++)
+                {
+                    if (map[leftWall - 1,y] == 0)
+                    {
+                        if (Random.Range(0,2) == 0)
+                            map[leftWall - 1,y] = 4;
+                    }
+                    if (map[rightWall + 1,y] == 0)
+                    {
+                        if (Random.Range(0,2) == 0)
+                            map[rightWall + 1,y] = 4;
+                    }
+                }
+
+                for (int x = 0; x < lm.levelWidth; x++)
+                {
+                    if (map[x, 1] == 0)
+                    {
+                        if (Random.Range(0,2) == 0)
+                            map[x,1] = 4;
+                    }
+                }
+                for (int y = bottomWall - 1; y > 0; y--)
+                {
+                    map[doorX,y] = 0;
+                    map[doorX - 1,y] = 0;
+                    if (Random.Range(0,1) == 0)
+                        map[doorX - 2,y] = 4;
+                    if (Random.Range(0,1) == 0)
+                        map[doorX + 1,y] = 4;
+                }
+            }
+
 
             for (int x = 0; x < lm.levelWidth; x++)
             {
