@@ -172,8 +172,8 @@ public class StatusSpriteScript : MonoBehaviour {
                     }
                     else if (e.isPlayer && gm.lm.isOverworld && (d % 4 <= 2))
                     {
-                        int wx = gm.lm.entity.stats["poi_0_x"];
-                        int wy = gm.lm.entity.stats["poi_0_y"];
+                        int wx = gm.overworldQuestX;
+                        int wy = gm.overworldQuestY;
 
                         SetDirection(wx,wy);
                         this.sprite.enabled = true;
@@ -182,8 +182,8 @@ public class StatusSpriteScript : MonoBehaviour {
                     {
                         this.sprite.enabled = false;
                         pos = target.transform.position;
-                        pos.x = gm.lm.entity.stats["poi_0_x"];
-                        pos.y = gm.lm.entity.stats["poi_0_y"];
+                        pos.x = gm.overworldQuestX;
+                        pos.y = gm.overworldQuestY;
                         transform.position = pos;
 
                         this.sprite.sprite = directionSprites[8];

@@ -59,6 +59,12 @@ public class GameManagerScript : MonoBehaviour {
 
     public List<string> messageScrollback = new List<string>();
 
+    [HideInInspector]
+    public int overworldQuestX = 0;
+    [HideInInspector]
+    public int overworldQuestY = 0;
+
+
     private const string helpText =
 @"<b>MOVEMENT:</b>
  Arrows, gamepad and WASD (probably) work, but vi keys are recommended:

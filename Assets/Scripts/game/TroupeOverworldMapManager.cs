@@ -639,14 +639,16 @@ namespace ThugSimpleGame {
             }
 
             // save our POI locations for quests
-            lm.entity.stats["poi_0_x"] = questPOIs[1].x;
-            lm.entity.stats["poi_0_y"] = questPOIs[1].y;
-            lm.entity.stats["poi_1_x"] = questPOIs[2].x;
-            lm.entity.stats["poi_1_y"] = questPOIs[2].y;
-            lm.entity.stats["poi_2_x"] = questPOIs[3].x;
-            lm.entity.stats["poi_2_y"] = questPOIs[3].y;
+            lm.entity.stats["quest_0_x"] = questPOIs[1].x;
+            lm.entity.stats["quest_0_y"] = questPOIs[1].y;
+            lm.entity.stats["quest_1_x"] = questPOIs[2].x;
+            lm.entity.stats["quest_1_y"] = questPOIs[2].y;
+            lm.entity.stats["quest_2_x"] = questPOIs[3].x;
+            lm.entity.stats["quest_2_y"] = questPOIs[3].y;
             lm.gm.overworldX = questPOIs[0].x;
             lm.gm.overworldY = questPOIs[0].y;
+            lm.gm.overworldQuestX = questPOIs[1].x;
+            lm.gm.overworldQuestY = questPOIs[1].y;
 
         }
         public override void PostProcess()
