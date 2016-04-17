@@ -170,12 +170,23 @@ public class StatusSpriteScript : MonoBehaviour {
                             this.sprite.enabled = false;
                         }
                     }
-                    else if (e.isPlayer && gm.lm.isOverworld && (d % 4 == 2))
+                    else if (e.isPlayer && gm.lm.isOverworld && (d % 4 <= 2))
                     {
                         int wx = gm.lm.entity.stats["poi_0_x"];
                         int wy = gm.lm.entity.stats["poi_0_y"];
 
                         SetDirection(wx,wy);
+                        this.sprite.enabled = true;
+                    }
+                    else if (e.isPlayer && gm.lm.isOverworld && (d % 4 == 3) && target.moving == false)
+                    {
+                        this.sprite.enabled = false;
+                        pos = target.transform.position;
+                        pos.x = gm.lm.entity.stats["poi_0_x"];
+                        pos.y = gm.lm.entity.stats["poi_0_y"];
+                        transform.position = pos;
+
+                        this.sprite.sprite = directionSprites[8];
                         this.sprite.enabled = true;
                     }
                     else
