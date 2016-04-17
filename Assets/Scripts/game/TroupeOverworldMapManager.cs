@@ -569,6 +569,12 @@ namespace ThugSimpleGame {
                 map = (int[,]) newmap.Clone();
             }
 
+            // ensure each quest POI has a city
+            foreach (MapNode m in questPOIs)
+            {
+                map[m.x,m.y] = 2;
+            }
+
             for (int x = 0; x < lm.levelWidth; x++)
             {
                 for (int y = 0; y < lm.levelHeight; y++)
@@ -631,7 +637,6 @@ namespace ThugSimpleGame {
                     }
                 }
             }
-
 
             // save our POI locations for quests
             lm.entity.stats["poi_0_x"] = questPOIs[1].x;
