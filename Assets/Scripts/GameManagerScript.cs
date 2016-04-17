@@ -62,6 +62,8 @@ public class GameManagerScript : MonoBehaviour {
     [HideInInspector]
     public int questNumber = 0;
 
+    private NameUtils nameUtils = new NameUtils();
+
     public int getOverworldQuestX() {
         return lm.entity.stats["quest_" + questNumber + "_x"];
     }
@@ -597,7 +599,7 @@ public class GameManagerScript : MonoBehaviour {
         {
             PlaceEntity office      = new PlaceEntity();
             office.shortDescription = "office";
-            office.longDescription  = "an office building";
+            office.longDescription  = "the " + nameUtils.RandomCompanyName() + " building";
             office.placeType        = "office";
             office.index            = this.entity.RegisterEntity(office);
             place.AddSubPlace(office);
