@@ -92,6 +92,7 @@ public class StatusSpriteScript : MonoBehaviour {
         this.transform.position = pos;
     }
 
+    // FIXME: this doesn't seem to point the way I was expecting it to
     void SetDirection(int x, int y)
     {
         Vector3 pos = target.transform.position;
@@ -172,8 +173,8 @@ public class StatusSpriteScript : MonoBehaviour {
                     }
                     else if (e.isPlayer && gm.lm.isOverworld && (d % 4 <= 2))
                     {
-                        int wx = gm.overworldQuestX;
-                        int wy = gm.overworldQuestY;
+                        int wx = gm.getOverworldQuestX();
+                        int wy = gm.getOverworldQuestY();
 
                         SetDirection(wx,wy);
                         this.sprite.enabled = true;
@@ -182,8 +183,8 @@ public class StatusSpriteScript : MonoBehaviour {
                     {
                         this.sprite.enabled = false;
                         pos = target.transform.position;
-                        pos.x = gm.overworldQuestX;
-                        pos.y = gm.overworldQuestY;
+                        pos.x = gm.getOverworldQuestX();
+                        pos.y = gm.getOverworldQuestY();
                         transform.position = pos;
 
                         this.sprite.sprite = directionSprites[8];

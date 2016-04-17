@@ -60,10 +60,14 @@ public class GameManagerScript : MonoBehaviour {
     public List<string> messageScrollback = new List<string>();
 
     [HideInInspector]
-    public int overworldQuestX = 0;
-    [HideInInspector]
-    public int overworldQuestY = 0;
+    public int questNumber = 0;
 
+    public int getOverworldQuestX() {
+        return lm.entity.stats["quest_" + questNumber + "_x"];
+    }
+    public int getOverworldQuestY() {
+        return lm.entity.stats["quest_" + questNumber + "_y"];
+    }
 
     private const string helpText =
 @"<b>MOVEMENT:</b>

@@ -647,8 +647,6 @@ namespace ThugSimpleGame {
             lm.entity.stats["quest_2_y"] = questPOIs[3].y;
             lm.gm.overworldX = questPOIs[0].x;
             lm.gm.overworldY = questPOIs[0].y;
-            lm.gm.overworldQuestX = questPOIs[1].x;
-            lm.gm.overworldQuestY = questPOIs[1].y;
 
         }
         public override void PostProcess()
